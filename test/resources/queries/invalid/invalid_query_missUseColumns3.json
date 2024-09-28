@@ -1,0 +1,38 @@
+{
+	"title": "invalid_query_using_space_in_OPTIONS",
+	"input": {
+		"WHERE": {
+			"OR": [
+				{
+					"OR": [
+						{
+							"LT": {
+								"sections_avg": 88
+							}
+						},
+						{
+							"IS": {
+								"sections_dept": "chem"
+							}
+						}
+					]
+				},
+				{
+					"IS": {
+						"sections_dept": "chem"
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			" ": [
+				"sections_dept",
+				"sections_id",
+				"sections_avg"
+			],
+			"ORDER": "sections_avg"
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

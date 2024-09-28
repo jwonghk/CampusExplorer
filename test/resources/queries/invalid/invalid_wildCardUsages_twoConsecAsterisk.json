@@ -1,0 +1,38 @@
+{
+	"title": "invalid_wildCardUsage_twoConsecAsterisk",
+	"input": {
+		"WHERE": {
+			"OR": [
+				{
+					"OR": [
+						{
+							"LT": {
+								"sections_avg": -2
+							}
+						},
+						{
+							"IS": {
+								"sections_dept": "bcd**"
+							}
+						}
+					]
+				},
+				{
+					"IS": {
+						"sections_dept": "cpsc"
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"sections_id",
+				"sections_avg"
+			],
+			"ORDER": "sections_avg"
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}
