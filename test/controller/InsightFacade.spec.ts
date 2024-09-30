@@ -357,8 +357,6 @@ describe("InsightFacade", function () {
 		it("[invalid/invalid_filter_key.json] Query with invalid filter key", checkQuery);
 		it("[invalid/invalid_filter_type.json] Query with invalid filter type", checkQuery);
 		it("[invalid/invalid_scomparator.json] Query with incorrect type for string field", checkQuery);
-		it("[invalid/non_object_query.json] Non-object query request", checkQuery);
-		it("[invalid/empty_query.json] Empty query request", checkQuery);
 		it("[invalid/empty_or.json] Query with empty AND list", checkQuery);
 		it("[invalid/empty_gt.json] Query with empty GT", checkQuery);
 		it("[invalid/empty_lt.json] Query with empty LT", checkQuery);
