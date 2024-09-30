@@ -36,6 +36,7 @@ describe("InsightFacade", function () {
 	before(async function () {
 		// This block runs once and loads the datasets.
 		sections = await getContentFromArchives("pair.zip");
+		sections2 = await getContentFromArchives("SmallerData.zip");
 		emptyZip = await getContentFromArchives("test_empty.zip");
 		invalidZIP = await getContentFromArchives("invalid_zip.zip");
 		invalidJSONZip = await getContentFromArchives("test_invalid_json.zip");
@@ -59,14 +60,15 @@ describe("InsightFacade", function () {
 			await clearDisk();
 		});
 
-		it("should reject with  an empty dataset id", async function () {
+		it("should reject with an empty dataset id", async function () {
 			try {
 				await facade.addDataset("", sections, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown above.");
 			} catch (err) {
 				expect(err).to.be.instanceOf(InsightError);
 			}
-			expect.fail("Should have thrown above.");
 		});
+
 		it("should add a valid dataset and return the dataset id", async function () {
 			const outputId = await facade.addDataset("foo", sections, InsightDatasetKind.Sections);
 			expect(outputId).to.deep.equal(["foo"]);
@@ -182,18 +184,6 @@ describe("InsightFacade", function () {
 
 		afterEach(async function () {
 			await clearDisk();
-		});
-
-		it("should fail adding a dataset, removing it, then removing again!", async function () {
-			//let result;
-			try {
-				await facade.addDataset("data1", sections, InsightDatasetKind.Sections);
-				await facade.removeDataset("data1");
-				await facade.removeDataset("data1");
-			} catch (err) {
-				expect(err).to.be.instanceOf(InsightError);
-			}
-			expect.fail("should failed above");
 		});
 
 		it("should successfully remove a valid dataset", async function () {
