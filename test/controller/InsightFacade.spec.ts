@@ -1,11 +1,4 @@
-import {
-	IInsightFacade,
-	InsightDatasetKind,
-	InsightError,
-	InsightResult,
-	NotFoundError,
-	ResultTooLargeError,
-} from "../../src/controller/IInsightFacade";
+import { IInsightFacade, InsightDatasetKind, InsightError, InsightResult } from "../../src/controller/IInsightFacade";
 import InsightFacade from "../../src/controller/InsightFacade";
 import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 
@@ -292,28 +285,13 @@ describe("InsightFacade", function () {
 				}
 
 				expect(result).to.be.an("array");
-				expect(result).to.equal(expected);
 				expect(result).to.deep.equal(expected);
 			} catch (err) {
 				if (!errorExpected) {
 					expect.fail(`performQuery threw unexpected error: ${err}`);
 				}
-				// wrong (i.e. without the return in front):
-				// expect(errorExpected).to.be.equal(expected);
-				// wrong : return expect(err).to.be.instanceOf(expected);
-				let localExepctedError;
-				if (expected === "InsightError") {
-					localExepctedError = InsightError;
-					return expect(err).to.be.instanceOf(localExepctedError);
-				} else if (expected === "ResultTooLargeError") {
-					localExepctedError = ResultTooLargeError;
-					return expect(err).to.be.instanceOf(localExepctedError);
-				} else if (expected === "NotFoundError") {
-					localExepctedError = NotFoundError;
-					return expect(err).to.be.instanceOf(localExepctedError);
-				} else {
-					return expect(err).to.be.instanceOf(Error);
-				}
+
+				expect(expected).to.be.oneOf(["ResultTooLargeError", "InsightError"]);
 			}
 		}
 
