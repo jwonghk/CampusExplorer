@@ -1,10 +1,8 @@
 {
-	"title": "Query with invalid filter key",
+	"title": "Query with invalid WHERE filter",
 	"input": {
 	  "WHERE": {
-		"GT": {
-		  "INVALID": 97
-		}
+		"INVALID": {}
 	  },
 	  "OPTIONS": {
 		"COLUMNS": [

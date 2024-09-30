@@ -1,9 +1,9 @@
 {
-	"title": "Query with invalid filter key",
+	"title": "Query with invalid ORDER key",
 	"input": {
 	  "WHERE": {
 		"GT": {
-		  "INVALID": 97
+		  "sections_avg": 97
 		}
 	  },
 	  "OPTIONS": {
@@ -11,7 +11,7 @@
 		  "sections_dept",
 		  "sections_avg"
 		],
-		"ORDER": "sections_avg"
+		"ORDER": "INVALID"
 	  }
 	},
 	"errorExpected": true,

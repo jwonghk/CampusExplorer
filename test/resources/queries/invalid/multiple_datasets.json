@@ -1,14 +1,24 @@
 {
-	"title": "Query with invalid filter key",
+	"title": "Query referencing multiple datasets",
 	"input": {
 	  "WHERE": {
-		"GT": {
-		  "INVALID": 97
-		}
+		"AND": [
+		  {
+			"GT": {
+			  "sections_avg": 97
+			}
+		  },
+		  {
+			"IS": {
+			  "courses_dept": "cpsc"
+			}
+		  }
+		]
 	  },
 	  "OPTIONS": {
 		"COLUMNS": [
 		  "sections_dept",
+		  "courses_title",
 		  "sections_avg"
 		],
 		"ORDER": "sections_avg"
