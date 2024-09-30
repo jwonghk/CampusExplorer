@@ -1,0 +1,51 @@
+{
+	"title": "valid_NOT_AND_GT0_LT100",
+	"input": {
+		"WHERE": {
+			"NOT": {
+				"AND": [
+					{
+						"GT": {
+							"sections_avg": 0
+						}
+					},
+					{
+						"LT": {
+							"sections_avg": 100
+						}
+					}
+				]
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"sections_avg",
+				"sections_id",
+				"sections_instructor"
+			],
+			"ORDER": "sections_avg"
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"sections_dept": "lfs",
+			"sections_avg": 0,
+			"sections_id": "100",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "lfs",
+			"sections_avg": 0,
+			"sections_id": "100",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "frst",
+			"sections_avg": 0,
+			"sections_id": "202",
+			"sections_instructor": ""
+		}
+	]
+}

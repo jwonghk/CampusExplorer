@@ -1,0 +1,38 @@
+{
+	"title": "invalid_query_using_rows_in_OPTIONS",
+	"input": {
+		"WHERE": {
+			"OR": [
+				{
+					"OR": [
+						{
+							"GT": {
+								"sections_avg": 57
+							}
+						},
+						{
+							"IS": {
+								"sections_dept": "math"
+							}
+						}
+					]
+				},
+				{
+					"IS": {
+						"sections_dept": "chem"
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"rows": [
+				"sections_dept",
+				"sections_id",
+				"sections_avg"
+			],
+			"ORDER": "sections_avg"
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

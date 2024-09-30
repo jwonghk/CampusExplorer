@@ -1,0 +1,35 @@
+{
+	"title": "invalid_OR_GT_IS_LT_cpsStar_morethan5000",
+	"input": {
+		"WHERE": {
+			"OR": [
+				{
+					"GT": {
+						"sections_pass": 890
+					}
+				},
+				{
+					"IS": {
+						"sections_dept": "cps*"
+					}
+				},
+				{
+					"LT": {
+						"sections_avg": 77
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"sections_avg",
+				"sections_id",
+				"sections_instructor"
+			],
+			"ORDER": "sections_avg"
+		}
+	},
+	"errorExpected": true,
+	"expected": "ResultTooLargeError"
+}

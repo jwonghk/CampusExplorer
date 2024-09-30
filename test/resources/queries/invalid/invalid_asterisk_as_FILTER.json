@@ -1,0 +1,38 @@
+{
+	"title": "invalid_asterisk_as_FILTER",
+	"input": {
+		"WHERE": {
+			"OR": [
+				{
+					"NOT": [
+						{
+							"*": {
+								"sections_avg": -2
+							}
+						},
+						{
+							"*": {
+								"sections_dept": "cps*"
+							}
+						}
+					]
+				},
+				{
+					"IS": {
+						"sections_dept": "cpsc"
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"sections_id",
+				"sections_avg"
+			],
+			"ORDER": "sections_avg"
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

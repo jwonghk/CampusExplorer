@@ -1,0 +1,450 @@
+{
+	"title": "valid_AND_GT_IS_LT",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"GT": {
+						"sections_pass": 777
+					}
+				},
+				{
+					"IS": {
+						"sections_dept": "c*"
+					}
+				},
+				{
+					"LT": {
+						"sections_avg": 80
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"sections_avg",
+				"sections_id",
+				"sections_instructor"
+			],
+			"ORDER": "sections_avg"
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"sections_dept": "chem",
+			"sections_avg": 63.31,
+			"sections_id": "233",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 63.33,
+			"sections_id": "233",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 64.6,
+			"sections_id": "233",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 64.94,
+			"sections_id": "233",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 67.02,
+			"sections_id": "233",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 67.42,
+			"sections_id": "121",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 67.7,
+			"sections_id": "233",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 67.89,
+			"sections_id": "233",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 68.2,
+			"sections_id": "121",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 68.72,
+			"sections_id": "121",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 68.77,
+			"sections_id": "121",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 68.87,
+			"sections_id": "205",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 68.93,
+			"sections_id": "123",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 69.3,
+			"sections_id": "121",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 69.41,
+			"sections_id": "121",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 70.14,
+			"sections_id": "123",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 70.22,
+			"sections_id": "121",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 70.36,
+			"sections_id": "123",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 70.97,
+			"sections_id": "121",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 71.19,
+			"sections_id": "291",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "cpsc",
+			"sections_avg": 71.22,
+			"sections_id": "110",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 71.25,
+			"sections_id": "205",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 71.32,
+			"sections_id": "235",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 72.04,
+			"sections_id": "292",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 72.08,
+			"sections_id": "290",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 72.1,
+			"sections_id": "123",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 72.25,
+			"sections_id": "290",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "cpsc",
+			"sections_avg": 72.28,
+			"sections_id": "110",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 72.32,
+			"sections_id": "291",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 72.42,
+			"sections_id": "292",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 72.44,
+			"sections_id": "205",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 72.58,
+			"sections_id": "235",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 72.66,
+			"sections_id": "123",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 72.74,
+			"sections_id": "235",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 72.83,
+			"sections_id": "123",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 73.06,
+			"sections_id": "205",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "cpsc",
+			"sections_avg": 73.25,
+			"sections_id": "110",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 73.45,
+			"sections_id": "123",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 73.94,
+			"sections_id": "235",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 73.98,
+			"sections_id": "235",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 74.43,
+			"sections_id": "292",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 74.49,
+			"sections_id": "290",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 74.58,
+			"sections_id": "235",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 74.64,
+			"sections_id": "235",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 74.82,
+			"sections_id": "298",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 75.06,
+			"sections_id": "292",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 75.28,
+			"sections_id": "202",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 75.44,
+			"sections_id": "202",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 75.68,
+			"sections_id": "390",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 75.76,
+			"sections_id": "395",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 75.77,
+			"sections_id": "296",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "crwr",
+			"sections_avg": 75.97,
+			"sections_id": "200",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 76.17,
+			"sections_id": "296",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 76.46,
+			"sections_id": "204",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 76.69,
+			"sections_id": "298",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 76.7,
+			"sections_id": "390",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 76.86,
+			"sections_id": "205",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 76.95,
+			"sections_id": "205",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 77.21,
+			"sections_id": "203",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 77.55,
+			"sections_id": "202",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "chem",
+			"sections_avg": 77.57,
+			"sections_id": "205",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 77.82,
+			"sections_id": "296",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 78.06,
+			"sections_id": "296",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "crwr",
+			"sections_avg": 78.51,
+			"sections_id": "200",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 78.89,
+			"sections_id": "205",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "crwr",
+			"sections_avg": 79.4,
+			"sections_id": "200",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 79.67,
+			"sections_id": "298",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "comm",
+			"sections_avg": 79.71,
+			"sections_id": "202",
+			"sections_instructor": ""
+		},
+		{
+			"sections_dept": "crwr",
+			"sections_avg": 79.76,
+			"sections_id": "200",
+			"sections_instructor": ""
+		}
+	]
+}

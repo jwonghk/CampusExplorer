@@ -1,0 +1,80 @@
+{
+	"title": "valid_AND_GT95_IS_starYstar",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"GT": {
+						"sections_avg": 95
+					}
+				},
+				{
+					"IS": {
+						"sections_dept": "*y*"
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"sections_avg",
+				"sections_id"
+			],
+			"ORDER": "sections_avg"
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"sections_dept": "psyc",
+			"sections_avg": 95.25,
+			"sections_id": "541"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_avg": 95.25,
+			"sections_id": "541"
+		},
+		{
+			"sections_dept": "phys",
+			"sections_avg": 95.43,
+			"sections_id": "508"
+		},
+		{
+			"sections_dept": "phys",
+			"sections_avg": 95.43,
+			"sections_id": "508"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_avg": 95.75,
+			"sections_id": "537"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_avg": 95.75,
+			"sections_id": "537"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_avg": 96,
+			"sections_id": "549"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_avg": 96,
+			"sections_id": "501"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_avg": 96,
+			"sections_id": "501"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_avg": 97,
+			"sections_id": "549"
+		}
+	]
+}

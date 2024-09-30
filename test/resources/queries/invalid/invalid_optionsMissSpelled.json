@@ -1,0 +1,19 @@
+{
+	"title": "invalid optionsMissSpelled",
+	"input": {
+		"WHERE": {
+			"GT": {
+				"sections_avg": 70
+			}
+		},
+		"OpTIoonS": {
+			"COLUMNS": [
+				"sections_dept",
+				"sections_avg"
+			],
+			"ORDER": "sections_avg"
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}
