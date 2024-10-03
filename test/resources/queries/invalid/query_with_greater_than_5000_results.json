@@ -1,0 +1,28 @@
+{
+	"title": "Query with greater than 5000 results",
+	"input": {
+		"WHERE": {
+			"OR": [
+				{
+					"GT": {
+						"sections_avg": 80
+					}
+				},
+				{
+					"IS": {
+						"sections_dept": "cpsc"
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"sections_avg"
+			],
+			"ORDER": "sections_avg"
+		}
+	},
+	"errorExpected": true,
+	"expected": "ResultTooLargeError"
+}

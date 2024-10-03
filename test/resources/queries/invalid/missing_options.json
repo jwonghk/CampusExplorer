@@ -1,13 +1,10 @@
 {
-	"title": "Query missing COLUMNS",
+	"title": "Query missing OPTIONS",
 	"input": {
 		"WHERE": {
 			"GT": {
 				"sections_avg": 97
 			}
-		},
-		"OPTIONS": {
-			"ORDER": "sections_avg"
 		}
 	},
 	"errorExpected": true,

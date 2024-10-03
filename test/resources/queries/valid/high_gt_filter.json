@@ -1,0 +1,19 @@
+{
+	"title": "Query with high GT number value for filter",
+	"input": {
+		"WHERE": {
+			"GT": {
+				"sections_avg": 1000
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"sections_avg"
+			],
+			"ORDER": "sections_avg"
+		}
+	},
+	"errorExpected": false,
+	"expected": []
+}

@@ -1,10 +1,19 @@
 {
-	"title": "Query with invalid filter key",
+	"title": "Query with invalid LOGIC operator",
 	"input": {
 	  "WHERE": {
-		"GT": {
-		  "INVALID": 97
-		}
+		"INVALID": [
+		  {
+			"GT": {
+			  "sections_avg": 97
+			}
+		  },
+		  {
+			"IS": {
+			  "sections_dept": "cpsc"
+			}
+		  }
+		]
 	  },
 	  "OPTIONS": {
 		"COLUMNS": [

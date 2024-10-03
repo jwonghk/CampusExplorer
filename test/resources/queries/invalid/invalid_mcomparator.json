@@ -1,9 +1,9 @@
 {
-	"title": "Query with invalid filter key",
+	"title": "Query with invalid MCOMPARATOR",
 	"input": {
 	  "WHERE": {
-		"GT": {
-		  "INVALID": 97
+		"INVALID": {
+		  "sections_avg": 97
 		}
 	  },
 	  "OPTIONS": {

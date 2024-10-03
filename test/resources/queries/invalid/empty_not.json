@@ -1,19 +1,17 @@
 {
-	"title": "Query with invalid filter key",
+	"title": "Query with empty NOT filter",
 	"input": {
 	  "WHERE": {
-		"GT": {
-		  "INVALID": 97
-		}
+		"NOT": {}
 	  },
 	  "OPTIONS": {
 		"COLUMNS": [
-		  "sections_dept",
-		  "sections_avg"
-		],
+			"sections_dept",
+			"sections_avg"
+		  ],
 		"ORDER": "sections_avg"
 	  }
 	},
 	"errorExpected": true,
 	"expected": "InsightError"
-  }
+}

@@ -1,0 +1,12 @@
+{
+	"title": "Query wildcard in middle",
+	"input": {
+		"WHERE": {
+			"IS": {
+				"sections_dept": "cp*c"
+			}
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

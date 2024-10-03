@@ -1,17 +1,14 @@
 {
-	"title": "Query with invalid filter key",
+	"title": "Query with empty LT",
 	"input": {
 	  "WHERE": {
-		"GT": {
-		  "INVALID": 97
-		}
+		"LT": {}
 	  },
 	  "OPTIONS": {
 		"COLUMNS": [
 		  "sections_dept",
 		  "sections_avg"
-		],
-		"ORDER": "sections_avg"
+		]
 	  }
 	},
 	"errorExpected": true,
