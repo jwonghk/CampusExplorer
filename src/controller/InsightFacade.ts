@@ -10,6 +10,7 @@ import InforForCourses from "./InforForCourses";
 import { AddAllCourses } from "./AddAllCourses";
 
 const fs = require("fs-extra");
+import * as path from "path";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -28,23 +29,26 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
-		// TODO: Remove this once you implement the methods!
-		//const funcProm: Promise<string[]> = new Promise<string[]>((res, rej) => {
-		const courses = new AddAllCourses(this); // keep !!!
+		this.checkConditionsForAdding(id, kind);
+
 		try {
-			this.checkConditionsForAdding(id, kind);
+			const dataDir = "data";
+			await fs.ensureDir(dataDir);
+
+			const courses = new AddAllCourses(this);
 			await courses.AddAllCourse(id, content);
+
 			const jsonFormat = JSON.stringify(this.dataIDmap.get(id));
-			await this.WriteToPersistent(id, jsonFormat);
+			await this.writeToPersistent(id, jsonFormat);
 			return this.datasetNameIDList;
 		} catch (error: any) {
-			throw new InsightError("something wrong with AddAllcourses!" + error);
+			throw new InsightError("Error while adding dataset: " + error.message);
 		}
 	}
 
 	public checkConditionsForAdding(id: string, kind: InsightDatasetKind): boolean {
 		if (this.datasetNameIDList.includes(id)) {
-			throw new InsightError("Data ID already exists!");
+			throw new InsightError("Data ID already exists, cannot add again.");
 		} else if (id.includes(" ") || id.includes("_") || id === "") {
 			throw new InsightError("Data ID contains space, underscore or empty");
 		} else if (kind === InsightDatasetKind.Rooms) {
@@ -55,18 +59,18 @@ export default class InsightFacade implements IInsightFacade {
 		}
 	}
 
-	private async WriteToPersistent(id: string, jsonData: string): Promise<any> {
-		return new Promise((res, rej) => {
-			fs.writeFile("data/" + id + ".json", jsonData, (err: any) => {
-				if (err) {
-					//console.log("in Persistent error");
-					rej(err);
-				} else {
-					//console.log("WriteToPersistent runs!!!");
-					res(jsonData);
-				}
-			});
-		});
+	private async writeToPersistent(id: string, jsonData: string): Promise<void> {
+		try {
+			const dataDir = "data";
+			// Ensure the 'data' directory exists
+			await fs.ensureDir(dataDir);
+			// Construct the full file path
+			const filePath = path.join(dataDir, id + ".json");
+			// Write the file
+			await fs.writeFile(filePath, jsonData);
+		} catch (err: any) {
+			throw new InsightError("Error writing dataset to disk: " + err.message);
+		}
 	}
 
 	public async removeDataset(id: string): Promise<string> {
@@ -193,18 +197,14 @@ export default class InsightFacade implements IInsightFacade {
 
 	public async resolveListofData(): Promise<InsightDataset[]> {
 		const insightDatasetArray: InsightDataset[] = [];
-		let storingKey: string[];
-		return new Promise((resolve, rej) => {
-			try {
-				for (const [key, value] of this.dataIDmap.entries()) {
-					insightDatasetArray.push(value.insightDataset);
-					storingKey.push(key);
-				}
-			} catch (err) {
-				rej(err);
+		const storingKey: string[] = [];
+		for (const [key, value] of this.dataIDmap.entries()) {
+			if (value.insightDataset) {
+				insightDatasetArray.push(value.insightDataset);
+				storingKey.push(key);
 			}
-			resolve(insightDatasetArray);
-		});
+		}
+		return insightDatasetArray;
 	}
 
 	public async listDatasets(): Promise<InsightDataset[]> {
