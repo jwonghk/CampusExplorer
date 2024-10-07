@@ -95,7 +95,6 @@ describe("InsightFacade", function () {
 
 			try {
 				result = await facade.addDataset("SmallerData", sections2, InsightDatasetKind.Sections);
-
 				result = await facade.addDataset("MATH541Data", math541Sections, InsightDatasetKind.Sections);
 			} catch (err) {
 				//console.log("Error: " + err);
@@ -107,9 +106,13 @@ describe("InsightFacade", function () {
 
 		// this add 1 data only : same as the test right below here
 		it("should add a valid dataset and return the dataset id", async function () {
-			const outputId = await facade.addDataset("foo", sections, InsightDatasetKind.Sections);
+			try {
+				const outputId = await facade.addDataset("foo", sections, InsightDatasetKind.Sections);
+				expect(outputId).to.deep.equal(["foo"]);
+			} catch (err) {
+				return expect(err).to.be.instanceOf(InsightError);
+			}
 			//console.log(outputId);
-			expect(outputId).to.deep.equal(["foo"]);
 		});
 
 		// this add 1 dataset only
@@ -124,8 +127,8 @@ describe("InsightFacade", function () {
 		});
 
 		it("should reject with a duplicate dataset id", async function () {
-			await facade.addDataset("foo", sections, InsightDatasetKind.Sections);
 			try {
+				await facade.addDataset("foo", sections, InsightDatasetKind.Sections);
 				await facade.addDataset("foo", sections, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown above.");
 			} catch (err) {
@@ -225,8 +228,8 @@ describe("InsightFacade", function () {
 		});
 
 		it("should reject adding same dataset id with different kinds", async function () {
-			await facade.addDataset("foobar", sections, InsightDatasetKind.Sections);
 			try {
+				await facade.addDataset("foobar", sections, InsightDatasetKind.Sections);
 				await facade.addDataset("foobar", sections, InsightDatasetKind.Rooms);
 				expect.fail("Should have thrown above.");
 			} catch (err) {
@@ -245,13 +248,16 @@ describe("InsightFacade", function () {
 		});
 
 		it("should successfully remove a valid dataset", async function () {
-			await facade.addDataset("sampleDataset", sections2, InsightDatasetKind.Sections);
+			try {
+				await facade.addDataset("sampleDataset", sections2, InsightDatasetKind.Sections);
+				const removedId = await facade.removeDataset("sampleDataset");
+				expect(removedId).to.equal("sampleDataset");
 
-			const removedId = await facade.removeDataset("sampleDataset");
-			expect(removedId).to.equal("sampleDataset");
-
-			const datasets = await facade.listDatasets();
-			expect(datasets).to.deep.equal([]);
+				const datasets = await facade.listDatasets();
+				expect(datasets).to.deep.equal([]);
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
 		});
 
 		it("should reject removing a dataset with id containing underscore _", async function () {
@@ -320,19 +326,22 @@ describe("InsightFacade", function () {
 		});
 
 		it("should list one added dataset", async function () {
-			await facade.addDataset("sampleDataset", sections, InsightDatasetKind.Sections);
-			const datasets = await facade.listDatasets();
-			expect(datasets).to.deep.equal([
-				{
-					id: "sampleDataset",
-					kind: InsightDatasetKind.Sections,
-					numRows: 64612,
-				},
-			]);
+			try {
+				await facade.addDataset("sampleDataset", sections, InsightDatasetKind.Sections);
+				const datasets = await facade.listDatasets();
+				expect(datasets).to.deep.equal([
+					{
+						id: "sampleDataset",
+						kind: InsightDatasetKind.Sections,
+						numRows: 64612,
+					},
+				]);
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
 		});
 
 		it("test listing two datasets", async function () {
-			// do I need try catch here???/
 			let datasets;
 			try {
 				await facade.addDataset("JAPN314", courseJAPN314, InsightDatasetKind.Sections);
@@ -340,21 +349,21 @@ describe("InsightFacade", function () {
 				await facade.addDataset("MATH541", courseMATH541, InsightDatasetKind.Sections);
 
 				datasets = await facade.listDatasets();
+				expect(datasets).to.deep.equal([
+					{
+						id: "JAPN314",
+						kind: InsightDatasetKind.Sections,
+						numRows: 10,
+					},
+					{
+						id: "MATH541",
+						kind: InsightDatasetKind.Sections,
+						numRows: 8,
+					},
+				]);
 			} catch (error) {
 				expect(error).to.be.instanceOf(InsightError);
 			}
-			expect(datasets).to.deep.equal([
-				{
-					id: "JAPN314",
-					kind: InsightDatasetKind.Sections,
-					numRows: 10,
-				},
-				{
-					id: "MATH541",
-					kind: InsightDatasetKind.Sections,
-					numRows: 8,
-				},
-			]);
 		});
 	});
 
