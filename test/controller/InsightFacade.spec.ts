@@ -1,10 +1,18 @@
-import { IInsightFacade, InsightDatasetKind, InsightError, InsightResult } from "../../src/controller/IInsightFacade";
+import {
+	IInsightFacade,
+	InsightDatasetKind,
+	InsightError,
+	InsightResult,
+	NotFoundError,
+} from "../../src/controller/IInsightFacade";
 import InsightFacade from "../../src/controller/InsightFacade";
 import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
 
+import path from "path";
+const fs = require("fs-extra");
 use(chaiAsPromised);
 
 export interface ITestQuery {
@@ -20,24 +28,42 @@ describe("InsightFacade", function () {
 	// Declare datasets used in tests. You should add more datasets like this!
 	let sections: string;
 	let sections2: string;
+	let math541Sections: string;
 	let emptyZip: string;
 	let invalidZIP: string;
 	let invalidJSONZip: string;
 	let noCourseFolder: string;
 	let missingResultKey: string;
+	let courseJAPN314: string;
+	let courseMATH541: string;
 
 	before(async function () {
 		// This block runs once and loads the datasets.
 		sections = await getContentFromArchives("pair.zip");
 		sections2 = await getContentFromArchives("SmallerData.zip");
+		math541Sections = await getContentFromArchives("MATH541.zip");
+
 		emptyZip = await getContentFromArchives("test_empty.zip");
 		invalidZIP = await getContentFromArchives("invalid_zip.zip");
 		invalidJSONZip = await getContentFromArchives("test_invalid_json.zip");
 		noCourseFolder = await getContentFromArchives("test_no_course_folder.zip");
 		missingResultKey = await getContentFromArchives("missing_result_key.zip");
 
+		courseJAPN314 = await getContentFromArchives("JAPN314.zip");
+		courseMATH541 = await getContentFromArchives("MATH541.zip");
+
 		// Just in case there is anything hanging around from a previous run of the test suite
 		await clearDisk();
+
+		const topLevelDir = path.resolve(__dirname, "../../data");
+
+		fs.mkdir(topLevelDir, { recursive: true }, (err: any) => {
+			if (err) {
+				return err;
+			}
+			//console.log("Directory created successfully!");
+		});
+		//console.log(topLevelDir);
 	});
 
 	describe("AddDataset", function () {
@@ -50,6 +76,7 @@ describe("InsightFacade", function () {
 		afterEach(async function () {
 			// This section resets the data directory (removing any cached data)
 			// This runs after each test, which should make each test independent of the previous one
+
 			await clearDisk();
 		});
 
@@ -62,9 +89,38 @@ describe("InsightFacade", function () {
 			}
 		});
 
+		// this add 2 datasets
+		it("This try to add two data set: smallerData and MATH541", async function () {
+			let result;
+
+			try {
+				result = await facade.addDataset("SmallerData", sections2, InsightDatasetKind.Sections);
+
+				result = await facade.addDataset("MATH541Data", math541Sections, InsightDatasetKind.Sections);
+			} catch (err) {
+				//console.log("Error: " + err);
+				return expect(err).to.be.instanceOf(InsightError);
+			}
+			//console.log(result);
+			return expect(result).to.be.deep.equal(["SmallerData", "MATH541Data"]);
+		});
+
+		// this add 1 data only : same as the test right below here
 		it("should add a valid dataset and return the dataset id", async function () {
 			const outputId = await facade.addDataset("foo", sections, InsightDatasetKind.Sections);
+			//console.log(outputId);
 			expect(outputId).to.deep.equal(["foo"]);
+		});
+
+		// this add 1 dataset only
+		it("should add a valid dataset and return the dataset", async function () {
+			let result;
+			try {
+				result = await facade.addDataset("foo", sections, InsightDatasetKind.Sections);
+			} catch (err) {
+				return expect(err).to.be.instanceOf(InsightError);
+			}
+			expect(result).to.deep.equal(["foo"]);
 		});
 
 		it("should reject with a duplicate dataset id", async function () {
@@ -159,6 +215,15 @@ describe("InsightFacade", function () {
 			}
 		});
 
+		it("should reject because of adding InsightDatasetKind of Rooms in C1", async function () {
+			try {
+				await facade.addDataset("dunbar", sections, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown above.");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
 		it("should reject adding same dataset id with different kinds", async function () {
 			await facade.addDataset("foobar", sections, InsightDatasetKind.Sections);
 			try {
@@ -180,7 +245,7 @@ describe("InsightFacade", function () {
 		});
 
 		it("should successfully remove a valid dataset", async function () {
-			await facade.addDataset("sampleDataset", sections, InsightDatasetKind.Sections);
+			await facade.addDataset("sampleDataset", sections2, InsightDatasetKind.Sections);
 
 			const removedId = await facade.removeDataset("sampleDataset");
 			expect(removedId).to.equal("sampleDataset");
@@ -189,12 +254,22 @@ describe("InsightFacade", function () {
 			expect(datasets).to.deep.equal([]);
 		});
 
-		it("should reject removing a dataset that doesn't exist", async function () {
+		it("should reject removing a dataset with id containing underscore _", async function () {
 			try {
 				await facade.removeDataset("foo_bar_nonexistent");
 				expect.fail("Should have thrown above.");
 			} catch (err) {
 				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject removing a dataset that doesn't exist", async function () {
+			try {
+				await facade.removeDataset("nonexistentID");
+				expect.fail("Should have thrown above.");
+			} catch (err) {
+				//console.log("Inside the test case within removing data don't exist");
+				expect(err).to.be.instanceOf(NotFoundError);
 			}
 		});
 
@@ -246,14 +321,38 @@ describe("InsightFacade", function () {
 
 		it("should list one added dataset", async function () {
 			await facade.addDataset("sampleDataset", sections, InsightDatasetKind.Sections);
-
 			const datasets = await facade.listDatasets();
-
 			expect(datasets).to.deep.equal([
 				{
 					id: "sampleDataset",
 					kind: InsightDatasetKind.Sections,
 					numRows: 64612,
+				},
+			]);
+		});
+
+		it("test listing two datasets", async function () {
+			// do I need try catch here???/
+			let datasets;
+			try {
+				await facade.addDataset("JAPN314", courseJAPN314, InsightDatasetKind.Sections);
+
+				await facade.addDataset("MATH541", courseMATH541, InsightDatasetKind.Sections);
+
+				datasets = await facade.listDatasets();
+			} catch (error) {
+				expect(error).to.be.instanceOf(InsightError);
+			}
+			expect(datasets).to.deep.equal([
+				{
+					id: "JAPN314",
+					kind: InsightDatasetKind.Sections,
+					numRows: 10,
+				},
+				{
+					id: "MATH541",
+					kind: InsightDatasetKind.Sections,
+					numRows: 8,
 				},
 			]);
 		});
