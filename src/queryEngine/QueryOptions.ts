@@ -9,7 +9,20 @@ export function processOptions(records: any[], options: Options): InsightResult[
 	}
 
 	const columns = options.COLUMNS;
-	const result = filterColumns(records, columns);
+	let result = filterColumns(records, columns);
+
+	if (options.ORDER) {
+		const orderKey = options.ORDER;
+		result = result.sort((a, b) => {
+			if (a[orderKey] < b[orderKey]) {
+				return -1;
+			} else if (a[orderKey] > b[orderKey]) {
+				return 1;
+			} else {
+				return 0;
+			}
+		});
+	}
 
 	return result;
 }

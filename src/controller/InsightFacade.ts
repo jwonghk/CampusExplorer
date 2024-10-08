@@ -20,6 +20,7 @@ import * as path from "path";
 
 const DATA_DIR = path.join(__dirname, "../../data");
 const MAX_QUERY_SIZE = 5000;
+
 // const TWO_SPACE_COUNT = 2;
 
 /**
