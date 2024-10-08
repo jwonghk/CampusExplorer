@@ -1,5 +1,7 @@
 import { InsightDataset, InsightDatasetKind, InsightError } from "./IInsightFacade";
 
+const YEAR_NINETEEN_HUNDRED = 1900;
+
 export class Section {
 	public readonly uuid: string;
 	public readonly id: string;
@@ -77,19 +79,29 @@ export default class InforForCourses {
 
 	public returnASingleSection(sectionsArray: any): void {
 		for (const aSection of sectionsArray.result) {
+			this.checkingToSeeIfAllTenReqFieldsExist(aSection);
+
 			const uuid = aSection.id.toString();
 			const Course = aSection.Course;
 			const Title = aSection.Title;
 			const Professor = aSection.Professor;
 			const Subject = aSection.Subject;
+			const sectionField = aSection.Section;
 
-			const Year = Number(aSection.Year);
+			let Year: number;
+			if (sectionField === "overall") {
+				Year = YEAR_NINETEEN_HUNDRED;
+			} else {
+				Year = Number(aSection.Year);
+			}
+
 			const Avg = Number(aSection.Avg);
 			const Pass = Number(aSection.Pass);
 			const Fail = Number(aSection.Fail);
 			const Audit = Number(aSection.Audit);
 
 			const section = new Section(uuid, Course, Title, Professor, Subject, Year, Avg, Pass, Fail, Audit);
+
 			this.listOfSections.push(section);
 		}
 		this.insightDataset.numRows = this.listOfSections.length;
@@ -106,7 +118,8 @@ export default class InforForCourses {
 			Object.prototype.hasOwnProperty.call(aSingleSection, "Avg") &&
 			Object.prototype.hasOwnProperty.call(aSingleSection, "Pass") &&
 			Object.prototype.hasOwnProperty.call(aSingleSection, "Fail") &&
-			Object.prototype.hasOwnProperty.call(aSingleSection, "Audit")
+			Object.prototype.hasOwnProperty.call(aSingleSection, "Audit") &&
+			Object.prototype.hasOwnProperty.call(aSingleSection, "Section")
 		) {
 			//console.log("This section has all required field!");
 			return;
