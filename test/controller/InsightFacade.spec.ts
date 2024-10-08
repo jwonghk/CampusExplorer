@@ -369,6 +369,79 @@ describe("InsightFacade", function () {
 		});
 	});
 
+	describe("Persistence", function () {
+		afterEach(async function () {
+			// Clean up after each test
+			await clearDisk();
+		});
+
+		it("should add a dataset and persist across InsightFacade instances", async function () {
+			const facade1 = new InsightFacade();
+
+			try {
+				await facade1.addDataset("sections", sections, InsightDatasetKind.Sections);
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+
+			const facade2 = new InsightFacade();
+
+			try {
+				const datasets = await facade2.listDatasets();
+				expect(datasets).to.deep.equal([
+					{
+						id: "sections",
+						kind: InsightDatasetKind.Sections,
+						numRows: 64612,
+					},
+				]);
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		it("should perform a query using the second instance", async function () {
+			const facade2 = new InsightFacade();
+
+			const query = {
+				WHERE: {
+					IS: {
+						sections_dept: "cpsc",
+					},
+				},
+				OPTIONS: {
+					COLUMNS: ["sections_dept", "sections_avg"],
+					ORDER: "sections_avg",
+				},
+			};
+
+			try {
+				const results = await facade2.performQuery(query);
+				expect(results).to.be.an("array");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		it("should remove the dataset and confirm it is no longer listed", async function () {
+			const facade2 = new InsightFacade();
+
+			try {
+				const removedId = await facade2.removeDataset("sections");
+				expect(removedId).to.equal("sections");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+
+			try {
+				const datasets = await facade2.listDatasets();
+				expect(datasets).to.deep.equal([]);
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+	});
+
 	describe("PerformQuery", function () {
 		/**
 		 * Loads the TestQuery specified in the test name and asserts the behaviour of performQuery.
