@@ -3,6 +3,7 @@ import { Options } from "./QueryInterfaces";
 
 const SPLIT_KEY_NUM = 2;
 
+// Process the options of a query
 export function processOptions(records: any[], options: Options): InsightResult[] {
 	if (!options.COLUMNS || !Array.isArray(options.COLUMNS) || options.COLUMNS.length === 0) {
 		throw new InsightError("OPTIONS must contain a non-empty COLUMNS array");

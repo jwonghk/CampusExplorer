@@ -21,8 +21,6 @@ import * as path from "path";
 const DATA_DIR = path.join(__dirname, "../../data");
 const MAX_QUERY_SIZE = 5000;
 
-// const TWO_SPACE_COUNT = 2;
-
 /**
  * This is the main programmatic entry point for the project.
  * Method documentation is in IInsightFacade
@@ -73,7 +71,6 @@ export default class InsightFacade implements IInsightFacade {
 		} else if (kind === InsightDatasetKind.Rooms) {
 			throw new InsightError("InsightDatasetKind being Room is not allowed yet in c1");
 		} else {
-			//console.log("Unique id added!");
 			return true;
 		}
 	}
@@ -148,13 +145,12 @@ export default class InsightFacade implements IInsightFacade {
 			}
 
 			// Return Query Result: return processed results
-			// console.log("Query results:", JSON.stringify(results, null, TWO_SPACE_COUNT));
 			return results;
-		} catch (error: any) {
-			if (error instanceof ResultTooLargeError) {
-				throw error;
+		} catch (err: any) {
+			if (err instanceof ResultTooLargeError) {
+				throw err;
 			}
-			throw new InsightError(error.message);
+			throw new InsightError(err.message);
 		}
 	}
 
@@ -184,9 +180,8 @@ export default class InsightFacade implements IInsightFacade {
 						if (parsedData.insightDataset) {
 							datasets.push(parsedData.insightDataset);
 						}
-					} catch (err) {
-						// Handle error, perhaps log it and skip this file
-						throw new InsightError(`Failed to list dataset: ${err}`);
+					} catch (err: any) {
+						throw new InsightError(`Failed to list dataset: ${err.message}`);
 					}
 				}
 			}

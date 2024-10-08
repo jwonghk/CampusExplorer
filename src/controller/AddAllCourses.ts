@@ -26,16 +26,13 @@ export class AddAllCourses {
 					Promise.all(sectionsPromiseArray)
 						.then((promise: string[]) => {
 							coursesData = new InforForCourses(id, promise);
-							//console.log("the length of coursesData listofs[0] : " + coursesData.listOfSections[0].dept);
 							if (coursesData.listOfSections.length === 0) {
 								rej("No sections were added!");
 							}
 						})
 						.then(() => {
 							this.insightfacade.dataIDmap.set(id, coursesData);
-							//console.log(this.insightfacade.dataIDmap.get(id));
 							this.insightfacade.datasetNameIDList.push(id);
-							//console.log("ID List: " + this.insightfacade.datasetNameIDList );
 							res(this.insightfacade.datasetNameIDList);
 						})
 						.catch((err) => {
@@ -46,7 +43,6 @@ export class AddAllCourses {
 					return rej(new InsightError("something wrong!" + err));
 				});
 		});
-		//console.log("PromiseFunc ret!");
 		return promiseFunc;
 	}
 }

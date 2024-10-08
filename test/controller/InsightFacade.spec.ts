@@ -15,8 +15,6 @@ import path from "path";
 const fs = require("fs-extra");
 use(chaiAsPromised);
 
-// const TWO_SPACE_COUNT = 2;
-
 export interface ITestQuery {
 	title?: string;
 	input: unknown;
@@ -63,9 +61,7 @@ describe("InsightFacade", function () {
 			if (err) {
 				return err;
 			}
-			//console.log("Directory created successfully!");
 		});
-		//console.log(topLevelDir);
 	});
 
 	describe("AddDataset", function () {
@@ -91,22 +87,18 @@ describe("InsightFacade", function () {
 			}
 		});
 
-		// this add 2 datasets
-		it("This try to add two data set: smallerData and MATH541", async function () {
+		it("should try to add two datasets: smallerData and MATH541", async function () {
 			let result;
 
 			try {
 				result = await facade.addDataset("SmallerData", sections2, InsightDatasetKind.Sections);
 				result = await facade.addDataset("MATH541Data", math541Sections, InsightDatasetKind.Sections);
 			} catch (err) {
-				//console.log("Error: " + err);
 				return expect(err).to.be.instanceOf(InsightError);
 			}
-			//console.log(result);
 			return expect(result).to.be.deep.equal(["SmallerData", "MATH541Data"]);
 		});
 
-		// this add 1 data only : same as the test right below here
 		it("should add a valid dataset and return the dataset id", async function () {
 			try {
 				const outputId = await facade.addDataset("foo", sections, InsightDatasetKind.Sections);
@@ -114,10 +106,8 @@ describe("InsightFacade", function () {
 			} catch (err) {
 				return expect(err).to.be.instanceOf(InsightError);
 			}
-			//console.log(outputId);
 		});
 
-		// this add 1 dataset only
 		it("should add a valid dataset and return the dataset", async function () {
 			let result;
 			try {
@@ -276,7 +266,6 @@ describe("InsightFacade", function () {
 				await facade.removeDataset("nonexistentID");
 				expect.fail("Should have thrown above.");
 			} catch (err) {
-				//console.log("Inside the test case within removing data don't exist");
 				expect(err).to.be.instanceOf(NotFoundError);
 			}
 		});
@@ -462,7 +451,6 @@ describe("InsightFacade", function () {
 					expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
 				}
 
-				// console.log("Expected:", JSON.stringify(expected, null, TWO_SPACE_COUNT));
 				expect(result).to.be.an("array");
 				expect(result).to.have.deep.members(expected);
 			} catch (err) {
@@ -500,7 +488,7 @@ describe("InsightFacade", function () {
 		it("[valid/simple.json] SELECT dept, avg WHERE avg > 97", checkQuery);
 		it("[invalid/invalid.json] Query missing WHERE", checkQuery);
 
-		// Leo's tests
+		// Leo's query tests
 		it("[valid/wildcard_at_start.json] Query wildcard at start", checkQuery);
 		it("[valid/wildcard_at_end.json] Query wildcard at end", checkQuery);
 		it("[valid/queryWildcardAtStartAndEnd.json] Query wildcard at start and end", checkQuery);
@@ -544,7 +532,7 @@ describe("InsightFacade", function () {
 		it("[invalid/empty_and_object.json] Query with empty AND object", checkQuery);
 		it("[invalid/empty_or_object.json] Query with empty OR object", checkQuery);
 
-		// John's tests
+		// John's query tests
 		it("[valid/valid_AND_GT_IS_LT.json] Svalid_AND_GT_IS_LT", checkQuery);
 		it("[valid/valid_AND_GT_IS_cStar.json] valid_AND_GT_IS_cStar", checkQuery);
 		it("[valid/valid_AND_GT_IS.json] valid_AND_GT_IS", checkQuery);

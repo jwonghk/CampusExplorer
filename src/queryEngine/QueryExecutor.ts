@@ -53,6 +53,7 @@ function evaluateComparisonNode(node: ComparatorNode, record: any): boolean {
 	}
 }
 
+// Start ChatGPT
 function getValue(record: any, key: string): any {
 	const parts = key.split("_");
 	if (parts.length !== SPLIT_KEY_NUM) {
@@ -62,7 +63,6 @@ function getValue(record: any, key: string): any {
 	return record[field];
 }
 
-// Start ChatGPT
 function matchIS(value: string, pattern: string): boolean {
 	const escapedPattern =
 		"^" +
