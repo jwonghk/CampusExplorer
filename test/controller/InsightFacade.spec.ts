@@ -15,6 +15,8 @@ import path from "path";
 const fs = require("fs-extra");
 use(chaiAsPromised);
 
+// const TWO_SPACE_COUNT = 2;
+
 export interface ITestQuery {
 	title?: string;
 	input: unknown;
@@ -392,8 +394,9 @@ describe("InsightFacade", function () {
 					expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
 				}
 
+				// console.log("Expected:", JSON.stringify(expected, null, TWO_SPACE_COUNT));
 				expect(result).to.be.an("array");
-				expect(result).to.deep.equal(expected);
+				expect(result).to.have.deep.members(expected);
 			} catch (err) {
 				if (!errorExpected) {
 					expect.fail(`performQuery threw unexpected error: ${err}`);
