@@ -33,20 +33,10 @@ export default class InsightFacade implements IInsightFacade {
 	constructor() {
 		this.dataIDmap = new Map<string, InforForCourses>();
 		this.datasetNameIDList = [];
-
-		if (fs.existsSync(DATA_DIR)) {
-			const files = fs.readdirSync(DATA_DIR);
-			for (const file of files) {
-				if (file.endsWith(".json")) {
-					const id = path.basename(file, ".json");
-					this.datasetNameIDList.push(id);
-				}
-			}
-		}
 	}
 
 	public async addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
-		this.checkConditionsForAdding(id, kind);
+		await this.checkConditionsForAdding(id, kind);
 
 		try {
 			const dataDir = "data";
@@ -63,15 +53,17 @@ export default class InsightFacade implements IInsightFacade {
 		}
 	}
 
-	public checkConditionsForAdding(id: string, kind: InsightDatasetKind): boolean {
-		if (this.datasetNameIDList.includes(id)) {
-			throw new InsightError("Data ID already exists, it cannot be added again");
-		} else if (id.includes(" ") || id.includes("_") || id === "") {
+	public async checkConditionsForAdding(id: string, kind: InsightDatasetKind): Promise<void> {
+		if (id.includes(" ") || id.includes("_") || id.trim() === "") {
 			throw new InsightError("Data ID contains space(s), underscore(s), or is empty");
 		} else if (kind === InsightDatasetKind.Rooms) {
 			throw new InsightError("InsightDatasetKind being Room is not allowed yet in c1");
-		} else {
-			return true;
+		}
+
+		const filePath = path.join(DATA_DIR, `${id}.json`);
+		const exists = await fs.pathExists(filePath);
+		if (exists || this.datasetNameIDList.includes(id)) {
+			throw new InsightError("Data ID already exists, it cannot be added again");
 		}
 	}
 
@@ -94,23 +86,23 @@ export default class InsightFacade implements IInsightFacade {
 
 		const filePath = path.join(DATA_DIR, `${id}.json`);
 
-		if (!fs.existsSync(filePath)) {
+		const exists = await fs.pathExists(filePath);
+		if (!exists) {
 			throw new NotFoundError(`Dataset with id ${id} not found`);
 		}
 
 		try {
-			fs.unlinkSync(filePath);
+			await fs.remove(filePath);
 			this.dataIDmap.delete(id);
 			const index = this.datasetNameIDList.indexOf(id);
 			if (index > -1) {
 				this.datasetNameIDList.splice(index, 1);
 			}
 			return id;
-		} catch (err) {
-			throw new InsightError(`Failed to remove dataset: ${err}`);
+		} catch (err: any) {
+			throw new InsightError(`Failed to remove dataset: ${err.message}`);
 		}
 	}
-
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
 		try {
 			// Parse Query: parse the query and generate an AST
@@ -169,22 +161,31 @@ export default class InsightFacade implements IInsightFacade {
 	public async listDatasets(): Promise<InsightDataset[]> {
 		const datasets: InsightDataset[] = [];
 
-		if (fs.existsSync(DATA_DIR)) {
-			const files = fs.readdirSync(DATA_DIR);
-			for (const file of files) {
-				if (file.endsWith(".json")) {
-					const filePath = path.join(DATA_DIR, file);
-					try {
-						const content = fs.readFileSync(filePath, "utf8");
-						const parsedData = JSON.parse(content);
-						if (parsedData.insightDataset) {
-							datasets.push(parsedData.insightDataset);
+		try {
+			const exists = await fs.pathExists(DATA_DIR);
+			if (exists) {
+				const files: string[] = await fs.readdir(DATA_DIR);
+
+				const readPromises = files
+					.filter((file: string) => file.endsWith(".json"))
+					.map(async (file: string) => {
+						const filePath = path.join(DATA_DIR, file);
+						try {
+							const content = await fs.readFile(filePath, "utf8");
+							const parsedData = JSON.parse(content);
+							if (parsedData?.insightDataset) {
+								datasets.push(parsedData.insightDataset);
+							} else {
+								throw new InsightError(`Invalid dataset format in file: ${file}`);
+							}
+						} catch (err: any) {
+							throw new InsightError(`Failed to list dataset: ${err.message}`);
 						}
-					} catch (err: any) {
-						throw new InsightError(`Failed to list dataset: ${err.message}`);
-					}
-				}
+					});
+				await Promise.all(readPromises);
 			}
+		} catch (err: any) {
+			throw new InsightError(`Failed to access data directory: ${err.message}`);
 		}
 
 		return datasets;
