@@ -27,6 +27,7 @@ export function processOptions(records: any[], options: Options): InsightResult[
 	return result;
 }
 
+// Start ChatGPT
 function filterColumns(records: any[], columns: string[]): InsightResult[] {
 	return records.map((record) => {
 		const filteredRecord: any = {};
@@ -41,3 +42,4 @@ function filterColumns(records: any[], columns: string[]): InsightResult[] {
 		return filteredRecord;
 	});
 }
+// End ChatGPT
