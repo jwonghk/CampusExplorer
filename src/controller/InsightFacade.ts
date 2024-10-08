@@ -5,12 +5,22 @@ import {
 	InsightError,
 	InsightResult,
 	NotFoundError,
+	ResultTooLargeError,
 } from "./IInsightFacade";
 import InforForCourses from "./InforForCourses";
+import { Section } from "./InforForCourses";
 import { AddAllCourses } from "./AddAllCourses";
+import { Query } from "../queryEngine/QueryInterfaces";
+import { parseFilter } from "../queryEngine/QueryParser";
+import { executeQuery } from "../queryEngine/QueryExecutor";
+import { processOptions } from "../queryEngine/QueryOptions";
 
 const fs = require("fs-extra");
 import * as path from "path";
+
+const DATA_DIR = path.join(__dirname, "../../data");
+const MAX_QUERY_SIZE = 5000;
+// const TWO_SPACE_COUNT = 2;
 
 /**
  * This is the main programmatic entry point for the project.
@@ -24,7 +34,6 @@ export default class InsightFacade implements IInsightFacade {
 	constructor() {
 		this.dataIDmap = new Map<string, InforForCourses>();
 		this.datasetNameIDList = [];
-
 		//console.log("current dir: " + __dirname);
 	}
 
@@ -48,11 +57,11 @@ export default class InsightFacade implements IInsightFacade {
 
 	public checkConditionsForAdding(id: string, kind: InsightDatasetKind): boolean {
 		if (this.datasetNameIDList.includes(id)) {
-			throw new InsightError("Data ID already exists, cannot add again.");
+			throw new InsightError("Data ID already exists, it cannot be added again");
 		} else if (id.includes(" ") || id.includes("_") || id === "") {
-			throw new InsightError("Data ID contains space, underscore or empty");
+			throw new InsightError("Data ID contains space(s), underscore(s), or is empty");
 		} else if (kind === InsightDatasetKind.Rooms) {
-			throw new InsightError("InsightDatasetKind being Room is not allowed yet in c1!");
+			throw new InsightError("InsightDatasetKind being Room is not allowed yet in c1");
 		} else {
 			//console.log("Unique id added!");
 			return true;
@@ -62,11 +71,9 @@ export default class InsightFacade implements IInsightFacade {
 	private async writeToPersistent(id: string, jsonData: string): Promise<void> {
 		try {
 			const dataDir = "data";
-			// Ensure the 'data' directory exists
 			await fs.ensureDir(dataDir);
-			// Construct the full file path
+
 			const filePath = path.join(dataDir, id + ".json");
-			// Write the file
 			await fs.writeFile(filePath, jsonData);
 		} catch (err: any) {
 			throw new InsightError("Error writing dataset to disk: " + err.message);
@@ -74,125 +81,82 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async removeDataset(id: string): Promise<string> {
-		// TODO: Remove this once you implement the methods!
-
 		const filePath = "data/" + id + ".json";
-		let storingResult: string[];
-		//console.log("Inside removeDataset");
-		return new Promise<string>((RemoveResolve, RemoveRej) => {
+
+		return new Promise<string>((resolve, reject) => {
 			if (!id || id.includes("_") || id.includes(" ")) {
-				//console.log("Inside _ and space within removeDataset");
-				return RemoveRej(new InsightError("Id null or ID including _ or space!"));
-			} else if (!this.datasetNameIDList.includes(id)) {
-				fs.unlink(filePath, (err: any, result: any) => {
-					//console.log("Get inside fs.unlink!" + result);
+				return reject(new InsightError("Invalid dataset ID: it cannot be null, contain underscores, or spaces"));
+			}
+			if (!this.datasetNameIDList.includes(id)) {
+				fs.unlink(filePath, (err: any) => {
 					if (err) {
-						return RemoveRej(new NotFoundError("Not in folder yet!"));
-					} else {
-						storingResult.push(result);
+						return reject(new NotFoundError("Dataset file not found, unable to remove"));
 					}
 				});
-				const filePosition = this.datasetNameIDList.indexOf(id);
-				delete this.datasetNameIDList[filePosition];
+				const index = this.datasetNameIDList.indexOf(id);
+				if (index > -1) {
+					delete this.datasetNameIDList[index];
+				}
 				this.dataIDmap.delete(id);
-				return RemoveRej(new NotFoundError("Not yet added!"));
+				return reject(new NotFoundError("Dataset with this ID was not added to the system yet"));
 			}
 
 			fs.unlink(filePath, (err: any) => {
-				//console.log("Inside second fs.unlink");
 				if (err) {
-					//console.log("Not yet!");
-					return RemoveRej(new NotFoundError("Not in folder!"));
+					return reject(new NotFoundError("Dataset file not found for removal"));
 				}
-				const positionInList = this.datasetNameIDList.indexOf(id);
-				//console.log("Position in list: " + positionInList);
-				if (positionInList > -1) {
-					this.datasetNameIDList.splice(positionInList, 1);
-				}
-
 				const index = this.datasetNameIDList.indexOf(id);
-				delete this.datasetNameIDList[index];
+				if (index > -1) {
+					this.datasetNameIDList.splice(index, 1);
+				}
 				this.dataIDmap.delete(id);
-				RemoveResolve(id);
+				resolve(id);
 			});
-
-			//throw new Error(`InsightFacadeImpl::removeDataset() is unimplemented! - id=${id};`);
 		});
 	}
 
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
-		/*
-		Validate Query:
-		Check that query is in the correct structure and syntax.
-		- Query is an object and not null
-		- Query contains two top level keys, WHERE and OPTIONS
-		- Check that WHERE clause is valid and not null
-		- Check that COLUMN contains a valid COLUMN array and optionally a valid ORDER
+		try {
+			// Parse Query: parse the query and generate an AST
+			const typedQuery = query as Query;
+			const ast = parseFilter(typedQuery.WHERE);
 
-		Inputs: query:any
-		Returns: boolean
-		*/
+			// Check Query Options: ensure that the query options are valid
+			if (!typedQuery.OPTIONS?.COLUMNS?.length) {
+				throw new InsightError("OPTIONS.COLUMNS must contain at least one key");
+			}
+			const firstColumnKey = typedQuery.OPTIONS.COLUMNS[0];
+			const datasetId = firstColumnKey.split("_")[0];
 
-		/*
-		Parse Query into AST Structure:
-		Converts the WHERE clauses into an Abstract Syntax Tree (AST) structure using recursion.
-		- Process LogicNode: AND, OR
-		- Process ComparisonNode: LT, GT, EQ, IS
-		- Process NotNode: NOT
-		- Process empty filters
+			// Load Dataset: load the dataset from disk
+			const datasetInfo = await this.loadDataset(datasetId);
+			const dataset = datasetInfo.listOfSections;
 
-		Inputs: Query.WHERE
-		Returns: ast:ASTNode
-		*/
+			// Execute Query: process the query and return the results
+			let records: any[];
+			if (ast === null) {
+				records = dataset;
+			} else {
+				records = await executeQuery(ast, dataset);
+			}
 
-		/*
-		Validate Query Semantics:
-		Check that query is semantically valid and references an existing dataset.
-		- Check that keys are valid and reference same dataset
-		- Check that dataset exists
+			// Process Query Options: apply options to the query results
+			const results = processOptions(records, typedQuery.OPTIONS);
 
-		Inputs: ast, Query.OPTIONS, dataset
-		Return: boolean
-		*/
+			// Check Result Size: ensure that the result size does not exceed 5000
+			if (results.length > MAX_QUERY_SIZE) {
+				throw new ResultTooLargeError("Query results exceed 5000 entries");
+			}
 
-		/*
-		Load Dataset from Disk:
-		Retrieve the dataset stored on disk to memory.
-		- Check that dataset exists on disk
-		- Load dataset from disk to memory
-		- Caches dataset to perform query
-
-		Inputs: id:string
-		Returns: dataset:Dataset
-		*/
-
-		/*
-		Execute Query:
-		Apply the query's filtering to the dataset and retrieve corresponding records.
-		- Traverse AST nodes to apply logical and comparison filters
-		- Evaluate LT, GT, EQ, IS, AND, OR, NOT
-		- Combine conditions with AND, OR, NOT
-
-		Inputs: ast, dataset
-		Returns: result:InsightResult[]
-		*/
-
-		/*
-		Process Options:
-		Apply the OPTIONS to the query results.
-		- Extract specified COLUMNs
-		- Sort results based on ORDER key
-
-		Inputs: result, Query.OPTIONS
-		Return: result:InsightResult[]
-		*/
-
-		// Check Result Size: ensure that the result size does not exceed 5000
-
-		// Return Query Result: return processed results
-
-		// TODO: Remove this once you implement the methods!
-		throw new Error(`InsightFacadeImpl::performQuery() is unimplemented! - query=${query};`);
+			// Return Query Result: return processed results
+			// console.log("Query results:", JSON.stringify(results, null, TWO_SPACE_COUNT));
+			return results;
+		} catch (error: any) {
+			if (error instanceof ResultTooLargeError) {
+				throw error;
+			}
+			throw new InsightError(error.message);
+		}
 	}
 
 	public async resolveListofData(): Promise<InsightDataset[]> {
@@ -209,5 +173,57 @@ export default class InsightFacade implements IInsightFacade {
 
 	public async listDatasets(): Promise<InsightDataset[]> {
 		return await this.resolveListofData();
+	}
+
+	private async readDatasetFromDisk(id: string): Promise<InforForCourses> {
+		try {
+			// Start ChatGPT
+			const filePath = path.join(DATA_DIR, `${id}.json`);
+			if (!(await fs.pathExists(filePath))) {
+				throw new InsightError(`Dataset ${id} not found`);
+			}
+
+			const content = await fs.readFile(filePath, "utf8");
+			const parsedData = JSON.parse(content);
+
+			if (!parsedData || !Array.isArray(parsedData.listOfSections)) {
+				throw new InsightError(`Dataset ${id} is malformed`);
+			}
+
+			const inforForCourses = new InforForCourses(id, []);
+			inforForCourses.listOfSections = parsedData.listOfSections.map(
+				(sectionData: any) =>
+					new Section(
+						sectionData.uuid,
+						sectionData.id,
+						sectionData.title,
+						sectionData.instructor,
+						sectionData.dept,
+						sectionData.year,
+						sectionData.avg,
+						sectionData.pass,
+						sectionData.fail,
+						sectionData.audit
+					)
+			);
+			inforForCourses.insightDataset = parsedData.insightDataset;
+
+			return inforForCourses;
+		} catch (err: any) {
+			throw err instanceof SyntaxError
+				? new InsightError(`Dataset ${id} is not valid JSON`)
+				: new InsightError(`Error reading dataset ${id}: ${err.message}`);
+		}
+		// End ChatGPT
+	}
+
+	private async loadDataset(id: string): Promise<InforForCourses> {
+		if (this.dataIDmap.has(id)) {
+			return this.dataIDmap.get(id)!;
+		} else {
+			const inforForCourses = await this.readDatasetFromDisk(id);
+			this.dataIDmap.set(id, inforForCourses);
+			return inforForCourses;
+		}
 	}
 }

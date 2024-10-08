@@ -76,19 +76,19 @@ export default class InforForCourses {
 	}
 
 	public returnASingleSection(sectionsArray: any): void {
-		for (const aSection in sectionsArray.result) {
-			//this.checkingToSeeIfAllTenReqFieldsExist(sectionsArray.result[aSection]);
+		for (const aSection of sectionsArray.result) {
+			const uuid = aSection.id.toString();
+			const Course = aSection.Course;
+			const Title = aSection.Title;
+			const Professor = aSection.Professor;
+			const Subject = aSection.Subject;
 
-			const uuid = sectionsArray.result[aSection].id;
-			const Course = sectionsArray.result[aSection].Course;
-			const Title = sectionsArray.result[aSection].Title;
-			const Professor = sectionsArray.result[aSection].Professor;
-			const Subject = sectionsArray.result[aSection].Subject;
-			const Year = sectionsArray.result[aSection].Year;
-			const Avg = sectionsArray.result[aSection].Avg;
-			const Pass = sectionsArray.result[aSection].Pass;
-			const Fail = sectionsArray.result[aSection].Fail;
-			const Audit = sectionsArray.result[aSection].Audit;
+			const Year = Number(aSection.Year);
+			const Avg = Number(aSection.Avg);
+			const Pass = Number(aSection.Pass);
+			const Fail = Number(aSection.Fail);
+			const Audit = Number(aSection.Audit);
+
 			const section = new Section(uuid, Course, Title, Professor, Subject, Year, Avg, Pass, Fail, Audit);
 			this.listOfSections.push(section);
 		}
