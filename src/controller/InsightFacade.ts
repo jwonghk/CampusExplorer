@@ -35,7 +35,16 @@ export default class InsightFacade implements IInsightFacade {
 	constructor() {
 		this.dataIDmap = new Map<string, InforForCourses>();
 		this.datasetNameIDList = [];
-		//console.log("current dir: " + __dirname);
+
+		if (fs.existsSync(DATA_DIR)) {
+			const files = fs.readdirSync(DATA_DIR);
+			for (const file of files) {
+				if (file.endsWith(".json")) {
+					const id = path.basename(file, ".json");
+					this.datasetNameIDList.push(id);
+				}
+			}
+		}
 	}
 
 	public async addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
@@ -82,38 +91,27 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async removeDataset(id: string): Promise<string> {
-		const filePath = "data/" + id + ".json";
+		if (!id || id.includes("_") || id.trim() === "") {
+			throw new InsightError("Invalid dataset ID: it cannot be null, contain underscores, or only whitespace");
+		}
 
-		return new Promise<string>((resolve, reject) => {
-			if (!id || id.includes("_") || id.includes(" ")) {
-				return reject(new InsightError("Invalid dataset ID: it cannot be null, contain underscores, or spaces"));
-			}
-			if (!this.datasetNameIDList.includes(id)) {
-				fs.unlink(filePath, (err: any) => {
-					if (err) {
-						return reject(new NotFoundError("Dataset file not found, unable to remove"));
-					}
-				});
-				const index = this.datasetNameIDList.indexOf(id);
-				if (index > -1) {
-					delete this.datasetNameIDList[index];
-				}
-				this.dataIDmap.delete(id);
-				return reject(new NotFoundError("Dataset with this ID was not added to the system yet"));
-			}
+		const filePath = path.join(DATA_DIR, `${id}.json`);
 
-			fs.unlink(filePath, (err: any) => {
-				if (err) {
-					return reject(new NotFoundError("Dataset file not found for removal"));
-				}
-				const index = this.datasetNameIDList.indexOf(id);
-				if (index > -1) {
-					this.datasetNameIDList.splice(index, 1);
-				}
-				this.dataIDmap.delete(id);
-				resolve(id);
-			});
-		});
+		if (!fs.existsSync(filePath)) {
+			throw new NotFoundError(`Dataset with id ${id} not found`);
+		}
+
+		try {
+			fs.unlinkSync(filePath);
+			this.dataIDmap.delete(id);
+			const index = this.datasetNameIDList.indexOf(id);
+			if (index > -1) {
+				this.datasetNameIDList.splice(index, 1);
+			}
+			return id;
+		} catch (err) {
+			throw new InsightError(`Failed to remove dataset: ${err}`);
+		}
 	}
 
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
@@ -173,7 +171,28 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async listDatasets(): Promise<InsightDataset[]> {
-		return await this.resolveListofData();
+		const datasets: InsightDataset[] = [];
+
+		if (fs.existsSync(DATA_DIR)) {
+			const files = fs.readdirSync(DATA_DIR);
+			for (const file of files) {
+				if (file.endsWith(".json")) {
+					const filePath = path.join(DATA_DIR, file);
+					try {
+						const content = fs.readFileSync(filePath, "utf8");
+						const parsedData = JSON.parse(content);
+						if (parsedData.insightDataset) {
+							datasets.push(parsedData.insightDataset);
+						}
+					} catch (err) {
+						// Handle error, perhaps log it and skip this file
+						throw new InsightError(`Failed to list dataset: ${err}`);
+					}
+				}
+			}
+		}
+
+		return datasets;
 	}
 
 	private async readDatasetFromDisk(id: string): Promise<InforForCourses> {

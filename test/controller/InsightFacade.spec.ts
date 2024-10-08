@@ -370,11 +370,6 @@ describe("InsightFacade", function () {
 	});
 
 	describe("Persistence", function () {
-		afterEach(async function () {
-			// Clean up after each test
-			await clearDisk();
-		});
-
 		it("should add a dataset and persist across InsightFacade instances", async function () {
 			const facade1 = new InsightFacade();
 
