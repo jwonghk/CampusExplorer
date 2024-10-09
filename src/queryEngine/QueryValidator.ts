@@ -1,4 +1,5 @@
 import { InsightError } from "../controller/IInsightFacade";
+import { Query } from "./QueryInterfaces";
 
 // Helper function to validate the filter object
 export function validateFilterObject(filter: any, filterType: string): void {
@@ -28,4 +29,56 @@ export function validateComparisonObject(comparison: any, comparator: string): {
 	const key = keys[0];
 	const value = comparison[key];
 	return { key, value };
+}
+
+// Start ChatGPT
+export function extractDatasetIds(query: Query): Set<string> {
+	const datasetIds = new Set<string>();
+
+	// Extract from COLUMNS
+	for (const column of query.OPTIONS.COLUMNS) {
+		const id = column.split("_")[0];
+		datasetIds.add(id);
+	}
+
+	// Extract from ORDER if present
+	if (query.OPTIONS.ORDER) {
+		const orderKey = query.OPTIONS.ORDER;
+		const id = orderKey.split("_")[0];
+		datasetIds.add(id);
+	}
+
+	// Extract from WHERE
+	function traverseFilter(filter: any): void {
+		if (filter === null || typeof filter !== "object") {
+			return;
+		}
+		const keys = Object.keys(filter);
+		if (["AND", "OR"].includes(keys[0])) {
+			for (const subFilter of filter[keys[0]]) {
+				traverseFilter(subFilter);
+			}
+		} else if (keys[0] === "NOT") {
+			traverseFilter(filter.NOT);
+		} else {
+			const comparator = keys[0];
+			const mKey = filter[comparator];
+			const key = Object.keys(mKey)[0];
+			const id = key.split("_")[0];
+			datasetIds.add(id);
+		}
+	}
+	traverseFilter(query.WHERE);
+
+	return datasetIds;
+}
+// End ChatGPT
+
+export function validateQueryStructure(query: Query): void {
+	if (!query.WHERE || !query.OPTIONS) {
+		throw new InsightError("Query must contain WHERE and OPTIONS");
+	}
+	if (!Array.isArray(query.OPTIONS.COLUMNS) || query.OPTIONS.COLUMNS.length === 0) {
+		throw new InsightError("OPTIONS must contain a non-empty COLUMNS array");
+	}
 }

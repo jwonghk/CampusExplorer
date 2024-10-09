@@ -12,36 +12,29 @@ export class AddAllCourses {
 
 	public async AddAllCourse(id: string, contents: string): Promise<string[]> {
 		const zipFile = JSZip();
-		let coursesData: InforForCourses;
-		const sectionsPromiseArray = Array<Promise<string>>();
-		const filePath: string[] = [];
+		const sectionsPromiseArray: Promise<string>[] = [];
 		const promiseFunc: Promise<string[]> = new Promise<string[]>((res, rej) => {
 			zipFile
 				.loadAsync(contents, { base64: true })
 				.then((zip: JSZip) => {
-					zip.folder("courses")?.forEach(function (filePathInsideZip, fileContent) {
-						sectionsPromiseArray.push(fileContent.async("string"));
-						filePath.push(filePathInsideZip);
-					});
+					const courseFolder = zip.folder("courses") || zip.folder("Courses");
+					if (!courseFolder) {
+						return rej(new InsightError("Courses folder not found"));
+					}
+					courseFolder.forEach((_, fileContent) => sectionsPromiseArray.push(fileContent.async("string")));
 					Promise.all(sectionsPromiseArray)
 						.then((promise: string[]) => {
-							coursesData = new InforForCourses(id, promise);
-							if (coursesData.listOfSections.length === 0) {
-								rej("No sections were added!");
+							const coursesData = new InforForCourses(id, promise);
+							if (!coursesData.listOfSections.length) {
+								return rej("No sections were added!");
 							}
-						})
-						.then(() => {
 							this.insightfacade.dataIDmap.set(id, coursesData);
 							this.insightfacade.datasetNameIDList.push(id);
 							res(this.insightfacade.datasetNameIDList);
 						})
-						.catch((err) => {
-							rej(err);
-						});
+						.catch(rej);
 				})
-				.catch((err: any) => {
-					return rej(new InsightError("something wrong!" + err));
-				});
+				.catch((err) => rej(new InsightError("Error: " + err)));
 		});
 		return promiseFunc;
 	}
