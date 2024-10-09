@@ -111,8 +111,8 @@ export default class InsightFacade implements IInsightFacade {
 				throw new InsightError("Query must be a non-null object");
 			}
 
+			validateQueryStructure(query);
 			const typedQuery = query as Query;
-			validateQueryStructure(typedQuery);
 
 			const datasetIds = extractDatasetIds(typedQuery);
 			if (datasetIds.size !== 1) {

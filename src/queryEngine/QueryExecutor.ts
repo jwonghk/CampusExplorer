@@ -38,18 +38,25 @@ function evaluateComparisonNode(node: ComparatorNode, record: any): boolean {
 	}
 	switch (node.comparator) {
 		case "LT":
-			return value < node.value;
 		case "GT":
-			return value > node.value;
 		case "EQ":
-			return value === node.value;
+			if (typeof value !== "number" || typeof node.value !== "number") {
+				throw new InsightError("Numeric comparisons require numeric values");
+			}
+			if (node.comparator === "LT") {
+				return value < node.value;
+			} else if (node.comparator === "GT") {
+				return value > node.value;
+			} else {
+				return value === node.value;
+			}
 		case "IS":
-			if (typeof value !== "string") {
-				return false;
+			if (typeof value !== "string" || typeof node.value !== "string") {
+				throw new InsightError("IS comparison requires string values");
 			}
 			return matchIS(value, node.value as string);
 		default:
-			return false;
+			throw new InsightError(`Invalid comparator: ${node.comparator}`);
 	}
 }
 
@@ -64,18 +71,14 @@ function getValue(record: any, key: string): any {
 }
 
 function matchIS(value: string, pattern: string): boolean {
-	const escapedPattern =
-		"^" +
-		pattern.replace(/[*?]/g, (char) => {
-			if (char === "*") {
-				return ".*";
-			}
-			if (char === "?") {
-				return ".";
-			}
-			return "\\" + char;
-		}) +
-		"$";
+	if (pattern === null || typeof pattern !== "string") {
+		throw new InsightError("Pattern in IS must be a string");
+	}
+
+	if (pattern.includes("**")) {
+		throw new InsightError("Invalid wildcard usage in IS");
+	}
+	const escapedPattern = "^" + pattern.replace(/\*/g, ".*") + "$";
 	const regex = new RegExp(escapedPattern);
 	return regex.test(value);
 }
