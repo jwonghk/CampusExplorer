@@ -21,8 +21,6 @@ import * as path from "path";
 const DATA_DIR = path.join(__dirname, "../../data");
 const MAX_QUERY_SIZE = 5000;
 
-// const TWO_SPACE_COUNT = 2;
-
 /**
  * This is the main programmatic entry point for the project.
  * Method documentation is in IInsightFacade
@@ -35,11 +33,10 @@ export default class InsightFacade implements IInsightFacade {
 	constructor() {
 		this.dataIDmap = new Map<string, InforForCourses>();
 		this.datasetNameIDList = [];
-		//console.log("current dir: " + __dirname);
 	}
 
 	public async addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
-		this.checkConditionsForAdding(id, kind);
+		await this.checkConditionsForAdding(id, kind);
 
 		try {
 			const dataDir = "data";
@@ -56,16 +53,17 @@ export default class InsightFacade implements IInsightFacade {
 		}
 	}
 
-	public checkConditionsForAdding(id: string, kind: InsightDatasetKind): boolean {
-		if (this.datasetNameIDList.includes(id)) {
-			throw new InsightError("Data ID already exists, it cannot be added again");
-		} else if (id.includes(" ") || id.includes("_") || id === "") {
+	public async checkConditionsForAdding(id: string, kind: InsightDatasetKind): Promise<void> {
+		if (id.includes(" ") || id.includes("_") || id.trim() === "") {
 			throw new InsightError("Data ID contains space(s), underscore(s), or is empty");
 		} else if (kind === InsightDatasetKind.Rooms) {
 			throw new InsightError("InsightDatasetKind being Room is not allowed yet in c1");
-		} else {
-			//console.log("Unique id added!");
-			return true;
+		}
+
+		const filePath = path.join(DATA_DIR, `${id}.json`);
+		const exists = await fs.pathExists(filePath);
+		if (exists || this.datasetNameIDList.includes(id)) {
+			throw new InsightError("Data ID already exists, it cannot be added again");
 		}
 	}
 
@@ -82,40 +80,29 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async removeDataset(id: string): Promise<string> {
-		const filePath = "data/" + id + ".json";
+		if (!id || id.includes("_") || id.trim() === "") {
+			throw new InsightError("Invalid dataset ID: it cannot be null, contain underscores, or only whitespace");
+		}
 
-		return new Promise<string>((resolve, reject) => {
-			if (!id || id.includes("_") || id.includes(" ")) {
-				return reject(new InsightError("Invalid dataset ID: it cannot be null, contain underscores, or spaces"));
-			}
-			if (!this.datasetNameIDList.includes(id)) {
-				fs.unlink(filePath, (err: any) => {
-					if (err) {
-						return reject(new NotFoundError("Dataset file not found, unable to remove"));
-					}
-				});
-				const index = this.datasetNameIDList.indexOf(id);
-				if (index > -1) {
-					delete this.datasetNameIDList[index];
-				}
-				this.dataIDmap.delete(id);
-				return reject(new NotFoundError("Dataset with this ID was not added to the system yet"));
-			}
+		const filePath = path.join(DATA_DIR, `${id}.json`);
 
-			fs.unlink(filePath, (err: any) => {
-				if (err) {
-					return reject(new NotFoundError("Dataset file not found for removal"));
-				}
-				const index = this.datasetNameIDList.indexOf(id);
-				if (index > -1) {
-					this.datasetNameIDList.splice(index, 1);
-				}
-				this.dataIDmap.delete(id);
-				resolve(id);
-			});
-		});
+		const exists = await fs.pathExists(filePath);
+		if (!exists) {
+			throw new NotFoundError(`Dataset with id ${id} not found`);
+		}
+
+		try {
+			await fs.remove(filePath);
+			this.dataIDmap.delete(id);
+			const index = this.datasetNameIDList.indexOf(id);
+			if (index > -1) {
+				this.datasetNameIDList.splice(index, 1);
+			}
+			return id;
+		} catch (err: any) {
+			throw new InsightError(`Failed to remove dataset: ${err.message}`);
+		}
 	}
-
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
 		try {
 			// Parse Query: parse the query and generate an AST
@@ -150,13 +137,12 @@ export default class InsightFacade implements IInsightFacade {
 			}
 
 			// Return Query Result: return processed results
-			// console.log("Query results:", JSON.stringify(results, null, TWO_SPACE_COUNT));
 			return results;
-		} catch (error: any) {
-			if (error instanceof ResultTooLargeError) {
-				throw error;
+		} catch (err: any) {
+			if (err instanceof ResultTooLargeError) {
+				throw err;
 			}
-			throw new InsightError(error.message);
+			throw new InsightError(err.message);
 		}
 	}
 
@@ -173,7 +159,36 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async listDatasets(): Promise<InsightDataset[]> {
-		return await this.resolveListofData();
+		const datasets: InsightDataset[] = [];
+
+		try {
+			const exists = await fs.pathExists(DATA_DIR);
+			if (exists) {
+				const files: string[] = await fs.readdir(DATA_DIR);
+
+				const readPromises = files
+					.filter((file: string) => file.endsWith(".json"))
+					.map(async (file: string) => {
+						const filePath = path.join(DATA_DIR, file);
+						try {
+							const content = await fs.readFile(filePath, "utf8");
+							const parsedData = JSON.parse(content);
+							if (parsedData?.insightDataset) {
+								datasets.push(parsedData.insightDataset);
+							} else {
+								throw new InsightError(`Invalid dataset format in file: ${file}`);
+							}
+						} catch (err: any) {
+							throw new InsightError(`Failed to list dataset: ${err.message}`);
+						}
+					});
+				await Promise.all(readPromises);
+			}
+		} catch (err: any) {
+			throw new InsightError(`Failed to access data directory: ${err.message}`);
+		}
+
+		return datasets;
 	}
 
 	private async readDatasetFromDisk(id: string): Promise<InforForCourses> {

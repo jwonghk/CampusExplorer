@@ -70,10 +70,8 @@ export default class InforForCourses {
 	}
 
 	public checkIfResultKeyIsInTheParseJSON(aCourseInJSON: JSON): void {
-		if (Object.prototype.hasOwnProperty.call(aCourseInJSON, "result")) {
-			//console.log("Yes, the course in JSON has the 'result' key");
-		} else {
-			throw new InsightError("result key is not founded");
+		if (!Object.prototype.hasOwnProperty.call(aCourseInJSON, "result")) {
+			throw new InsightError("result key is not found");
 		}
 	}
 
@@ -121,7 +119,6 @@ export default class InforForCourses {
 			Object.prototype.hasOwnProperty.call(aSingleSection, "Audit") &&
 			Object.prototype.hasOwnProperty.call(aSingleSection, "Section")
 		) {
-			//console.log("This section has all required field!");
 			return;
 		} else {
 			throw new InsightError("A section doesn't have all 10 required fields!");
