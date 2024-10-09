@@ -576,5 +576,16 @@ describe("InsightFacade", function () {
 		it("[invalid/invalid_oR_gt_is_lt_audit_dept_avg.json], missing_columns", checkQuery);
 		it("[invalid/invalid_using_datasetname_id_that_has_underscore.json], missing_columns", checkQuery);
 		it("[invalid/invalid_using_nonexistent_dataname_as_mkey.json], missing_columns", checkQuery);
+
+		it(
+			"[invalid/invalid_CANNOT_query_more_than_one_dataset.json], Invalid: cannot query more than onedataset",
+			checkQuery
+		);
+		it("[invalid/invalid_COLUMNS_IS_AN_EMPTY_ARRAY.json], Invalid: COLUMNS IS AN EMPTY ARRAY", checkQuery);
+		it("[invalid/invalid_ORDER_type.json], Invalid:  ORDER TYPE invalid", checkQuery);
+		it(
+			"[invalid/invalid_RESULT_too_big_WHERE_matches_everything.json], Invalid: TOO_BIG result because WHERE clauses matches everything",
+			checkQuery
+		);
 	});
 });
