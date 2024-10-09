@@ -1,0 +1,16 @@
+{
+	"title": "String value in MCOMPARATOR",
+	"input": {
+	  "WHERE": {
+		"LT": {
+		  "sections_avg": "ninety"
+		}
+	  },
+	  "OPTIONS": {
+		"COLUMNS": ["sections_dept", "sections_avg"],
+		"ORDER": "sections_avg"
+	  }
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

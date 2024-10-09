@@ -576,5 +576,36 @@ describe("InsightFacade", function () {
 		it("[invalid/invalid_oR_gt_is_lt_audit_dept_avg.json], missing_columns", checkQuery);
 		it("[invalid/invalid_using_datasetname_id_that_has_underscore.json], missing_columns", checkQuery);
 		it("[invalid/invalid_using_nonexistent_dataname_as_mkey.json], missing_columns", checkQuery);
+
+		// additional InvalidQueries test cases
+		it("[invalid/invalid_key_format_in_filter.json], Invalid key format in filter", checkQuery);
+		it("[invalid/invalid_field_in_mcomparator.json], Invalid field in MCOMPARATOR", checkQuery);
+		it("[invalid/string_in_mcomparator.json], Invalid type String in MComparator", checkQuery);
+		it("[invalid/number_in_scomparator.json], Invalid type Number in SComparator", checkQuery);
+		it("[invalid/invalid_wildcard_usage_is.json], Invalid wildcard usage in IS", checkQuery);
+		it("[invalid/invalid_xor_logic_operator.json] Invalid XOR operator in logic", checkQuery);
+		it("[invalid/invalid_null_where_filter.json], Invalid null WHERE filter", checkQuery);
+		it("[invalid/missing_where_and_options.json], Missing WHERE and OPTIONS", checkQuery);
+		it("[invalid/order_key_not_in_columns.json], ORDER key not in COLUMNS", checkQuery);
+		it("[invalid/order_key_not_string.json], Order key not a string", checkQuery);
+		it("[invalid/missing_columns_in_options.json], Missing COLUMNS in OPTIONS", checkQuery);
+		it("[invalid/and_with_non_array.json], AND with non-array", checkQuery);
+		it("[invalid/empty_strings_as_keys.json], Empty strings as keys", checkQuery);
+		it("[invalid/extra_keys_as_comparator.json], Extra keys as comparator", checkQuery);
+		it("[invalid/invalid_field_name.json], Invalid field name", checkQuery);
+		it("[invalid/invalid_dataset_id.json], Invalid dataset id", checkQuery);
+		it("[invalid/empty_id_string_in_key.json], Empty id string in key", checkQuery);
+		it("[invalid/query_is_not_object.json], Query is not an object", checkQuery);
+		it("[invalid/query_is_null.json], Query is null", checkQuery);
+		it("[invalid/query_has_extra_keys.json], Query has extra keys", checkQuery);
+		it("[invalid/options_not_an_object.json], OPTIONS is not an object", checkQuery);
+		it("[non_object_in_mcomparator.json], Non-object in MCOMPARATOR", checkQuery);
+		it("[invalid/boolean_in_mcomparator.json], Boolean in MCOMPARATOR", checkQuery);
+		it("invalid/invalid_mcomparator_name.json], Invalid MCOMPARATOR name", checkQuery);
+		it("[invalid/non_object_where.json], Non-Object WHERE", checkQuery);
+		it("[invalid_query_syntax.json], Invalid query syntax", checkQuery);
+		it("[invalid/reference_mulitple_datasets.json], Reference multiple datasets", checkQuery);
+		it("invalid/empty_columns_array.json], Empty COLUMNS array", checkQuery);
+		it("[invalid/non_array_columns.json], Non-array COLUMNS", checkQuery);
 	});
 });

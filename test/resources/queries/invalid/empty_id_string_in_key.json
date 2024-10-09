@@ -1,0 +1,15 @@
+{
+	"title": "Empty idstring in key",
+	"input": {
+	  "WHERE": {
+		"GT": {
+		  "_avg": 90
+		}
+	  },
+	  "OPTIONS": {
+		"COLUMNS": ["_dept", "_avg"]
+	  }
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+  }
