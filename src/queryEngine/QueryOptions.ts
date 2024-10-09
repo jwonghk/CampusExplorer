@@ -4,7 +4,7 @@ import { validateKey } from "./QueryValidator";
 
 const SPLIT_KEY_NUM = 2;
 
-// Process the options of a query
+// Processes the OPTIONS clause of a query, filtering and sorting the dataset based on the COLUMNS and ORDER fields
 export function processOptions(records: any[], options: Options): InsightResult[] {
 	if (!options.COLUMNS || !Array.isArray(options.COLUMNS) || options.COLUMNS.length === 0) {
 		throw new InsightError("OPTIONS must contain a non-empty COLUMNS array");
@@ -13,13 +13,15 @@ export function processOptions(records: any[], options: Options): InsightResult[
 	const columns = options.COLUMNS;
 	const datasetId = columns[0].split("_")[0];
 
-	// Validate all columns
+	// Validate all columns in the COLUMNS array
 	for (const column of columns) {
 		validateKey(column, datasetId); // Add validation for each column
 	}
 
+	// Filter the dataset to include only the specified columns
 	let result = filterColumns(records, columns);
 
+	// If ORDER is specified, sort the result based on the ORDER key
 	if (options.ORDER) {
 		const orderKey = options.ORDER;
 		if (typeof orderKey !== "string") {
@@ -40,8 +42,9 @@ export function processOptions(records: any[], options: Options): InsightResult[
 	return result;
 }
 
-// Start ChatGPT
+// Helper function to filter the dataset to include only the columns specified in the COLUMNS array
 function filterColumns(records: any[], columns: string[]): InsightResult[] {
+	// Start ChatGPT
 	return records.map((record) => {
 		const filteredRecord: any = {};
 		for (const column of columns) {
@@ -49,10 +52,10 @@ function filterColumns(records: any[], columns: string[]): InsightResult[] {
 			if (fieldParts.length !== SPLIT_KEY_NUM) {
 				throw new InsightError(`Invalid column key: ${column}`);
 			}
-			const field = fieldParts[1];
+			const field = fieldParts[1]; // Extract the field name from the column key
 			filteredRecord[column] = record[field];
 		}
 		return filteredRecord;
 	});
+	// End ChatGPT
 }
-// End ChatGPT

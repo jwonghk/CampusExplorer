@@ -2,6 +2,7 @@ import { InsightDataset, InsightDatasetKind, InsightError } from "./IInsightFaca
 
 const YEAR_NINETEEN_HUNDRED = 1900;
 
+// Represents a single course section
 export class Section {
 	public readonly uuid: string;
 	public readonly id: string;
@@ -15,6 +16,7 @@ export class Section {
 	public readonly fail: number;
 	public readonly audit: number;
 
+	// Constructor to initialize a Section object
 	constructor(
 		uuid: string,
 		Course: string,
@@ -45,6 +47,7 @@ export default class InforForCourses {
 	public listOfSections: Section[];
 	public insightDataset: InsightDataset;
 
+	// Constructor to process and store all course sections from the parsed ZIP content
 	constructor(id: string, coursesArrayInZip: string[]) {
 		this.idOfZipDatafile = id;
 		this.listOfSections = [];
@@ -56,6 +59,7 @@ export default class InforForCourses {
 		this.GetallSectionsAcrossEachCourse(coursesArrayInZip);
 	}
 
+	// Method to iterate through courses and extract their sections
 	public GetallSectionsAcrossEachCourse(coursesInZip: string[]): void {
 		for (const aCourse of coursesInZip) {
 			let allSectionsWithinACourse: JSON;
@@ -69,12 +73,14 @@ export default class InforForCourses {
 		}
 	}
 
+	// Check if the 'result' key exists in the parsed JSON content
 	public checkIfResultKeyIsInTheParseJSON(aCourseInJSON: JSON): void {
 		if (!Object.prototype.hasOwnProperty.call(aCourseInJSON, "result")) {
 			throw new InsightError("result key is not found");
 		}
 	}
 
+	// Extract a section from the parsed JSON and store it in the list of sections
 	public returnASingleSection(sectionsArray: any): void {
 		for (const aSection of sectionsArray.result) {
 			this.checkingToSeeIfAllTenReqFieldsExist(aSection);
@@ -87,6 +93,7 @@ export default class InforForCourses {
 			const sectionField = aSection.Section;
 
 			let Year: number;
+			// Set the year based on whether it is "overall" or a specific year
 			if (sectionField === "overall") {
 				Year = YEAR_NINETEEN_HUNDRED;
 			} else {
@@ -98,13 +105,16 @@ export default class InforForCourses {
 			const Fail = Number(aSection.Fail);
 			const Audit = Number(aSection.Audit);
 
+			// Create a new Section object and add it to the list of sections
 			const section = new Section(uuid, Course, Title, Professor, Subject, Year, Avg, Pass, Fail, Audit);
 
 			this.listOfSections.push(section);
 		}
+		// Update the number of rows in the dataset after adding sections
 		this.insightDataset.numRows = this.listOfSections.length;
 	}
 
+	// Validate that the section contains all required fields
 	public checkingToSeeIfAllTenReqFieldsExist(aSingleSection: any): void {
 		if (
 			Object.prototype.hasOwnProperty.call(aSingleSection, "id") &&

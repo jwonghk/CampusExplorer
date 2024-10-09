@@ -597,9 +597,6 @@ describe("InsightFacade", function () {
 		it("[invalid/invalid_null_where_filter.json], Invalid null WHERE filter", checkQuery);
 		it("[invalid/missing_where_and_options.json], Missing WHERE and OPTIONS", checkQuery);
 		it("[invalid/order_key_not_in_columns.json], ORDER key not in COLUMNS", checkQuery);
-		// it("[invalid/order_key_not_string.json], Order key not a string", checkQuery);
-		// it("[invalid/missing_columns_in_options.json], Missing COLUMNS in OPTIONS", checkQuery);
-		// it("[invalid/and_with_non_array.json], AND with non-array", checkQuery);
 		it("[invalid/empty_strings_as_keys.json], Empty strings as keys", checkQuery);
 		it("[invalid/extra_keys_as_comparator.json], Extra keys as comparator", checkQuery);
 		it("[invalid/invalid_field_name.json], Invalid field name", checkQuery);
@@ -611,12 +608,8 @@ describe("InsightFacade", function () {
 		it("[invalid/options_not_an_object.json], OPTIONS is not an object", checkQuery);
 		it("[invalid/non_object_in_mcomparator.json], Non-object in MCOMPARATOR", checkQuery);
 		it("[invalid/boolean_in_mcomparator.json], Boolean in MCOMPARATOR", checkQuery);
-		// it("[invalid/invalid_mcomparator_name.json], Invalid MCOMPARATOR name", checkQuery);
-		// it("[invalid/non_object_where.json], Non-Object WHERE", checkQuery);
-		// it("[invalid/invalid_query_syntax.json], Invalid query syntax", checkQuery);
 		it("[invalid/reference_mulitple_datasets.json], Reference multiple datasets", checkQuery);
 		it("[invalid/empty_columns_array.json], Empty COLUMNS array", checkQuery);
-		// it("[invalid/non_array_columns.json], Non-array COLUMNS", checkQuery);
 	});
 
 	describe("Invalid Query Inputs", function () {
