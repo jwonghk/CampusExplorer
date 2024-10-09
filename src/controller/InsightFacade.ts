@@ -11,6 +11,7 @@ import InforForCourses from "./InforForCourses";
 import { Section } from "./InforForCourses";
 import { AddAllCourses } from "./AddAllCourses";
 import { Query } from "../queryEngine/QueryInterfaces";
+import { extractDatasetIds, validateQueryStructure } from "../queryEngine/QueryValidator";
 import { parseFilter } from "../queryEngine/QueryParser";
 import { executeQuery } from "../queryEngine/QueryExecutor";
 import { processOptions } from "../queryEngine/QueryOptions";
@@ -103,18 +104,31 @@ export default class InsightFacade implements IInsightFacade {
 			throw new InsightError(`Failed to remove dataset: ${err.message}`);
 		}
 	}
+
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
 		try {
-			// Parse Query: parse the query and generate an AST
 			const typedQuery = query as Query;
+
+			// Validate the query structure before proceeding
+			validateQueryStructure(typedQuery);
+
+			// Extract dataset IDs and validate
+			const datasetIds = extractDatasetIds(typedQuery);
+			if (datasetIds.size !== 1) {
+				throw new InsightError("Query must reference exactly one dataset");
+			}
+			let datasetId = datasetIds.values().next().value;
+
+			// Parse Query: parse the query and generate an AST
 			const ast = parseFilter(typedQuery.WHERE);
 
 			// Check Query Options: ensure that the query options are valid
 			if (!typedQuery.OPTIONS?.COLUMNS?.length) {
 				throw new InsightError("OPTIONS.COLUMNS must contain at least one key");
 			}
+
 			const firstColumnKey = typedQuery.OPTIONS.COLUMNS[0];
-			const datasetId = firstColumnKey.split("_")[0];
+			datasetId = firstColumnKey.split("_")[0];
 
 			// Load Dataset: load the dataset from disk
 			const datasetInfo = await this.loadDataset(datasetId);
