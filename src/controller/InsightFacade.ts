@@ -107,22 +107,21 @@ export default class InsightFacade implements IInsightFacade {
 
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
 		try {
-			const typedQuery = query as Query;
+			if (typeof query !== "object" || query === null || Array.isArray(query)) {
+				throw new InsightError("Query must be a non-null object");
+			}
 
-			// Validate the query structure before proceeding
+			const typedQuery = query as Query;
 			validateQueryStructure(typedQuery);
 
-			// Extract dataset IDs and validate
 			const datasetIds = extractDatasetIds(typedQuery);
 			if (datasetIds.size !== 1) {
 				throw new InsightError("Query must reference exactly one dataset");
 			}
-			let datasetId = datasetIds.values().next().value;
 
-			// Parse Query: parse the query and generate an AST
+			let datasetId = datasetIds.values().next().value;
 			const ast = parseFilter(typedQuery.WHERE);
 
-			// Check Query Options: ensure that the query options are valid
 			if (!typedQuery.OPTIONS?.COLUMNS?.length) {
 				throw new InsightError("OPTIONS.COLUMNS must contain at least one key");
 			}
@@ -130,27 +129,16 @@ export default class InsightFacade implements IInsightFacade {
 			const firstColumnKey = typedQuery.OPTIONS.COLUMNS[0];
 			datasetId = firstColumnKey.split("_")[0];
 
-			// Load Dataset: load the dataset from disk
 			const datasetInfo = await this.loadDataset(datasetId);
 			const dataset = datasetInfo.listOfSections;
 
-			// Execute Query: process the query and return the results
-			let records: any[];
-			if (ast === null) {
-				records = dataset;
-			} else {
-				records = await executeQuery(ast, dataset);
-			}
-
-			// Process Query Options: apply options to the query results
+			const records = ast === null ? dataset : await executeQuery(ast, dataset);
 			const results = processOptions(records, typedQuery.OPTIONS);
 
-			// Check Result Size: ensure that the result size does not exceed 5000
 			if (results.length > MAX_QUERY_SIZE) {
 				throw new ResultTooLargeError("Query results exceed 5000 entries");
 			}
 
-			// Return Query Result: return processed results
 			return results;
 		} catch (err: any) {
 			if (err instanceof ResultTooLargeError) {

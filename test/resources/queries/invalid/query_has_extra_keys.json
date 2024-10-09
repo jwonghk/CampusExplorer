@@ -1,0 +1,14 @@
+{
+	"title": "Query has extra keys",
+	"input": {
+	  "WHERE": {
+		"GT": { "sections_avg": 90 }
+	  },
+	  "OPTIONS": {
+		"COLUMNS": ["sections_dept", "sections_avg"]
+	  },
+	  "TRANSFORMATIONS": {}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

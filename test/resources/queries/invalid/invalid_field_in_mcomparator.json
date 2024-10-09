@@ -1,0 +1,16 @@
+{
+	"title": "Invalid field in MCOMPARISON",
+	"input": {
+	  "WHERE": {
+		"GT": {
+		  "sections_title": 90
+		}
+	  },
+	  "OPTIONS": {
+		"COLUMNS": ["sections_dept", "sections_title"],
+		"ORDER": "sections_title"
+	  }
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

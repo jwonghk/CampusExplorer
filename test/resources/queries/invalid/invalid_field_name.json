@@ -1,0 +1,15 @@
+{
+	"title": "Invalid field name",
+	"input": {
+	  "WHERE": {
+		"GT": {
+		  "sections_score": 90
+		}
+	  },
+	  "OPTIONS": {
+		"COLUMNS": ["sections_dept", "sections_score"]
+	  }
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+  }
