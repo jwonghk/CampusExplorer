@@ -578,6 +578,16 @@ describe("InsightFacade", function () {
 		it("[invalid/invalid_using_nonexistent_dataname_as_mkey.json], missing_columns", checkQuery);
 
 		// additional InvalidQueries test cases
+		it(
+			"[invalid/invalid_CANNOT_query_more_than_one_dataset.json], Invalid: cannot query more than onedataset",
+			checkQuery
+		);
+		it("[invalid/invalid_COLUMNS_IS_AN_EMPTY_ARRAY.json], Invalid: COLUMNS IS AN EMPTY ARRAY", checkQuery);
+		it("[invalid/invalid_ORDER_type.json], Invalid:  ORDER TYPE invalid", checkQuery);
+		it(
+			"[invalid/invalid_RESULT_too_big_WHERE_matches_everything.json], Invalid: TOO_BIG result because WHERE clauses matches everything",
+			checkQuery
+		);
 		it("[invalid/invalid_key_format_in_filter.json], Invalid key format in filter", checkQuery);
 		it("[invalid/invalid_field_in_mcomparator.json], Invalid field in MCOMPARATOR", checkQuery);
 		it("[invalid/string_in_mcomparator.json], Invalid type String in MComparator", checkQuery);
