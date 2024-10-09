@@ -21,38 +21,39 @@ function parseComparison(filter: any, comparator: "LT" | "GT" | "EQ" | "IS"): Co
 export function parseFilter(filter: any): ASTNode | null {
 	validateFilterObject(filter, "filter");
 
-	if (Object.keys(filter).length === 0) {
+	const filterKeys = Object.keys(filter);
+
+	// Empty filter (WHERE: {})
+	if (filterKeys.length === 0) {
 		return null;
 	}
 
+	// Filter must contain exactly one key
+	if (filterKeys.length !== 1) {
+		throw new InsightError("Filter must contain exactly one key");
+	}
+
+	const filterKey = filterKeys[0];
+
 	// Parse logical operators
-	if ("AND" in filter) {
-		validateArray(filter.AND, "AND");
-		const filters = filter.AND.map(parseFilter);
-		return new LogicNode("AND", filters);
+	if (filterKey === "AND" || filterKey === "OR") {
+		const logicArray = filter[filterKey];
+		validateArray(logicArray, filterKey);
+		const filters = logicArray.map(parseFilter);
+		return new LogicNode(filterKey as "AND" | "OR", filters);
 	}
 
-	if ("OR" in filter) {
-		validateArray(filter.OR, "OR");
-		const filters = filter.OR.map(parseFilter);
-		return new LogicNode("OR", filters);
-	}
-
-	if ("NOT" in filter) {
+	if (filterKey === "NOT") {
 		const innerFilter = parseFilter(filter.NOT);
 		if (innerFilter === null) {
-			throw new InsightError("Invalid NOT filter structure");
+			throw new InsightError("NOT filter cannot be empty");
 		}
 		return new NotNode(innerFilter);
 	}
 
-	// Parse comparison operators
-	const comparisonKeys = ["LT", "GT", "EQ", "IS"] as const;
-	for (const comparator of comparisonKeys) {
-		if (comparator in filter) {
-			return parseComparison(filter, comparator);
-		}
+	if (["LT", "GT", "EQ", "IS"].includes(filterKey)) {
+		return parseComparison(filter, filterKey as "LT" | "GT" | "EQ" | "IS");
 	}
 
-	throw new InsightError("Invalid filter");
+	throw new InsightError("Invalid filter key");
 }

@@ -1,5 +1,6 @@
 import { InsightResult, InsightError } from "../controller/IInsightFacade";
 import { Options } from "./QueryInterfaces";
+import { validateKey } from "./QueryValidator";
 
 const SPLIT_KEY_NUM = 2;
 
@@ -10,10 +11,21 @@ export function processOptions(records: any[], options: Options): InsightResult[
 	}
 
 	const columns = options.COLUMNS;
+	const datasetId = columns[0].split("_")[0];
+
+	// Validate all columns
+	for (const column of columns) {
+		validateKey(column, datasetId); // Add validation for each column
+	}
+
 	let result = filterColumns(records, columns);
 
 	if (options.ORDER) {
 		const orderKey = options.ORDER;
+		if (typeof orderKey !== "string") {
+			throw new InsightError("ORDER must be a string");
+		}
+		validateKey(orderKey, datasetId); // Add validation for ORDER key
 		result = result.sort((a, b) => {
 			if (a[orderKey] < b[orderKey]) {
 				return -1;
