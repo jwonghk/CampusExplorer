@@ -106,15 +106,15 @@ function traverseFilter(filter: any, datasetIds: Set<string>): void {
 }
 
 function addDatasetIdFromKey(key: string, datasetIds: Set<string>): void {
-    if (typeof key !== "string" || key.trim() === "") {
-        throw new InsightError(`Invalid key: ${key}`);
-    }
-    const id = key.split("_")[0];
-    if (!id || id.trim() === "") {
-        throw new InsightError(`Invalid dataset ID in key: ${key}`);
-    }
-    validateKey(key, id); // Validate the key format and dataset
-    datasetIds.add(id);
+	if (typeof key !== "string" || key.trim() === "") {
+		throw new InsightError(`Invalid key: ${key}`);
+	}
+	const id = key.split("_")[0];
+	if (!id || id.trim() === "") {
+		throw new InsightError(`Invalid dataset ID in key: ${key}`);
+	}
+	validateKey(key, id); // Validate the key format and dataset
+	datasetIds.add(id);
 }
 // End ChatGPT
 
@@ -124,7 +124,7 @@ export function validateQueryStructure(query: any): void {
 	}
 
 	const validTopLevelKeys = ["WHERE", "OPTIONS"];
-	if (Object.keys(query).length !== validTopLevelKeys.length || !validTopLevelKeys.every(k => k in query)) {
+	if (Object.keys(query).length !== validTopLevelKeys.length || !validTopLevelKeys.every((k) => k in query)) {
 		throw new InsightError("Query must contain only WHERE and OPTIONS");
 	}
 
@@ -137,11 +137,14 @@ export function validateQueryStructure(query: any): void {
 	}
 
 	const validOptionsKeys = ["COLUMNS", "ORDER"];
-	if (!Object.keys(query.OPTIONS).every(k => validOptionsKeys.includes(k))) {
+	if (!Object.keys(query.OPTIONS).every((k) => validOptionsKeys.includes(k))) {
 		throw new InsightError("OPTIONS can only contain COLUMNS and optional ORDER");
 	}
 
-	if ("ORDER" in query.OPTIONS && (!isString(query.OPTIONS.ORDER) || !query.OPTIONS.COLUMNS.includes(query.OPTIONS.ORDER))) {
+	if (
+		"ORDER" in query.OPTIONS &&
+		(!isString(query.OPTIONS.ORDER) || !query.OPTIONS.COLUMNS.includes(query.OPTIONS.ORDER))
+	) {
 		throw new InsightError("ORDER must be a string and exist in COLUMNS");
 	}
 }
