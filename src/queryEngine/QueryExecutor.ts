@@ -3,6 +3,7 @@ import { InsightError } from "../controller/IInsightFacade";
 
 const SPLIT_KEY_NUM = 2;
 
+// Execute the query by filtering the dataset based on the AST
 export async function executeQuery(ast: ASTNode, dataset: any[]): Promise<any[]> {
 	if (!ast) {
 		return dataset;
@@ -11,6 +12,7 @@ export async function executeQuery(ast: ASTNode, dataset: any[]): Promise<any[]>
 	return dataset.filter((record) => evaluate(ast, record));
 }
 
+// Evaluate the AST node to determine whether a record matches the filter
 function evaluate(node: ASTNode, record: any): boolean {
 	if (node instanceof LogicNode) {
 		return evaluateLogicNode(node, record);
@@ -22,6 +24,7 @@ function evaluate(node: ASTNode, record: any): boolean {
 	return false;
 }
 
+// Evaluate a logic node (AND/OR) against a record
 function evaluateLogicNode(node: LogicNode, record: any): boolean {
 	if (node.operator === "AND") {
 		return node.filters.every((filter) => evaluate(filter, record));
@@ -31,6 +34,7 @@ function evaluateLogicNode(node: LogicNode, record: any): boolean {
 	return false;
 }
 
+// Evaluate a comparison node (LT, GT, EQ, IS) against a record
 function evaluateComparisonNode(node: ComparatorNode, record: any): boolean {
 	const value = getValue(record, node.key);
 	if (value === undefined || value === null) {
@@ -60,8 +64,9 @@ function evaluateComparisonNode(node: ComparatorNode, record: any): boolean {
 	}
 }
 
-// Start ChatGPT
+// Retrieve the value of a field from a record using a key (formatted as datasetId_fieldName)
 function getValue(record: any, key: string): any {
+	// Start ChatGPT
 	const parts = key.split("_");
 	if (parts.length !== SPLIT_KEY_NUM) {
 		throw new InsightError(`Invalid key format: ${key}`);
@@ -70,6 +75,7 @@ function getValue(record: any, key: string): any {
 	return record[field];
 }
 
+// Check if a string matches the pattern using the IS comparison (supports wildcards)
 function matchIS(value: string, pattern: string): boolean {
 	if (pattern === null || typeof pattern !== "string") {
 		throw new InsightError("Pattern in IS must be a string");

@@ -36,6 +36,7 @@ export default class InsightFacade implements IInsightFacade {
 		this.datasetNameIDList = [];
 	}
 
+	// Add a dataset by extracting courses from a ZIP file
 	public async addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
 		await this.checkConditionsForAdding(id, kind);
 
@@ -54,6 +55,7 @@ export default class InsightFacade implements IInsightFacade {
 		}
 	}
 
+	// Check if conditions are met to add the dataset (valid ID, dataset doesn't already exist)
 	public async checkConditionsForAdding(id: string, kind: InsightDatasetKind): Promise<void> {
 		if (id.includes(" ") || id.includes("_") || id.trim() === "") {
 			throw new InsightError("Data ID contains space(s), underscore(s), or is empty");
@@ -68,6 +70,7 @@ export default class InsightFacade implements IInsightFacade {
 		}
 	}
 
+	// Write dataset information to persistent storage
 	private async writeToPersistent(id: string, jsonData: string): Promise<void> {
 		try {
 			const dataDir = "data";
@@ -80,6 +83,7 @@ export default class InsightFacade implements IInsightFacade {
 		}
 	}
 
+	// Remove a dataset from the system and disk
 	public async removeDataset(id: string): Promise<string> {
 		if (!id || id.includes("_") || id.trim() === "") {
 			throw new InsightError("Invalid dataset ID: it cannot be null, contain underscores, or only whitespace");
@@ -105,6 +109,7 @@ export default class InsightFacade implements IInsightFacade {
 		}
 	}
 
+	// Perform a query on a dataset based on the provided filter and options
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
 		try {
 			if (typeof query !== "object" || query === null || Array.isArray(query)) {
@@ -148,6 +153,7 @@ export default class InsightFacade implements IInsightFacade {
 		}
 	}
 
+	// Return a list of all datasets in the system
 	public async resolveListofData(): Promise<InsightDataset[]> {
 		const insightDatasetArray: InsightDataset[] = [];
 		const storingKey: string[] = [];
@@ -160,6 +166,7 @@ export default class InsightFacade implements IInsightFacade {
 		return insightDatasetArray;
 	}
 
+	// List all datasets by reading them from disk if necessary
 	public async listDatasets(): Promise<InsightDataset[]> {
 		const datasets: InsightDataset[] = [];
 
@@ -193,6 +200,7 @@ export default class InsightFacade implements IInsightFacade {
 		return datasets;
 	}
 
+	// Read a dataset from disk and return it as an InforForCourses instance
 	private async readDatasetFromDisk(id: string): Promise<InforForCourses> {
 		try {
 			// Start ChatGPT
@@ -235,6 +243,7 @@ export default class InsightFacade implements IInsightFacade {
 		// End ChatGPT
 	}
 
+	// Load a dataset from memory if available, or from disk otherwise
 	private async loadDataset(id: string): Promise<InforForCourses> {
 		if (this.dataIDmap.has(id)) {
 			return this.dataIDmap.get(id)!;

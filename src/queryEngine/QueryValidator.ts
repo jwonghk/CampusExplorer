@@ -3,21 +3,21 @@ import { Query } from "./QueryInterfaces";
 
 const SPLIT_KEY_NUM = 2;
 
-// Helper function to validate the filter object
+// Helper function to validate the structure of a filter object (e.g., WHERE clause)
 export function validateFilterObject(filter: any, filterType: string): void {
 	if (typeof filter !== "object" || filter === null) {
 		throw new InsightError(`Invalid ${filterType} structure`);
 	}
 }
 
-// Helper function to validate arrays for AND/OR logic
+// Helper function to validate that AND/OR arrays contain at least one filter
 export function validateArray(filterArray: any, filterType: string): void {
 	if (!Array.isArray(filterArray) || filterArray.length === 0) {
 		throw new InsightError(`${filterType} must be a non-empty array`);
 	}
 }
 
-// Ensure a valid key is referenced in COLUMNS and ORDER
+// Ensure a valid key is referenced in COLUMNS and ORDER clauses
 export function validateKey(key: string, datasetId: string): void {
 	const keyParts = key.split("_");
 	if (keyParts.length !== SPLIT_KEY_NUM || keyParts[0] !== datasetId) {
@@ -25,7 +25,7 @@ export function validateKey(key: string, datasetId: string): void {
 	}
 }
 
-// Helper function to validate comparison objects
+// Helper function to validate comparison objects used in LT, GT, EQ, IS
 export function validateComparisonObject(comparison: any, comparator: string): { key: string; value: any } {
 	if (typeof comparison !== "object" || comparison === null || Array.isArray(comparison)) {
 		throw new InsightError(`Invalid comparison object for ${comparator}`);
@@ -48,31 +48,31 @@ export function validateComparisonObject(comparison: any, comparator: string): {
 		throw new InsightError(`Invalid key format: ${key}`);
 	}
 
-	// Validate field name
+	// Validate that the key references a valid field
 	const fieldName = keyParts[1];
 	const validFields = ["dept", "id", "instructor", "title", "uuid", "avg", "pass", "fail", "audit", "year"];
 	if (!validFields.includes(fieldName)) {
 		throw new InsightError(`Invalid field name: ${fieldName}`);
 	}
 
-	// Additional checks for value can be added here
-
-	return { key, value };
+	return { key, value }; // Return the validated key-value pair
 }
 
 // Start ChatGPT
+// Extract dataset IDs from the query by inspecting the COLUMNS and WHERE clauses
 export function extractDatasetIds(query: Query): Set<string> {
 	const datasetIds = new Set<string>();
 
-	// Extract from COLUMNS and ORDER
+	// Extract dataset IDs from the OPTIONS clause
 	extractFromOptions(query.OPTIONS, datasetIds);
 
-	// Extract from WHERE
+	// Extract dataset IDs from the WHERE clause
 	traverseFilter(query.WHERE, datasetIds);
 
 	return datasetIds;
 }
 
+// Helper function to extract dataset IDs from the OPTIONS clause
 function extractFromOptions(options: any, datasetIds: Set<string>): void {
 	for (const column of options.COLUMNS) {
 		addDatasetIdFromKey(column, datasetIds);
@@ -82,6 +82,7 @@ function extractFromOptions(options: any, datasetIds: Set<string>): void {
 	}
 }
 
+// Helper function to recursively extract dataset IDs from the WHERE clause
 function traverseFilter(filter: any, datasetIds: Set<string>): void {
 	if (!filter || typeof filter !== "object") {
 		return;
@@ -92,12 +93,14 @@ function traverseFilter(filter: any, datasetIds: Set<string>): void {
 	}
 
 	if (["AND", "OR"].includes(key)) {
+		// Recursively traverse sub-filters for AND/OR operations
 		for (const subFilter of filter[key]) {
 			traverseFilter(subFilter, datasetIds);
 		}
 	} else if (key === "NOT") {
 		traverseFilter(filter.NOT, datasetIds);
 	} else if (["LT", "GT", "EQ", "IS"].includes(key)) {
+		// Extract dataset ID from the key in comparison operations
 		const comparisonKey = Object.keys(filter[key])[0];
 		addDatasetIdFromKey(comparisonKey, datasetIds);
 	} else {
@@ -105,6 +108,7 @@ function traverseFilter(filter: any, datasetIds: Set<string>): void {
 	}
 }
 
+// Add a dataset ID to the set by extracting it from the key
 function addDatasetIdFromKey(key: string, datasetIds: Set<string>): void {
 	if (typeof key !== "string" || key.trim() === "") {
 		throw new InsightError(`Invalid key: ${key}`);
@@ -118,6 +122,7 @@ function addDatasetIdFromKey(key: string, datasetIds: Set<string>): void {
 }
 // End ChatGPT
 
+// Validate the overall query structure (must contain WHERE and OPTIONS)
 export function validateQueryStructure(query: any): void {
 	if (typeof query !== "object" || query === null || Array.isArray(query)) {
 		throw new InsightError("Query must be a non-null object");
@@ -132,6 +137,7 @@ export function validateQueryStructure(query: any): void {
 		throw new InsightError("WHERE and OPTIONS must be non-null objects");
 	}
 
+	// Ensure COLUMNS is a non-empty array in the OPTIONS clause
 	if (!Array.isArray(query.OPTIONS.COLUMNS) || query.OPTIONS.COLUMNS.length === 0) {
 		throw new InsightError("OPTIONS must contain a non-empty COLUMNS array");
 	}
@@ -141,6 +147,7 @@ export function validateQueryStructure(query: any): void {
 		throw new InsightError("OPTIONS can only contain COLUMNS and optional ORDER");
 	}
 
+	// Validate ORDER key if it exists, ensuring it's in COLUMNS
 	if (
 		"ORDER" in query.OPTIONS &&
 		(!isString(query.OPTIONS.ORDER) || !query.OPTIONS.COLUMNS.includes(query.OPTIONS.ORDER))
@@ -149,10 +156,12 @@ export function validateQueryStructure(query: any): void {
 	}
 }
 
+// Helper function to check if an object is valid (non-null, not an array)
 function isValidObject(obj: any): boolean {
 	return typeof obj === "object" && obj !== null && !Array.isArray(obj);
 }
 
+// Helper function to check if a value is a string
 function isString(value: any): boolean {
 	return typeof value === "string";
 }
