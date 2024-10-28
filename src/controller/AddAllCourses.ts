@@ -1,3 +1,5 @@
+// AddAllCourses.ts
+
 import { InsightError } from "./IInsightFacade";
 import InsightFacade from "./InsightFacade";
 import JSZip from "jszip";
@@ -13,39 +15,33 @@ export class AddAllCourses {
 
 	// Method to add all courses from the provided ZIP content
 	public async AddAllCourse(id: string, contents: string): Promise<string[]> {
-		const zipFile = JSZip();
+		const zipFile = new JSZip();
 		const sectionsPromiseArray: Promise<string>[] = [];
 
-		// Promise to handle the asynchronous processing of the ZIP file
-		const promiseFunc: Promise<string[]> = new Promise<string[]>((res, rej) => {
+		return new Promise<string[]>((res, rej) => {
 			zipFile
 				.loadAsync(contents, { base64: true })
 				.then((zip: JSZip) => {
-					// Access the 'courses' folder inside the ZIP
-					const courseFolder = zip.folder("courses") || zip.folder("Courses");
+					const courseFolder = zip.folder("courses");
 					if (!courseFolder) {
-						// Reject if 'courses' folder is not found
 						return rej(new InsightError("Courses folder not found"));
 					}
-					// For each file in the 'courses' folder, read its content as a string
-					courseFolder.forEach((_, fileContent) => sectionsPromiseArray.push(fileContent.async("string")));
-					// Wait for all file contents to be read
+					courseFolder.forEach((_, file) => {
+						sectionsPromiseArray.push(file.async("string"));
+					});
 					Promise.all(sectionsPromiseArray)
-						.then((promise: string[]) => {
-							// Create a new InforForCourses instance with the file contents
-							const coursesData = new InforForCourses(id, promise);
+						.then((fileContents: string[]) => {
+							const coursesData = new InforForCourses(id, fileContents);
 							if (!coursesData.listOfSections.length) {
-								return rej("No sections were added!");
+								return rej(new InsightError("No valid sections were added!"));
 							}
-							// Store the courses data in the dataset
 							this.insightfacade.dataIDmap.set(id, coursesData);
 							this.insightfacade.datasetNameIDList.push(id);
 							res(this.insightfacade.datasetNameIDList);
 						})
 						.catch(rej);
 				})
-				.catch((err) => rej(new InsightError("Error: " + err)));
+				.catch((err) => rej(new InsightError("Error loading ZIP file: " + err)));
 		});
-		return promiseFunc;
 	}
 }

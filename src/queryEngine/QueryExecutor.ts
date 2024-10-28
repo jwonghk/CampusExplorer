@@ -1,18 +1,34 @@
-import { ASTNode, LogicNode, ComparatorNode, NotNode } from "./QueryAST";
-import { InsightError } from "../controller/IInsightFacade";
+// QueryExecutor.ts
+
+import { ASTNode, QueryNode, TransformationsNode, LogicNode, ComparatorNode, NotNode } from "./QueryAST";
+import { InsightResult, InsightError } from "../controller/IInsightFacade";
+import { performAggregation } from "./AggregationHelper";
+import { processOptions } from "./QueryOptions";
 
 const SPLIT_KEY_NUM = 2;
 
-// Execute the query by filtering the dataset based on the AST
-export async function executeQuery(ast: ASTNode, dataset: any[]): Promise<any[]> {
-	if (!ast) {
-		return dataset;
+export async function executeQuery(ast: ASTNode | null, dataset: any[]): Promise<InsightResult[]> {
+	if (!(ast instanceof QueryNode)) {
+		throw new InsightError("Invalid AST: Root node must be a QueryNode");
 	}
 
-	return dataset.filter((record) => evaluate(ast, record));
+	const queryNode = ast as QueryNode;
+
+	let records = dataset;
+
+	if (queryNode.filter) {
+		records = records.filter((record) => evaluate(queryNode.filter!, record));
+	}
+
+	if (queryNode.transformations) {
+		records = applyTransformations(records, queryNode.transformations);
+	}
+
+	const results = processOptions(records, queryNode.options);
+
+	return results;
 }
 
-// Evaluate the AST node to determine whether a record matches the filter
 function evaluate(node: ASTNode, record: any): boolean {
 	if (node instanceof LogicNode) {
 		return evaluateLogicNode(node, record);
@@ -24,7 +40,6 @@ function evaluate(node: ASTNode, record: any): boolean {
 	return false;
 }
 
-// Evaluate a logic node (AND/OR) against a record
 function evaluateLogicNode(node: LogicNode, record: any): boolean {
 	if (node.operator === "AND") {
 		return node.filters.every((filter) => evaluate(filter, record));
@@ -34,7 +49,6 @@ function evaluateLogicNode(node: LogicNode, record: any): boolean {
 	return false;
 }
 
-// Evaluate a comparison node (LT, GT, EQ, IS) against a record
 function evaluateComparisonNode(node: ComparatorNode, record: any): boolean {
 	const value = getValue(record, node.key);
 	if (value === undefined || value === null) {
@@ -42,45 +56,36 @@ function evaluateComparisonNode(node: ComparatorNode, record: any): boolean {
 	}
 	switch (node.comparator) {
 		case "LT":
+			return typeof value === "number" && value < node.value;
 		case "GT":
+			return typeof value === "number" && value > node.value;
 		case "EQ":
-			if (typeof value !== "number" || typeof node.value !== "number") {
-				throw new InsightError("Numeric comparisons require numeric values");
-			}
-			if (node.comparator === "LT") {
-				return value < node.value;
-			} else if (node.comparator === "GT") {
-				return value > node.value;
-			} else {
-				return value === node.value;
-			}
+			return typeof value === "number" && value === node.value;
 		case "IS":
-			if (typeof value !== "string" || typeof node.value !== "string") {
-				throw new InsightError("IS comparison requires string values");
-			}
-			return matchIS(value, node.value as string);
+			return typeof value === "string" && matchIS(value, node.value as string);
 		default:
 			throw new InsightError(`Invalid comparator: ${node.comparator}`);
 	}
 }
 
-// Retrieve the value of a field from a record using a key (formatted as datasetId_fieldName)
 function getValue(record: any, key: string): any {
-	// Start ChatGPT
 	const parts = key.split("_");
 	if (parts.length !== SPLIT_KEY_NUM) {
 		throw new InsightError(`Invalid key format: ${key}`);
 	}
 	const field = parts[1];
-	return record[field];
+	let value = record[field];
+	if (value === undefined) {
+		const adjustedField = field.toLowerCase();
+		value = record[adjustedField];
+	}
+	return value;
 }
 
-// Check if a string matches the pattern using the IS comparison (supports wildcards)
 function matchIS(value: string, pattern: string): boolean {
 	if (pattern === null || typeof pattern !== "string") {
 		throw new InsightError("Pattern in IS must be a string");
 	}
-
 	if (pattern.includes("**")) {
 		throw new InsightError("Invalid wildcard usage in IS");
 	}
@@ -88,4 +93,41 @@ function matchIS(value: string, pattern: string): boolean {
 	const regex = new RegExp(escapedPattern);
 	return regex.test(value);
 }
-// End ChatGPT
+
+function applyTransformations(records: any[], transformationsNode: TransformationsNode): any[] {
+	const groups = groupRecords(records, transformationsNode.groupKeys);
+	const transformedRecords = [];
+
+	for (const group of Object.values(groups)) {
+		const newRecord: any = {};
+
+		// Add group keys
+		const sample = group[0];
+		for (const key of transformationsNode.groupKeys) {
+			newRecord[key] = getValue(sample, key);
+		}
+
+		// Apply aggregation
+		for (const applyNode of transformationsNode.applyRules) {
+			const values = group.map((item: any) => getValue(item, applyNode.key));
+			newRecord[applyNode.applyKey] = performAggregation(applyNode.applyToken, values);
+		}
+
+		transformedRecords.push(newRecord);
+	}
+
+	return transformedRecords;
+}
+
+function groupRecords(records: any[], groupKeys: string[]): Record<string, any[]> {
+	const groups: Record<string, any[]> = {};
+	records.forEach((record) => {
+		const keyValues = groupKeys.map((k) => getValue(record, k));
+		const key = JSON.stringify(keyValues);
+		if (!groups[key]) {
+			groups[key] = [];
+		}
+		groups[key].push(record);
+	});
+	return groups;
+}

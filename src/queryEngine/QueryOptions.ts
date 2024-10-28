@@ -1,61 +1,64 @@
+// QueryOptions.ts
+
 import { InsightResult, InsightError } from "../controller/IInsightFacade";
-import { Options } from "./QueryInterfaces";
-import { validateKey } from "./QueryValidator";
+import { OptionsNode, OrderNode } from "./QueryAST";
 
 const SPLIT_KEY_NUM = 2;
 
-// Processes the OPTIONS clause of a query, filtering and sorting the dataset based on the COLUMNS and ORDER fields
-export function processOptions(records: any[], options: Options): InsightResult[] {
-	if (!options.COLUMNS || !Array.isArray(options.COLUMNS) || options.COLUMNS.length === 0) {
-		throw new InsightError("OPTIONS must contain a non-empty COLUMNS array");
-	}
+export function processOptions(records: any[], optionsNode: OptionsNode): InsightResult[] {
+	const columns = optionsNode.columns;
 
-	const columns = options.COLUMNS;
-	const datasetId = columns[0].split("_")[0];
+	const result = filterColumns(records, columns);
 
-	// Validate all columns in the COLUMNS array
-	for (const column of columns) {
-		validateKey(column, datasetId); // Add validation for each column
-	}
-
-	// Filter the dataset to include only the specified columns
-	let result = filterColumns(records, columns);
-
-	// If ORDER is specified, sort the result based on the ORDER key
-	if (options.ORDER) {
-		const orderKey = options.ORDER;
-		if (typeof orderKey !== "string") {
-			throw new InsightError("ORDER must be a string");
-		}
-		validateKey(orderKey, datasetId); // Add validation for ORDER key
-		result = result.sort((a, b) => {
-			if (a[orderKey] < b[orderKey]) {
-				return -1;
-			} else if (a[orderKey] > b[orderKey]) {
-				return 1;
-			} else {
-				return 0;
-			}
-		});
+	if (optionsNode.order) {
+		result.sort(createSortFunction(optionsNode.order));
 	}
 
 	return result;
 }
 
-// Helper function to filter the dataset to include only the columns specified in the COLUMNS array
 function filterColumns(records: any[], columns: string[]): InsightResult[] {
-	// Start ChatGPT
 	return records.map((record) => {
 		const filteredRecord: any = {};
 		for (const column of columns) {
-			const fieldParts = column.split("_");
-			if (fieldParts.length !== SPLIT_KEY_NUM) {
-				throw new InsightError(`Invalid column key: ${column}`);
-			}
-			const field = fieldParts[1]; // Extract the field name from the column key
-			filteredRecord[column] = record[field];
+			filteredRecord[column] = getValue(record, column);
 		}
 		return filteredRecord;
 	});
-	// End ChatGPT
+}
+
+function getValue(record: any, key: string): any {
+	const parts = key.split("_");
+	if (parts.length !== SPLIT_KEY_NUM) {
+		return record[key];
+	}
+	const field = parts[1];
+	let value = record[field];
+	if (value === undefined) {
+		const adjustedField = field.toLowerCase();
+		value = record[adjustedField];
+	}
+	return value;
+}
+
+function createSortFunction(order: OrderNode | string): (a: any, b: any) => number {
+	if (typeof order === "string") {
+		return (a, b) => (a[order] < b[order] ? -1 : a[order] > b[order] ? 1 : 0);
+	} else if (order instanceof OrderNode) {
+		const dir = order.direction === "UP" ? 1 : -1;
+		const keys = order.keys;
+		return (a, b) => {
+			for (const key of keys) {
+				if (a[key] < b[key]) {
+					return -1 * dir;
+				}
+				if (a[key] > b[key]) {
+					return 1 * dir;
+				}
+			}
+			return 0;
+		};
+	} else {
+		throw new InsightError("Invalid ORDER format");
+	}
 }
