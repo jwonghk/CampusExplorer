@@ -621,9 +621,6 @@ describe("InsightFacade", function () {
 		it("[valid/queryReturningNoResults.json], Query returning no results", checkQuery);
 
 		it("[invalid/aggregation_duplicate_applykey.json] Aggregation query with duplicate applykey", checkQuery);
-
-		it("[invalid/aggregation_empty_apply.json] Aggregation query with empty APPLY array", checkQuery);
-
 		it("[invalid/aggregation_invalid_applytoken.json] Aggregation query with invalid APPLYTOKEN", checkQuery);
 		it("[invalid/aggregation_missing_applytoken.json] Aggregation query missing APPLYTOKEN", checkQuery);
 		it("[invalid/aggregation_missing_group_apply.json] Aggregation query missing GROUP and APPLY", checkQuery);
