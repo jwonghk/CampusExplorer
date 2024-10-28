@@ -610,6 +610,34 @@ describe("InsightFacade", function () {
 		it("[invalid/boolean_in_mcomparator.json], Boolean in MCOMPARATOR", checkQuery);
 		it("[invalid/reference_mulitple_datasets.json], Reference multiple datasets", checkQuery);
 		it("[invalid/empty_columns_array.json], Empty COLUMNS array", checkQuery);
+
+		// Query tests for aggregations
+		it("[valid/aggregationQueryUsingAVG.json], Aggregation query using AVG", checkQuery);
+		it("[valid/aggregationQueryUsingMAX.json], Aggregation query using MAX", checkQuery);
+		it("[valid/aggregationQueryUsingMIN.json], Aggregation query using MIN", checkQuery);
+		it("[valid/aggregationQueryUsingSUM.json], Aggregation query using SUM", checkQuery);
+		it("[valid/aggregationQueryUsingCOUNT.json], Aggregation query using COUNT", checkQuery);
+		it("[valid/aggregationQueryWithMultipleAPPLYRules.json], Aggregation query with multiple APPLY rules", checkQuery);
+		it("[valid/queryReturningNoResults.json], Query returning no results", checkQuery);
+
+		it("[invalid/aggregation_duplicate_applykey.json] Aggregation query with duplicate applykey", checkQuery);
+		it("[invalid/aggregation_empty_apply.json] Aggregation query with empty APPLY array", checkQuery);
+		it("[invalid/aggregation_invalid_applytoken.json] Aggregation query with invalid APPLYTOKEN", checkQuery);
+		it("[invalid/aggregation_missing_applytoken.json] Aggregation query missing APPLYTOKEN", checkQuery);
+		it("[invalid/aggregation_missing_group_apply.json] Aggregation query missing GROUP and APPLY", checkQuery);
+		it("[invalid/aggregation_nested_transformations.json] Aggregation query with nested TRANSFORMATIONS", checkQuery);
+		it(
+			"[invalid/aggregation_non_numeric_field.json] Aggregation query applying SUM on a non-numeric field",
+			checkQuery
+		);
+		it("[invalid/aggregation_non_unique_applykeys.json] Aggregation query with non-unique apply keys", checkQuery);
+		it("[invalid/aggregation_nonexistent_apply_key.json] Aggregation query with non-existent key in APPLY", checkQuery);
+		it("[invalid/aggregation_nonexistent_group_key.json] Aggregation query with non-existent key in GROUP", checkQuery);
+		it(
+			"[invalid/aggregation_query_with_duplicate_apply_key.json], Aggregation query with duplicate applykey",
+			checkQuery
+		);
+		it("[invalid/aggregation_query_with_empty_group_array.json] Aggregation query with empty GROUP array", checkQuery);
 	});
 
 	describe("Invalid Query Inputs", function () {

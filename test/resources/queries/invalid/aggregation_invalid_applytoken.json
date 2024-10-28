@@ -1,0 +1,21 @@
+{
+	"title": "Aggregation query with invalid APPLYTOKEN",
+	"input": {
+	  "WHERE": {},
+	  "OPTIONS": {
+		"COLUMNS": ["sections_dept", "invalidAgg"]
+	  },
+	  "TRANSFORMATIONS": {
+		"GROUP": ["sections_dept"],
+		"APPLY": [
+		  {
+			"invalidAgg": {
+			  "MEDIAN": "sections_avg"
+			}
+		  }
+		]
+	  }
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+  }
