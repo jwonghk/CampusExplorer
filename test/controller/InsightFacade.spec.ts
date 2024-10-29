@@ -446,7 +446,8 @@ describe("InsightFacade", function () {
 
 			try {
 				result = await facade.performQuery(input);
-				console.log("Query Result:", result);
+				// console.log("Expected Results:", expected);    // Log expected results
+				// console.log("Actual Results:", result);        // Log actual results for comparison
 				if (errorExpected) {
 					expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
 				}
@@ -613,15 +614,12 @@ describe("InsightFacade", function () {
 
 		// Query tests for aggregations
 		const TEN_THOUSAND = 30000;
-		it.only("[valid/aggregationQueryUsingAVG.json], Aggregation query using AVG", checkQuery).timeout(TEN_THOUSAND);
+		it("[valid/aggregationQueryUsingAVG.json], Aggregation query using AVG", checkQuery).timeout(TEN_THOUSAND);
 		it("[valid/aggregationQueryUsingMAX.json], Aggregation query using MAX", checkQuery);
 		it("[valid/aggregationQueryUsingMIN.json], Aggregation query using MIN", checkQuery);
 		it("[valid/aggregationQueryUsingSUM.json], Aggregation query using SUM", checkQuery);
 		it("[valid/aggregationQueryUsingCOUNT.json], Aggregation query using COUNT", checkQuery);
-		it(
-			"[valid/aggregationQueryWithMultipleAPPLYRules.json], Aggregation query with multiple APPLY rules",
-			checkQuery
-		);
+		it("[valid/aggregationQueryWithMultipleAPPLYRules.json], Aggregation query with multiple APPLY rules", checkQuery);
 		it("[valid/queryReturningNoResults.json], Query returning no results", checkQuery);
 
 		it("[invalid/aggregation_duplicate_applykey.json] Aggregation query with duplicate applykey", checkQuery);
@@ -766,7 +764,8 @@ describe("InsightFacade", function () {
 			}
 		});
 
-		it("should reject when query has extra top-level keys", async function () { // TEST THIS ONE
+		it("should reject when query has extra top-level keys", async function () {
+			// TEST THIS ONE
 			const invalidQuery: any = {
 				WHERE: {},
 				OPTIONS: {
