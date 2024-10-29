@@ -52,6 +52,7 @@ export class Section {
 			this.fail = Number(sectionFields.fail);
 			this.audit = Number(sectionFields.audit);
 		}
+		// console.log("Creating Section:", { id: this.id, title: this.title, instructor: this.instructor }); // Log section data
 	}
 }
 
@@ -75,6 +76,7 @@ export default class InforForCourses {
 		for (const courseContent of coursesInZip) {
 			try {
 				const courseData = JSON.parse(courseContent);
+				// console.log("Processing Course Data:", courseData); // Log each course's raw data
 				this.validateCourseData(courseData);
 				this.extractSections(courseData);
 			} catch (_err: any) {

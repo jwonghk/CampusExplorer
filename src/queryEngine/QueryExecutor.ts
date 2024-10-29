@@ -95,7 +95,11 @@ function matchIS(value: string, pattern: string): boolean {
 }
 
 function applyTransformations(records: any[], transformationsNode: TransformationsNode): any[] {
+	console.log("Transformations Node:", transformationsNode); // Log transformations configuration
+    console.log("Records before Transformation:", records); // Log records before transformation
+
 	const groups = groupRecords(records, transformationsNode.groupKeys);
+	console.log("Grouped Records:", groups); // Log groups to check for sections_title presence
 	const transformedRecords = [];
 
 	for (const group of Object.values(groups)) {
@@ -103,14 +107,18 @@ function applyTransformations(records: any[], transformationsNode: Transformatio
 
 		// Add group keys
 		const sample = group[0];
+		console.log("Group Key Sample Record:", sample); // Log sample record to verify sections_title
 		for (const key of transformationsNode.groupKeys) {
 			newRecord[key] = getValue(sample, key);
+			// console.log("Group Key:", key, "Value:", newRecord[key]); // Log each group key and its value
 		}
 
 		// Apply aggregation
 		for (const applyNode of transformationsNode.applyRules) {
+			console.log("Applying Rule - Key:", applyNode.key, "ApplyKey:", applyNode.applyKey); // Log apply node keys
 			const values = group.map((item: any) => getValue(item, applyNode.key));
 			newRecord[applyNode.applyKey] = performAggregation(applyNode.applyToken, values);
+			console.log("Applying Aggregation:", applyNode.applyKey, "Token:", applyNode.applyToken, "Result:", newRecord[applyNode.applyKey]); // Existing log
 		}
 
 		transformedRecords.push(newRecord);
