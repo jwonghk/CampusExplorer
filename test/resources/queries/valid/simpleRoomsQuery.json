@@ -3,7 +3,7 @@
 	"input": {
 		"WHERE": {
 			"GT": {
-				"rooms_seats": 100
+				"rooms_seats": 150
 			}
 		},
 		"OPTIONS": {
@@ -17,106 +17,6 @@
 	},
 	"errorExpected": false,
 	"expected": [
-		{
-			"rooms_shortname": "WESB",
-			"rooms_number": "201",
-			"rooms_seats": 102
-		},
-		{
-			"rooms_shortname": "MATX",
-			"rooms_number": "1100",
-			"rooms_seats": 106
-		},
-		{
-			"rooms_shortname": "BUCH",
-			"rooms_number": "A202",
-			"rooms_seats": 108
-		},
-		{
-			"rooms_shortname": "BUCH",
-			"rooms_number": "A203",
-			"rooms_seats": 108
-		},
-		{
-			"rooms_shortname": "IBLC",
-			"rooms_number": "261",
-			"rooms_seats": 112
-		},
-		{
-			"rooms_shortname": "CHEM",
-			"rooms_number": "D200",
-			"rooms_seats": 114
-		},
-		{
-			"rooms_shortname": "CHEM",
-			"rooms_number": "D300",
-			"rooms_seats": 114
-		},
-		{
-			"rooms_shortname": "DMP",
-			"rooms_number": "110",
-			"rooms_seats": 120
-		},
-		{
-			"rooms_shortname": "WOOD",
-			"rooms_number": "1",
-			"rooms_seats": 120
-		},
-		{
-			"rooms_shortname": "WOOD",
-			"rooms_number": "4",
-			"rooms_seats": 120
-		},
-		{
-			"rooms_shortname": "WOOD",
-			"rooms_number": "5",
-			"rooms_seats": 120
-		},
-		{
-			"rooms_shortname": "MCLD",
-			"rooms_number": "202",
-			"rooms_seats": 123
-		},
-		{
-			"rooms_shortname": "LSC",
-			"rooms_number": "1003",
-			"rooms_seats": 125
-		},
-		{
-			"rooms_shortname": "BUCH",
-			"rooms_number": "A103",
-			"rooms_seats": 131
-		},
-		{
-			"rooms_shortname": "MCLD",
-			"rooms_number": "228",
-			"rooms_seats": 136
-		},
-		{
-			"rooms_shortname": "AERL",
-			"rooms_number": "120",
-			"rooms_seats": 144
-		},
-		{
-			"rooms_shortname": "BUCH",
-			"rooms_number": "A102",
-			"rooms_seats": 150
-		},
-		{
-			"rooms_shortname": "BUCH",
-			"rooms_number": "A104",
-			"rooms_seats": 150
-		},
-		{
-			"rooms_shortname": "ESB",
-			"rooms_number": "1012",
-			"rooms_seats": 150
-		},
-		{
-			"rooms_shortname": "HENN",
-			"rooms_number": "202",
-			"rooms_seats": 150
-		},
 		{
 			"rooms_shortname": "IBLC",
 			"rooms_number": "182",

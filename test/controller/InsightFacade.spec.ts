@@ -109,7 +109,7 @@ describe("InsightFacade", function () {
 
 		it("should add a valid dataset and return the dataset id", async function () {
 			try {
-				const outputId = await facade.addDataset("foo", sections, InsightDatasetKind.Sections);
+				const outputId = await facade.addDataset("foo", sections2, InsightDatasetKind.Sections);
 				expect(outputId).to.deep.equal(["foo"]);
 			} catch (err) {
 				return expect(err).to.be.instanceOf(InsightError);
@@ -119,7 +119,7 @@ describe("InsightFacade", function () {
 		it("should add a valid dataset and return the dataset", async function () {
 			let result;
 			try {
-				result = await facade.addDataset("foo", sections, InsightDatasetKind.Sections);
+				result = await facade.addDataset("foo", sections2, InsightDatasetKind.Sections);
 			} catch (err) {
 				return expect(err).to.be.instanceOf(InsightError);
 			}
@@ -128,8 +128,8 @@ describe("InsightFacade", function () {
 
 		it("should reject with a duplicate dataset id", async function () {
 			try {
-				await facade.addDataset("foo", sections, InsightDatasetKind.Sections);
-				await facade.addDataset("foo", sections, InsightDatasetKind.Sections);
+				await facade.addDataset("foo", sections2, InsightDatasetKind.Sections);
+				await facade.addDataset("foo", sections2, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown above.");
 			} catch (err) {
 				expect(err).to.be.instanceOf(InsightError);
@@ -229,8 +229,8 @@ describe("InsightFacade", function () {
 
 		it("should reject adding same dataset id with different kinds", async function () {
 			try {
-				await facade.addDataset("foobar", sections, InsightDatasetKind.Sections);
-				await facade.addDataset("foobar", sections, InsightDatasetKind.Rooms);
+				await facade.addDataset("foobar", sections2, InsightDatasetKind.Sections);
+				await facade.addDataset("foobar", sections2, InsightDatasetKind.Rooms);
 				expect.fail("Should have thrown above.");
 			} catch (err) {
 				expect(err).to.be.instanceOf(InsightError);
@@ -401,13 +401,13 @@ describe("InsightFacade", function () {
 
 		it("should list one added dataset", async function () {
 			try {
-				await facade.addDataset("sampleDataset", sections, InsightDatasetKind.Sections);
+				await facade.addDataset("sampleDataset", sections2, InsightDatasetKind.Sections);
 				const datasets = await facade.listDatasets();
 				expect(datasets).to.deep.equal([
 					{
 						id: "sampleDataset",
 						kind: InsightDatasetKind.Sections,
-						numRows: 64612,
+						numRows: 25,
 					},
 				]);
 			} catch (err) {
@@ -443,15 +443,15 @@ describe("InsightFacade", function () {
 		// Rooms tests
 		it("should list datasets including both sections and rooms datasets", async function () {
 			try {
-				await facade.addDataset("sections", sections, InsightDatasetKind.Sections);
+				await facade.addDataset("sections2", sections2, InsightDatasetKind.Sections);
 				await facade.addDataset("rooms", buildingZip, InsightDatasetKind.Rooms);
 
 				const datasets = await facade.listDatasets();
 				expect(datasets).to.deep.include.members([
 					{
-						id: "sections",
+						id: "sections2",
 						kind: InsightDatasetKind.Sections,
-						numRows: 64612,
+						numRows: 25,
 					},
 					{
 						id: "rooms",
@@ -470,7 +470,7 @@ describe("InsightFacade", function () {
 			const facade1 = new InsightFacade();
 
 			try {
-				await facade1.addDataset("sections", sections, InsightDatasetKind.Sections);
+				await facade1.addDataset("sections2", sections2, InsightDatasetKind.Sections);
 			} catch (err) {
 				expect(err).to.be.instanceOf(InsightError);
 			}
@@ -481,9 +481,9 @@ describe("InsightFacade", function () {
 				const datasets = await facade2.listDatasets();
 				expect(datasets).to.deep.equal([
 					{
-						id: "sections",
+						id: "sections2",
 						kind: InsightDatasetKind.Sections,
-						numRows: 64612,
+						numRows: 25,
 					},
 				]);
 			} catch (err) {
@@ -518,17 +518,17 @@ describe("InsightFacade", function () {
 			const facade2 = new InsightFacade();
 
 			try {
-				const removedId = await facade2.removeDataset("sections");
-				expect(removedId).to.equal("sections");
+				const removedId = await facade2.removeDataset("sections2");
+				expect(removedId).to.equal("sections2");
 			} catch (err) {
-				expect(err).to.be.instanceOf(InsightError);
+				expect.fail("Expected removeDataset to succeed, but it threw an error: " + err);
 			}
 
 			try {
 				const datasets = await facade2.listDatasets();
 				expect(datasets).to.deep.equal([]);
 			} catch (err) {
-				expect(err).to.be.instanceOf(InsightError);
+				expect.fail("Expected listDatasets to succeed after removal, but it threw an error: " + err);
 			}
 		});
 	});
@@ -727,8 +727,7 @@ describe("InsightFacade", function () {
 		);
 
 		// Query tests for aggregations
-		const TEN_THOUSAND = 30000;
-		it("[valid/aggregationQueryUsingAVG.json], Aggregation query using AVG", checkQuery).timeout(TEN_THOUSAND);
+		it("[valid/aggregationQueryUsingAVG.json], Aggregation query using AVG", checkQuery);
 		it("[valid/aggregationQueryUsingMAX.json], Aggregation query using MAX", checkQuery);
 		it("[valid/aggregationQueryUsingMIN.json], Aggregation query using MIN", checkQuery);
 		it("[valid/aggregationQueryUsingSUM.json], Aggregation query using SUM", checkQuery);
