@@ -578,6 +578,7 @@ describe("InsightFacade", function () {
 			const loadDatasetPromises: Promise<string[]>[] = [
 				facade.addDataset("sections", sections, InsightDatasetKind.Sections),
 				facade.addDataset("sections2", sections2, InsightDatasetKind.Sections),
+				facade.addDataset("rooms", buildingZip, InsightDatasetKind.Rooms),
 			];
 
 			try {
@@ -651,7 +652,7 @@ describe("InsightFacade", function () {
 		it("[valid/valid_AND_GT_IS_LT_sections_id.json] valid_AND_GT_IS_LT_sections_id", checkQuery);
 		it("[valid/valid_AND_GT_IS_LT_sections_instructor.json] valid_AND_GT_IS_LT_sections_instructor", checkQuery);
 		it("[valid/valid_AND_GT_IS_LT_sections_pass.json] valid_AND_GT_IS_LT_sections_pass", checkQuery);
-		it("[valid/valid_AND_GT_IS_LT_sections_title.json] valid_AND_GT_IS_LT_sections_title", checkQuery); // THIS ONE TO VALIDATE VALID CASES
+		it("[valid/valid_AND_GT_IS_LT_sections_title.json] valid_AND_GT_IS_LT_sections_title", checkQuery);
 		it("[valid/valid_AND_GT_IS_LT_sections_uuid.json] valid_AND_GT_IS_LT_sections_uuid", checkQuery);
 		it("[valid/valid_AND_GT_IS_LT_sections_year.json] valid_AND_GT_IS_LT_sections_year", checkQuery);
 		it("[valid/valid_AND_GTNegative23_IS_starhYstar.json] valid_AND_GTNegative23_IS_starhYstar", checkQuery);
@@ -720,7 +721,7 @@ describe("InsightFacade", function () {
 		it("[invalid/empty_columns_array.json], Empty COLUMNS array", checkQuery);
 
 		// Room tests
-		it("[valid/simpleRoomsQuery.json], Query rooms with seats greater than 100", checkQuery);
+		it("[valid/simpleRoomsQuery.json], Query rooms with seats greater than 150", checkQuery);
 		it(
 			"[valid/querySpecificRoomsWithOrdering.json], Query rooms in specific buildings with ordered results",
 			checkQuery
@@ -878,7 +879,6 @@ describe("InsightFacade", function () {
 		});
 
 		it("should reject when query has extra top-level keys", async function () {
-			// TEST THIS ONE
 			const invalidQuery: any = {
 				WHERE: {},
 				OPTIONS: {
