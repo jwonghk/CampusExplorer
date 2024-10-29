@@ -37,6 +37,10 @@ describe("InsightFacade", function () {
 	let courseJAPN314: string;
 	let courseMATH541: string;
 
+	let buildingZip: string;
+	let invalidHTMLZip: string;
+	let missingIndexZip: string;
+
 	before(async function () {
 		// This block runs once and loads the datasets.
 		sections = await getContentFromArchives("pair.zip");
@@ -51,6 +55,10 @@ describe("InsightFacade", function () {
 
 		courseJAPN314 = await getContentFromArchives("JAPN314.zip");
 		courseMATH541 = await getContentFromArchives("MATH541.zip");
+
+		buildingZip = await getContentFromArchives("campus.zip");
+		invalidHTMLZip = await getContentFromArchives("invalid_html.zip");
+		missingIndexZip = await getContentFromArchives("missing_index.zip");
 
 		// Just in case there is anything hanging around from a previous run of the test suite
 		await clearDisk();
@@ -228,6 +236,58 @@ describe("InsightFacade", function () {
 				expect(err).to.be.instanceOf(InsightError);
 			}
 		});
+
+		// Rooms tests
+		it("should add a valid rooms dataset and return the dataset id", async function () {
+			try {
+				const result = await facade.addDataset("rooms", buildingZip, InsightDatasetKind.Rooms);
+				expect(result).to.deep.equal(["rooms"]);
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding a rooms dataset missing index.htm", async function () {
+			try {
+				await facade.addDataset("rooms", missingIndexZip, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown an error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding a rooms dataset with invalid HTML", async function () {
+			try {
+				await facade.addDataset("rooms", invalidHTMLZip, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown an error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		it("should list datasets including the rooms dataset", async function () {
+			try {
+				await facade.addDataset("rooms", buildingZip, InsightDatasetKind.Rooms);
+				const datasets = await facade.listDatasets();
+				expect(datasets).to.deep.include({
+					id: "rooms",
+					kind: InsightDatasetKind.Rooms,
+					numRows: 364,
+				});
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding a duplicate rooms dataset id", async function () {
+			try {
+				await facade.addDataset("rooms", buildingZip, InsightDatasetKind.Rooms);
+				await facade.addDataset("rooms", buildingZip, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown an error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
 	});
 
 	describe("removeDataset", function () {
@@ -305,6 +365,29 @@ describe("InsightFacade", function () {
 				expect(err).to.be.instanceOf(InsightError);
 			}
 		});
+
+		// Rooms tests
+		it("should successfully remove a valid rooms dataset", async function () {
+			try {
+				await facade.addDataset("rooms", buildingZip, InsightDatasetKind.Rooms);
+				const removedId = await facade.removeDataset("rooms");
+				expect(removedId).to.equal("rooms");
+
+				const datasets = await facade.listDatasets();
+				expect(datasets).to.deep.equal([]);
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject removing a non-existent rooms dataset", async function () {
+			try {
+				await facade.removeDataset("rooms");
+				expect.fail("Should have thrown an error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(NotFoundError);
+			}
+		});
 	});
 
 	describe("listDataset", function () {
@@ -354,6 +437,30 @@ describe("InsightFacade", function () {
 				]);
 			} catch (error) {
 				expect(error).to.be.instanceOf(InsightError);
+			}
+		});
+
+		// Rooms tests
+		it("should list datasets including both sections and rooms datasets", async function () {
+			try {
+				await facade.addDataset("sections", sections, InsightDatasetKind.Sections);
+				await facade.addDataset("rooms", buildingZip, InsightDatasetKind.Rooms);
+
+				const datasets = await facade.listDatasets();
+				expect(datasets).to.deep.include.members([
+					{
+						id: "sections",
+						kind: InsightDatasetKind.Sections,
+						numRows: 64612,
+					},
+					{
+						id: "rooms",
+						kind: InsightDatasetKind.Rooms,
+						numRows: 364,
+					},
+				]);
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
 			}
 		});
 	});
@@ -611,6 +718,13 @@ describe("InsightFacade", function () {
 		it("[invalid/boolean_in_mcomparator.json], Boolean in MCOMPARATOR", checkQuery);
 		it("[invalid/reference_mulitple_datasets.json], Reference multiple datasets", checkQuery);
 		it("[invalid/empty_columns_array.json], Empty COLUMNS array", checkQuery);
+
+		// Room tests
+		it("[valid/simpleRoomsQuery.json] Query rooms with seats greater than 100", checkQuery);
+		it(
+			"[valid/querySpecificRoomsWithOrdering.json] Query rooms in specific buildings with ordered results",
+			checkQuery
+		);
 
 		// Query tests for aggregations
 		const TEN_THOUSAND = 30000;
