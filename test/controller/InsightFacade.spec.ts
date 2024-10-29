@@ -720,9 +720,9 @@ describe("InsightFacade", function () {
 		it("[invalid/empty_columns_array.json], Empty COLUMNS array", checkQuery);
 
 		// Room tests
-		it("[valid/simpleRoomsQuery.json] Query rooms with seats greater than 100", checkQuery);
+		it("[valid/simpleRoomsQuery.json], Query rooms with seats greater than 100", checkQuery);
 		it(
-			"[valid/querySpecificRoomsWithOrdering.json] Query rooms in specific buildings with ordered results",
+			"[valid/querySpecificRoomsWithOrdering.json], Query rooms in specific buildings with ordered results",
 			checkQuery
 		);
 
