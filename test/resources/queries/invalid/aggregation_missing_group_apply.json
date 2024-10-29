@@ -1,0 +1,12 @@
+{
+	"title": "Aggregation query missing GROUP and APPLY",
+	"input": {
+	  "WHERE": {},
+	  "OPTIONS": {
+		"COLUMNS": ["sections_dept", "overallAvg"]
+	  },
+	  "TRANSFORMATIONS": {}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

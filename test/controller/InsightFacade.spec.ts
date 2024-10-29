@@ -446,7 +446,8 @@ describe("InsightFacade", function () {
 
 			try {
 				result = await facade.performQuery(input);
-
+				// console.log("Expected Results:", expected);    // Log expected results
+				// console.log("Actual Results:", result);        // Log actual results for comparison
 				if (errorExpected) {
 					expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
 				}
@@ -543,7 +544,7 @@ describe("InsightFacade", function () {
 		it("[valid/valid_AND_GT_IS_LT_sections_id.json] valid_AND_GT_IS_LT_sections_id", checkQuery);
 		it("[valid/valid_AND_GT_IS_LT_sections_instructor.json] valid_AND_GT_IS_LT_sections_instructor", checkQuery);
 		it("[valid/valid_AND_GT_IS_LT_sections_pass.json] valid_AND_GT_IS_LT_sections_pass", checkQuery);
-		it("[valid/valid_AND_GT_IS_LT_sections_title.json] valid_AND_GT_IS_LT_sections_title", checkQuery);
+		it("[valid/valid_AND_GT_IS_LT_sections_title.json] valid_AND_GT_IS_LT_sections_title", checkQuery); // THIS ONE TO VALIDATE VALID CASES
 		it("[valid/valid_AND_GT_IS_LT_sections_uuid.json] valid_AND_GT_IS_LT_sections_uuid", checkQuery);
 		it("[valid/valid_AND_GT_IS_LT_sections_year.json] valid_AND_GT_IS_LT_sections_year", checkQuery);
 		it("[valid/valid_AND_GTNegative23_IS_starhYstar.json] valid_AND_GTNegative23_IS_starhYstar", checkQuery);
@@ -610,6 +611,34 @@ describe("InsightFacade", function () {
 		it("[invalid/boolean_in_mcomparator.json], Boolean in MCOMPARATOR", checkQuery);
 		it("[invalid/reference_mulitple_datasets.json], Reference multiple datasets", checkQuery);
 		it("[invalid/empty_columns_array.json], Empty COLUMNS array", checkQuery);
+
+		// Query tests for aggregations
+		const TEN_THOUSAND = 30000;
+		it("[valid/aggregationQueryUsingAVG.json], Aggregation query using AVG", checkQuery).timeout(TEN_THOUSAND);
+		it("[valid/aggregationQueryUsingMAX.json], Aggregation query using MAX", checkQuery);
+		it("[valid/aggregationQueryUsingMIN.json], Aggregation query using MIN", checkQuery);
+		it("[valid/aggregationQueryUsingSUM.json], Aggregation query using SUM", checkQuery);
+		it("[valid/aggregationQueryUsingCOUNT.json], Aggregation query using COUNT", checkQuery);
+		it("[valid/aggregationQueryWithMultipleAPPLYRules.json], Aggregation query with multiple APPLY rules", checkQuery);
+		it("[valid/queryReturningNoResults.json], Query returning no results", checkQuery);
+
+		it("[invalid/aggregation_duplicate_applykey.json] Aggregation query with duplicate applykey", checkQuery);
+		it("[invalid/aggregation_invalid_applytoken.json] Aggregation query with invalid APPLYTOKEN", checkQuery);
+		it("[invalid/aggregation_missing_applytoken.json] Aggregation query missing APPLYTOKEN", checkQuery);
+		it("[invalid/aggregation_missing_group_apply.json] Aggregation query missing GROUP and APPLY", checkQuery);
+		it("[invalid/aggregation_nested_transformations.json] Aggregation query with nested TRANSFORMATIONS", checkQuery);
+		it(
+			"[invalid/aggregation_non_numeric_field.json] Aggregation query applying SUM on a non-numeric field",
+			checkQuery
+		);
+		it("[invalid/aggregation_non_unique_applykeys.json] Aggregation query with non-unique apply keys", checkQuery);
+		it("[invalid/aggregation_nonexistent_apply_key.json] Aggregation query with non-existent key in APPLY", checkQuery);
+		it("[invalid/aggregation_nonexistent_group_key.json] Aggregation query with non-existent key in GROUP", checkQuery);
+		it(
+			"[invalid/aggregation_query_with_duplicate_apply_key.json], Aggregation query with duplicate applykey",
+			checkQuery
+		);
+		it("[invalid/aggregation_query_with_empty_group_array.json] Aggregation query with empty GROUP array", checkQuery);
 	});
 
 	describe("Invalid Query Inputs", function () {
@@ -736,6 +765,7 @@ describe("InsightFacade", function () {
 		});
 
 		it("should reject when query has extra top-level keys", async function () {
+			// TEST THIS ONE
 			const invalidQuery: any = {
 				WHERE: {},
 				OPTIONS: {

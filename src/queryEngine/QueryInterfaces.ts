@@ -10,6 +10,8 @@ export type Filter = LogicComparison | MComparator | SComparator | Negation | Em
 // Comparison object used in numeric comparisons (LT, GT, EQ)
 export type Comparison = Record<string, number>;
 
+export type ApplyToken = "MAX" | "MIN" | "AVG" | "COUNT" | "SUM";
+
 // LogicComparison interface represents AND/OR operations on filters
 export interface LogicComparison {
 	AND?: Filter[];
