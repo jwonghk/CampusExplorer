@@ -1,0 +1,1441 @@
+{
+	"title": "Query specific rooms with ordering",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"IS": {
+						"rooms_furniture": "*Tables*"
+					}
+				},
+				{
+					"LT": {
+						"rooms_seats": 80
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"rooms_number",
+				"rooms_furniture",
+				"rooms_seats"
+			],
+			"ORDER": {
+				"dir": "UP",
+				"keys": [
+					"rooms_shortname",
+					"rooms_number"
+				]
+			}
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_shortname": "ALRD",
+			"rooms_number": "112",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 20
+		},
+		{
+			"rooms_shortname": "ALRD",
+			"rooms_number": "113",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 20
+		},
+		{
+			"rooms_shortname": "ALRD",
+			"rooms_number": "121",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 50
+		},
+		{
+			"rooms_shortname": "ALRD",
+			"rooms_number": "B101",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 44
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "037",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 54
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "039",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 54
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "232",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 16
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "234",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 60
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "235",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 41
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "237",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 41
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "241",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 70
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "243",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 68
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "291",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 54
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "292",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 35
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "293",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 32
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "295",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 54
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "296",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 37
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "332",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 16
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "334",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 60
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "335",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 41
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "339",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 20
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "343",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 68
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "345",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 68
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "347",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 70
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "350",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 58
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "354",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 44
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "432",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 16
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "434",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 44
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "435",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 53
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"rooms_number": "437",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 32
+		},
+		{
+			"rooms_shortname": "ANSO",
+			"rooms_number": "202",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 26
+		},
+		{
+			"rooms_shortname": "ANSO",
+			"rooms_number": "203",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 33
+		},
+		{
+			"rooms_shortname": "ANSO",
+			"rooms_number": "205",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 37
+		},
+		{
+			"rooms_shortname": "AUDX",
+			"rooms_number": "142",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 20
+		},
+		{
+			"rooms_shortname": "AUDX",
+			"rooms_number": "157",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 21
+		},
+		{
+			"rooms_shortname": "BIOL",
+			"rooms_number": "1503",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 16
+		},
+		{
+			"rooms_shortname": "BIOL",
+			"rooms_number": "2200",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 76
+		},
+		{
+			"rooms_shortname": "BIOL",
+			"rooms_number": "2519",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 16
+		},
+		{
+			"rooms_shortname": "BRKX",
+			"rooms_number": "2365",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 70
+		},
+		{
+			"rooms_shortname": "BRKX",
+			"rooms_number": "2367",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "B141",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 42
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "B142",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 26
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "B208",
+			"rooms_furniture": "Classroom-Fixed Tables/Moveable Chairs",
+			"rooms_seats": 56
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "B213",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 78
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "B215",
+			"rooms_furniture": "Classroom-Fixed Tables/Moveable Chairs",
+			"rooms_seats": 78
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "B216",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 22
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "B219",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "B312",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 18
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "B313",
+			"rooms_furniture": "Classroom-Fixed Tables/Moveable Chairs",
+			"rooms_seats": 78
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "B315",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 78
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "B316",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 22
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "B318",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "B319",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D201",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D204",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D205",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 30
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D207",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 30
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D209",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 22
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D214",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 22
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D216",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D217",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 65
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D218",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 65
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D219",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 65
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D221",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 30
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D222",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 65
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D228",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D229",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 30
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D306",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 22
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D315",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 22
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D319",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 22
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D323",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 31
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"rooms_number": "D325",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 22
+		},
+		{
+			"rooms_shortname": "CEME",
+			"rooms_number": "1204",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 62
+		},
+		{
+			"rooms_shortname": "CEME",
+			"rooms_number": "1206",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 26
+		},
+		{
+			"rooms_shortname": "CEME",
+			"rooms_number": "1210",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 22
+		},
+		{
+			"rooms_shortname": "CEME",
+			"rooms_number": "1212",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 34
+		},
+		{
+			"rooms_shortname": "CEME",
+			"rooms_number": "1215",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 45
+		},
+		{
+			"rooms_shortname": "CHBE",
+			"rooms_number": "103",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 60
+		},
+		{
+			"rooms_shortname": "DMP",
+			"rooms_number": "101",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "DMP",
+			"rooms_number": "201",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "EOSM",
+			"rooms_number": "135",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 50
+		},
+		{
+			"rooms_shortname": "FNH",
+			"rooms_number": "30",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 28
+		},
+		{
+			"rooms_shortname": "FORW",
+			"rooms_number": "303",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 63
+		},
+		{
+			"rooms_shortname": "FORW",
+			"rooms_number": "317",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 44
+		},
+		{
+			"rooms_shortname": "FORW",
+			"rooms_number": "519",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 35
+		},
+		{
+			"rooms_shortname": "FSC",
+			"rooms_number": "1001",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 65
+		},
+		{
+			"rooms_shortname": "FSC",
+			"rooms_number": "1002",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "FSC",
+			"rooms_number": "1003",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 65
+		},
+		{
+			"rooms_shortname": "FSC",
+			"rooms_number": "1402",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 18
+		},
+		{
+			"rooms_shortname": "FSC",
+			"rooms_number": "1611",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "FSC",
+			"rooms_number": "1613",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 36
+		},
+		{
+			"rooms_shortname": "FSC",
+			"rooms_number": "1615",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 20
+		},
+		{
+			"rooms_shortname": "FSC",
+			"rooms_number": "1617",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 20
+		},
+		{
+			"rooms_shortname": "GEOG",
+			"rooms_number": "101",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 60
+		},
+		{
+			"rooms_shortname": "GEOG",
+			"rooms_number": "147",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 60
+		},
+		{
+			"rooms_shortname": "GEOG",
+			"rooms_number": "201",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 42
+		},
+		{
+			"rooms_shortname": "GEOG",
+			"rooms_number": "212",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 72
+		},
+		{
+			"rooms_shortname": "GEOG",
+			"rooms_number": "214",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 39
+		},
+		{
+			"rooms_shortname": "GEOG",
+			"rooms_number": "242",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 21
+		},
+		{
+			"rooms_shortname": "HEBB",
+			"rooms_number": "10",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 54
+		},
+		{
+			"rooms_shortname": "HEBB",
+			"rooms_number": "12",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 54
+		},
+		{
+			"rooms_shortname": "HEBB",
+			"rooms_number": "13",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 54
+		},
+		{
+			"rooms_shortname": "HENN",
+			"rooms_number": "301",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 30
+		},
+		{
+			"rooms_shortname": "HENN",
+			"rooms_number": "302",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 30
+		},
+		{
+			"rooms_shortname": "HENN",
+			"rooms_number": "304",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 36
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"rooms_number": "155",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 50
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"rooms_number": "156",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"rooms_number": "157",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"rooms_number": "158",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"rooms_number": "185",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"rooms_number": "191",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"rooms_number": "192",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"rooms_number": "193",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"rooms_number": "194",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"rooms_number": "195",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"rooms_number": "263",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"rooms_number": "264",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 12
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"rooms_number": "265",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 10
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"rooms_number": "266",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"rooms_number": "460",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 16
+		},
+		{
+			"rooms_shortname": "IONA",
+			"rooms_number": "633",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 50
+		},
+		{
+			"rooms_shortname": "LASR",
+			"rooms_number": "211",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 20
+		},
+		{
+			"rooms_shortname": "LASR",
+			"rooms_number": "5C",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 20
+		},
+		{
+			"rooms_shortname": "LSK",
+			"rooms_number": "460",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 75
+		},
+		{
+			"rooms_shortname": "LSK",
+			"rooms_number": "462",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 42
+		},
+		{
+			"rooms_shortname": "MATH",
+			"rooms_number": "102",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 60
+		},
+		{
+			"rooms_shortname": "MATH",
+			"rooms_number": "104",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 48
+		},
+		{
+			"rooms_shortname": "MATH",
+			"rooms_number": "203",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 48
+		},
+		{
+			"rooms_shortname": "MCLD",
+			"rooms_number": "214",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 60
+		},
+		{
+			"rooms_shortname": "MCLD",
+			"rooms_number": "220",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "MCLD",
+			"rooms_number": "242",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 60
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "154",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 47
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "160",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 72
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "256",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 32
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "260",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 32
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "358",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "360A",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 6
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "360B",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 6
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "360C",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "360D",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "360E",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "360F",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "360G",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "360H",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "360J",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "360K",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "360L",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "MCML",
+			"rooms_number": "360M",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 8
+		},
+		{
+			"rooms_shortname": "ORCH",
+			"rooms_number": "3002",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 25
+		},
+		{
+			"rooms_shortname": "ORCH",
+			"rooms_number": "3016",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 25
+		},
+		{
+			"rooms_shortname": "ORCH",
+			"rooms_number": "3058",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 25
+		},
+		{
+			"rooms_shortname": "ORCH",
+			"rooms_number": "3074",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 72
+		},
+		{
+			"rooms_shortname": "ORCH",
+			"rooms_number": "4002",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 25
+		},
+		{
+			"rooms_shortname": "ORCH",
+			"rooms_number": "4004",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 25
+		},
+		{
+			"rooms_shortname": "ORCH",
+			"rooms_number": "4016",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 25
+		},
+		{
+			"rooms_shortname": "ORCH",
+			"rooms_number": "4058",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 25
+		},
+		{
+			"rooms_shortname": "ORCH",
+			"rooms_number": "4068",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 16
+		},
+		{
+			"rooms_shortname": "OSBO",
+			"rooms_number": "203A",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "PCOH",
+			"rooms_number": "1001",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "PCOH",
+			"rooms_number": "1002",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "PCOH",
+			"rooms_number": "1003",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "PCOH",
+			"rooms_number": "1009",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "PCOH",
+			"rooms_number": "1011",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "PCOH",
+			"rooms_number": "1215",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "PCOH",
+			"rooms_number": "1302",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "PHRM",
+			"rooms_number": "3112",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 7
+		},
+		{
+			"rooms_shortname": "PHRM",
+			"rooms_number": "3114",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 7
+		},
+		{
+			"rooms_shortname": "PHRM",
+			"rooms_number": "3115",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 7
+		},
+		{
+			"rooms_shortname": "PHRM",
+			"rooms_number": "3116",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 14
+		},
+		{
+			"rooms_shortname": "PHRM",
+			"rooms_number": "3118",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 7
+		},
+		{
+			"rooms_shortname": "PHRM",
+			"rooms_number": "3120",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 7
+		},
+		{
+			"rooms_shortname": "PHRM",
+			"rooms_number": "3122",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 7
+		},
+		{
+			"rooms_shortname": "PHRM",
+			"rooms_number": "3124",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 7
+		},
+		{
+			"rooms_shortname": "PHRM",
+			"rooms_number": "3208",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 72
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "1003",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "1004",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "1005",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "1020",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "1021",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 20
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "1022",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 20
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "1023",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 20
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "1024",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 20
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "1328",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 38
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "200",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "201",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "202",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "203",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "204",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "204A",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "205",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 34
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "206",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "207",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "208",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 40
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "209",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 60
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"rooms_number": "210",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 24
+		},
+		{
+			"rooms_shortname": "SOWK",
+			"rooms_number": "122",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 12
+		},
+		{
+			"rooms_shortname": "SOWK",
+			"rooms_number": "324",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 16
+		},
+		{
+			"rooms_shortname": "SOWK",
+			"rooms_number": "326",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 16
+		},
+		{
+			"rooms_shortname": "SPPH",
+			"rooms_number": "143",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 28
+		},
+		{
+			"rooms_shortname": "SPPH",
+			"rooms_number": "B108",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 30
+		},
+		{
+			"rooms_shortname": "SPPH",
+			"rooms_number": "B112",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 16
+		},
+		{
+			"rooms_shortname": "SPPH",
+			"rooms_number": "B136",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 12
+		},
+		{
+			"rooms_shortname": "SPPH",
+			"rooms_number": "B138",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 14
+		},
+		{
+			"rooms_shortname": "SPPH",
+			"rooms_number": "B151",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 66
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "105",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 47
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "106",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 27
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "107",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 47
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "108",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 27
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "109",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 47
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "110",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 27
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "305",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 47
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "306",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 27
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "307",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 47
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "308",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 27
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "309",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 47
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "310",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 27
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "405",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 47
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "406",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 27
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "407",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 47
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "408",
+			"rooms_furniture": "Classroom-Moveable Tables & Chairs",
+			"rooms_seats": 27
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "409",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 47
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"rooms_number": "410",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 27
+		},
+		{
+			"rooms_shortname": "UCLL",
+			"rooms_number": "101",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 30
+		},
+		{
+			"rooms_shortname": "UCLL",
+			"rooms_number": "103",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_seats": 55
+		},
+		{
+			"rooms_shortname": "UCLL",
+			"rooms_number": "107",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 48
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "B75",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 30
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G41",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 30
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G44",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 14
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G53",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 10
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G55",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 10
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G57",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 12
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G59",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 10
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G65",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 12
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G66",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_seats": 16
+		}
+	]
+}
