@@ -1,5 +1,3 @@
-// QueryOptions.ts
-
 import { InsightResult, InsightError } from "../controller/IInsightFacade";
 import { OptionsNode, OrderNode } from "./QueryAST";
 
@@ -27,10 +25,8 @@ function filterColumns(records: any[], columns: string[]): InsightResult[] {
 		return filteredRecord;
 	});
 }
-// End ChatGPT
 
 function getValue(record: any, key: string): any {
-	// Check if record contains key directly
 	if (key in record) {
 		return record[key];
 	}
@@ -54,10 +50,9 @@ function getValue(record: any, key: string): any {
 			return value;
 		}
 	}
-
-	// Fallback if neither direct access nor split structure found a value
 	return undefined;
 }
+// End ChatGPT
 
 function createSortFunction(order: OrderNode | string): (a: any, b: any) => number {
 	if (typeof order === "string") {

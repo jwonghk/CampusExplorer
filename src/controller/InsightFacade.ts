@@ -1,5 +1,3 @@
-// InsightFacade.ts
-
 import {
 	IInsightFacade,
 	InsightDataset,
@@ -178,6 +176,7 @@ export default class InsightFacade implements IInsightFacade {
 		return datasets;
 	}
 
+	// Start ChatGPT
 	private async readDatasetFromDisk(id: string): Promise<InforForCourses | InfoForRooms> {
 		try {
 			const filePath = path.join(DATA_DIR, `${id}.json`);
@@ -215,6 +214,7 @@ export default class InsightFacade implements IInsightFacade {
 				: new InsightError(`Error reading dataset ${id}: ${err.message}`);
 		}
 	}
+	// End ChatGPT
 
 	private async loadDataset(id: string): Promise<InforForCourses | InfoForRooms> {
 		if (this.dataIDmap.has(id)) {

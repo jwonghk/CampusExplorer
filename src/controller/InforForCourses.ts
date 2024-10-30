@@ -1,5 +1,3 @@
-// InforForCourses.ts
-
 import { InsightDataset, InsightDatasetKind, InsightError } from "./IInsightFacade";
 
 const YEAR_NINETEEN_HUNDRED = 1900;

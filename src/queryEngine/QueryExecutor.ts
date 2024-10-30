@@ -1,5 +1,3 @@
-// QueryExecutor.ts
-
 import { ASTNode, QueryNode, TransformationsNode, LogicNode, ComparatorNode, NotNode } from "./QueryAST";
 import { InsightResult, InsightError } from "../controller/IInsightFacade";
 import { performAggregation } from "./AggregationHelper";
