@@ -70,17 +70,33 @@ function evaluateComparisonNode(node: ComparatorNode, record: any): boolean {
 
 // Start ChatGPT
 function getValue(record: any, key: string): any {
+	// Check if record contains key directly
+	if (key in record) {
+		return record[key];
+	}
+
+	// Split key by underscore for nested access
 	const parts = key.split("_");
-	if (parts.length !== SPLIT_KEY_NUM) {
-		throw new InsightError(`Invalid key format: ${key}`);
+
+	// Ensure the split key has expected structure before nested access
+	if (parts.length === SPLIT_KEY_NUM) {
+		const field = parts[1];
+		let value = record[field];
+
+		// Check adjusted case if initial value is undefined
+		if (value === undefined) {
+			const adjustedField = field.toLowerCase();
+			value = record[adjustedField];
+		}
+
+		// Return value if found through split structure
+		if (value !== undefined) {
+			return value;
+		}
 	}
-	const field = parts[1];
-	let value = record[field];
-	if (value === undefined) {
-		const adjustedField = field.toLowerCase();
-		value = record[adjustedField];
-	}
-	return value;
+
+	// Fallback if neither direct access nor split structure found a value
+	return undefined;
 }
 
 function matchIS(value: string, pattern: string): boolean {

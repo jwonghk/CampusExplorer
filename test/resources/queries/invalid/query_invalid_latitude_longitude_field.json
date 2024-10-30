@@ -1,0 +1,19 @@
+{
+	"title": "Invalid Latitude/Longitude Query with Incorrect Field Name",
+	"input": {
+		"WHERE": {
+			"GT": {
+				"rooms_lattitude": 49
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"rooms_number",
+				"rooms_lattitude"
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+  }
