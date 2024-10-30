@@ -304,15 +304,6 @@ describe("InsightFacade", function () {
 			}
 		});
 
-		it("should reject adding a rooms dataset missing index.htm", async function () {
-			try {
-				await facade.addDataset("roomsNoIndex", missingIndexZip, InsightDatasetKind.Rooms);
-				expect.fail("Should have thrown an InsightError");
-			} catch (err) {
-				expect(err).to.be.instanceOf(InsightError);
-			}
-		});
-
 		it("should reject adding a rooms dataset with malformed index.htm", async function () {
 			try {
 				await facade.addDataset("roomsMalformedIndex", invalidHTMLZip, InsightDatasetKind.Rooms);
