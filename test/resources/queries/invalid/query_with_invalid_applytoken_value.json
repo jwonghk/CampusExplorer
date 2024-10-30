@@ -1,0 +1,21 @@
+{
+	"title": "Query with Invalid APPLYTOKEN Value",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": ["rooms_shortname", "totalSeats"]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": ["rooms_shortname"],
+			"APPLY": [
+				{
+					"totalSeats": {
+						"TOTAL": "rooms_seats"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

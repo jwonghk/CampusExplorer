@@ -1,0 +1,22 @@
+{
+	"title": "Query with Invalid GROUP Key",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": ["rooms_invalidkey", "maxSeats"]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": ["rooms_invalidkey"],
+			"APPLY": [
+				{
+					"maxSeats": {
+						"MAX": "rooms_seats"
+					}
+				}
+			]
+		}
+	}
+	,
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

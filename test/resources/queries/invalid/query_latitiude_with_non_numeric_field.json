@@ -1,0 +1,19 @@
+{
+	"title": "Query Using Non-Numeric Value for Latitude Field",
+	"input": {
+		"WHERE": {
+		  "GT": {
+			"rooms_lat": "49"
+		  }
+		},
+		"OPTIONS": {
+		  "COLUMNS": [
+			"rooms_shortname",
+			"rooms_number",
+			"rooms_lat"
+		  ]
+		}
+	  },
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

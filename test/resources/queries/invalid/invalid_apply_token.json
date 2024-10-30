@@ -1,0 +1,21 @@
+{
+	"title": "Query with Invalid APPLY Token",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": ["rooms_shortname", "averageSeats"]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": ["rooms_shortname"],
+			"APPLY": [
+				{
+					"averageSeats": {
+						"AVERAGE": "rooms_seats"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

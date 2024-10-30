@@ -1,0 +1,15 @@
+{
+	"title": "Query with Invalid APPLYRULE",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": ["rooms_shortname", "maxSeats"]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": ["rooms_shortname"],
+			"APPLY": ["maxSeats"]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

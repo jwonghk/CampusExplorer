@@ -674,98 +674,103 @@ describe("InsightFacade", function () {
 		it("[valid/valid_AND_GT97_IS_starhystar.json] valid_AND_GT97_IS_starhystar", checkQuery);
 		it("[valid/valid_AND_GT100_IS_cStar.json] valid_AND_GT100_IS_cStar", checkQuery);
 
-		it("[invalid/invalid_IS_55shouldbeString.json], invalid_IS_55shouldbeString only", checkQuery);
-		it("[invalid/invalid_mkey_underScore_key.json], invalid_mkey_underScore_key", checkQuery);
-		it("[invalid/invalid_mkey_underScore_key2.json], invalid_mkey_underScore_key2", checkQuery);
-		it("[invalid/invalid_query_missUseColumns1.json], invalid_query_missUseColumns1", checkQuery);
-		it("[invalid/invalid_query_missUseColumns2.json], invalid_query_missUseColumns2", checkQuery);
-		it("[invalid/invalid_query_missUseColumns3.json], invalid_query_missUseColumns3", checkQuery);
-		it("[invalid/invalid_query_missUseColumns4.json], invalid_query_missUseColumns4", checkQuery);
-		it("[invalid/invalid_query_missUseColumns5.json], invalid_query_missUseColumns5", checkQuery);
-		it("[invalid/invalid_wildCardUsages_abc_wc_IJK_wc.json], invalid_wildCardUsages_abc_wc_IJK_wc", checkQuery);
-		it("[invalid/invalid_wildCardUsages_twoConsecAsterisk.json], invalid_wildCardUsages_twoConsecAsterisk", checkQuery);
+		it("[invalid/invalid_IS_55shouldbeString.json] invalid_IS_55shouldbeString only", checkQuery);
+		it("[invalid/invalid_mkey_underScore_key.json] invalid_mkey_underScore_key", checkQuery);
+		it("[invalid/invalid_mkey_underScore_key2.json] invalid_mkey_underScore_key2", checkQuery);
+		it("[invalid/invalid_query_missUseColumns1.json] invalid_query_missUseColumns1", checkQuery);
+		it("[invalid/invalid_query_missUseColumns2.json] invalid_query_missUseColumns2", checkQuery);
+		it("[invalid/invalid_query_missUseColumns3.json] invalid_query_missUseColumns3", checkQuery);
+		it("[invalid/invalid_query_missUseColumns4.json] invalid_query_missUseColumns4", checkQuery);
+		it("[invalid/invalid_query_missUseColumns5.json] invalid_query_missUseColumns5", checkQuery);
+		it("[invalid/invalid_wildCardUsages_abc_wc_IJK_wc.json] invalid_wildCardUsages_abc_wc_IJK_wc", checkQuery);
+		it("[invalid/invalid_wildCardUsages_twoConsecAsterisk.json] invalid_wildCardUsages_twoConsecAsterisk", checkQuery);
 		it(
-			"[invalid/invalid_wildCardUsages_twoConsecAsterisk2.json], invalid_wildCardUsages_twoConsecAsterisk2",
+			"[invalid/invalid_wildCardUsages_twoConsecAsterisk2.json] invalid_wildCardUsages_twoConsecAsterisk2",
 			checkQuery
 		);
-		it("[invalid/morethan5000_returned.json], morethan5000_returned", checkQuery);
-		it("[invalid/invalid_a_body_with_no_filter_matches_all_entries.json], missing_columns", checkQuery);
-		it("[invalid/invalid_oR_gt_is_lt_audit_dept_avg.json], missing_columns", checkQuery);
-		it("[invalid/invalid_using_datasetname_id_that_has_underscore.json], missing_columns", checkQuery);
-		it("[invalid/invalid_using_nonexistent_dataname_as_mkey.json], missing_columns", checkQuery);
+		it("[invalid/morethan5000_returned.json] morethan5000_returned", checkQuery);
+		it("[invalid/invalid_a_body_with_no_filter_matches_all_entries.json] missing_columns", checkQuery);
+		it("[invalid/invalid_oR_gt_is_lt_audit_dept_avg.json] missing_columns", checkQuery);
+		it("[invalid/invalid_using_datasetname_id_that_has_underscore.json] missing_columns", checkQuery);
+		it("[invalid/invalid_using_nonexistent_dataname_as_mkey.json] missing_columns", checkQuery);
 
 		// additional InvalidQueries test cases
 		it(
-			"[invalid/invalid_CANNOT_query_more_than_one_dataset.json], Invalid: cannot query more than onedataset",
+			"[invalid/invalid_CANNOT_query_more_than_one_dataset.json] Invalid: cannot query more than onedataset",
 			checkQuery
 		);
-		it("[invalid/invalid_COLUMNS_IS_AN_EMPTY_ARRAY.json], Invalid: COLUMNS IS AN EMPTY ARRAY", checkQuery);
-		it("[invalid/invalid_ORDER_type.json], Invalid:  ORDER TYPE invalid", checkQuery);
+		it("[invalid/invalid_COLUMNS_IS_AN_EMPTY_ARRAY.json] Invalid: COLUMNS IS AN EMPTY ARRAY", checkQuery);
+		it("[invalid/invalid_ORDER_type.json] Invalid:  ORDER TYPE invalid", checkQuery);
 		it(
-			"[invalid/invalid_RESULT_too_big_WHERE_matches_everything.json], Invalid: TOO_BIG result because WHERE clauses matches everything",
+			"[invalid/invalid_RESULT_too_big_WHERE_matches_everything.json] Invalid: TOO_BIG result because WHERE clauses matches everything",
 			checkQuery
 		);
-		it("[invalid/invalid_key_format_in_filter.json], Invalid key format in filter", checkQuery);
-		it("[invalid/invalid_field_in_mcomparator.json], Invalid field in MCOMPARATOR", checkQuery);
-		it("[invalid/string_in_mcomparator.json], Invalid type String in MComparator", checkQuery);
-		it("[invalid/number_in_scomparator.json], Invalid type Number in SComparator", checkQuery);
-		it("[invalid/invalid_wildcard_usage_is.json], Invalid wildcard usage in IS", checkQuery);
+		it("[invalid/invalid_key_format_in_filter.json] Invalid key format in filter", checkQuery);
+		it("[invalid/invalid_field_in_mcomparator.json] Invalid field in MCOMPARATOR", checkQuery);
+		it("[invalid/string_in_mcomparator.json] Invalid type String in MComparator", checkQuery);
+		it("[invalid/number_in_scomparator.json] Invalid type Number in SComparator", checkQuery);
+		it("[invalid/invalid_wildcard_usage_is.json] Invalid wildcard usage in IS", checkQuery);
 		it("[invalid/invalid_xor_logic_operator.json] Invalid XOR operator in logic", checkQuery);
-		it("[invalid/invalid_null_where_filter.json], Invalid null WHERE filter", checkQuery);
-		it("[invalid/missing_where_and_options.json], Missing WHERE and OPTIONS", checkQuery);
-		it("[invalid/order_key_not_in_columns.json], ORDER key not in COLUMNS", checkQuery);
-		it("[invalid/empty_strings_as_keys.json], Empty strings as keys", checkQuery);
-		it("[invalid/extra_keys_as_comparator.json], Extra keys as comparator", checkQuery);
-		it("[invalid/invalid_field_name.json], Invalid field name", checkQuery);
-		it("[invalid/invalid_dataset_id.json], Invalid dataset id", checkQuery);
-		it("[invalid/empty_id_string_in_key.json], Empty id string in key", checkQuery);
-		it("[invalid/query_is_not_object.json], Query is not an object", checkQuery);
-		it("[invalid/query_is_null.json], Query is null", checkQuery);
-		it("[invalid/query_has_extra_keys.json], Query has extra keys", checkQuery);
-		it("[invalid/options_not_an_object.json], OPTIONS is not an object", checkQuery);
-		it("[invalid/non_object_in_mcomparator.json], Non-object in MCOMPARATOR", checkQuery);
-		it("[invalid/boolean_in_mcomparator.json], Boolean in MCOMPARATOR", checkQuery);
-		it("[invalid/reference_mulitple_datasets.json], Reference multiple datasets", checkQuery);
-		it("[invalid/empty_columns_array.json], Empty COLUMNS array", checkQuery);
+		it("[invalid/invalid_null_where_filter.json] Invalid null WHERE filter", checkQuery);
+		it("[invalid/missing_where_and_options.json] Missing WHERE and OPTIONS", checkQuery);
+		it("[invalid/order_key_not_in_columns.json] ORDER key not in COLUMNS", checkQuery);
+		it("[invalid/empty_strings_as_keys.json] Empty strings as keys", checkQuery);
+		it("[invalid/extra_keys_as_comparator.json] Extra keys as comparator", checkQuery);
+		it("[invalid/invalid_field_name.json] Invalid field name", checkQuery);
+		it("[invalid/invalid_dataset_id.json] Invalid dataset id", checkQuery);
+		it("[invalid/empty_id_string_in_key.json] Empty id string in key", checkQuery);
+		it("[invalid/query_is_not_object.json] Query is not an object", checkQuery);
+		it("[invalid/query_is_null.json] Query is null", checkQuery);
+		it("[invalid/query_has_extra_keys.json] Query has extra keys", checkQuery);
+		it("[invalid/options_not_an_object.json] OPTIONS is not an object", checkQuery);
+		it("[invalid/non_object_in_mcomparator.json] Non-object in MCOMPARATOR", checkQuery);
+		it("[invalid/boolean_in_mcomparator.json] Boolean in MCOMPARATOR", checkQuery);
+		it("[invalid/reference_mulitple_datasets.json] Reference multiple datasets", checkQuery);
+		it("[invalid/empty_columns_array.json] Empty COLUMNS array", checkQuery);
 
 		// Room tests
-		it("[valid/simpleRoomsQuery.json], Query rooms with seats greater than 150", checkQuery);
+		it("[valid/simpleRoomsQuery.json] Query rooms with seats greater than 150", checkQuery);
 		it(
-			"[valid/querySpecificRoomsWithOrdering.json], Query rooms in specific buildings with ordered results",
+			"[valid/querySpecificRoomsWithOrdering.json] Query rooms in specific buildings with ordered results",
 			checkQuery
 		);
+		it("[invalid/query_referencing_multiple_datasets.json] Query Referencing Multiple Datasets", checkQuery);
 
 		// Query tests for latitude/longitude
-		it("[valid/queryRoomsWithLatitudeGreaterThan49.json], Query Rooms with Latitude Greater Than 49", checkQuery);
-		it("[valid/queryRoomsWithLongitudeLessThan-123.json], Query Rooms with Longitude Less Than -123", checkQuery);
-		it("[valid/queryRoomsWithinAGeographicalArea.json], Query Rooms Within a Geographical Area", checkQuery);
+		it("[valid/queryRoomsWithLatitudeGreaterThan49.json] Query Rooms with Latitude Greater Than 49", checkQuery);
+		it("[valid/queryRoomsWithLongitudeLessThan-123.json] Query Rooms with Longitude Less Than -123", checkQuery);
+		it("[valid/queryRoomsWithinAGeographicalArea.json] Query Rooms Within a Geographical Area", checkQuery);
 		it(
-			"[valid/queryRoomsIncludingLatitudeAndLongitudeInCOLUMNS.json], Query Rooms Including Latitude and Longitude in COLUMNS",
+			"[valid/queryRoomsIncludingLatitudeAndLongitudeInCOLUMNS.json] Query Rooms Including Latitude and Longitude in COLUMNS",
 			checkQuery
 		);
-		it("[valid/queryUsingEQComparatorOnLatitude.json], Query Using EQ Comparator on Latitude", checkQuery);
+		it("[valid/queryUsingEQComparatorOnLatitude.json] Query Using EQ Comparator on Latitude", checkQuery);
 		it(
-			"[valid/queryRoomsCombiningGeolocationWithOtherFields.json], Query Rooms Combining Geolocation with Other Fields",
+			"[valid/queryRoomsCombiningGeolocationWithOtherFields.json] Query Rooms Combining Geolocation with Other Fields",
 			checkQuery
 		);
 		it(
-			"[valid/queryWithGeolocationFieldsInGROUPAndAPPLY.json], Query with Geolocation Fields in GROUP and APPLY",
+			"[valid/queryWithGeolocationFieldsInGROUPAndAPPLY.json] Query with Geolocation Fields in GROUP and APPLY",
 			checkQuery
 		);
 
 		it(
-			"[invalid/query_invalid_latitude_longitude_field.json], Invalid Latitude/Longitude Query with Incorrect Field Name",
+			"[invalid/query_invalid_latitude_longitude_field.json] Invalid Latitude/Longitude Query with Incorrect Field Name",
+			checkQuery
+		);
+		it(
+			"[invalid/query_latitiude_with_non_numeric_field.json] Query Using Non-Numeric Value for Latitude Field",
 			checkQuery
 		);
 
 		// Query tests for aggregations
-		it("[valid/aggregationQueryUsingAVG.json], Aggregation query using AVG", checkQuery);
-		it("[valid/aggregationQueryUsingMAX.json], Aggregation query using MAX", checkQuery);
-		it("[valid/aggregationQueryUsingMIN.json], Aggregation query using MIN", checkQuery);
-		it("[valid/aggregationQueryUsingSUM.json], Aggregation query using SUM", checkQuery);
-		it("[valid/aggregationQueryUsingCOUNT.json], Aggregation query using COUNT", checkQuery);
-		it("[valid/aggregationQueryWithMultipleAPPLYRules.json], Aggregation query with multiple APPLY rules", checkQuery);
-		it("[valid/queryReturningNoResults.json], Query returning no results", checkQuery);
+		it("[valid/aggregationQueryUsingAVG.json] Aggregation query using AVG", checkQuery);
+		it("[valid/aggregationQueryUsingMAX.json] Aggregation query using MAX", checkQuery);
+		it("[valid/aggregationQueryUsingMIN.json] Aggregation query using MIN", checkQuery);
+		it("[valid/aggregationQueryUsingSUM.json] Aggregation query using SUM", checkQuery);
+		it("[valid/aggregationQueryUsingCOUNT.json] Aggregation query using COUNT", checkQuery);
+		it("[valid/aggregationQueryWithMultipleAPPLYRules.json] Aggregation query with multiple APPLY rules", checkQuery);
+		it("[valid/queryReturningNoResults.json] Query returning no results", checkQuery);
 
 		it("[invalid/aggregation_duplicate_applykey.json] Aggregation query with duplicate applykey", checkQuery);
 		it("[invalid/aggregation_invalid_applytoken.json] Aggregation query with invalid APPLYTOKEN", checkQuery);
@@ -780,10 +785,39 @@ describe("InsightFacade", function () {
 		it("[invalid/aggregation_nonexistent_apply_key.json] Aggregation query with non-existent key in APPLY", checkQuery);
 		it("[invalid/aggregation_nonexistent_group_key.json] Aggregation query with non-existent key in GROUP", checkQuery);
 		it(
-			"[invalid/aggregation_query_with_duplicate_apply_key.json], Aggregation query with duplicate applykey",
+			"[invalid/aggregation_query_with_duplicate_apply_key.json] Aggregation query with duplicate applykey",
 			checkQuery
 		);
 		it("[invalid/aggregation_query_with_empty_group_array.json] Aggregation query with empty GROUP array", checkQuery);
+		it("[invalid/query_with_invalid_order_direction.json] Query with Invalid ORDER Direction", checkQuery);
+		it("[invalid/query_with_order_key_not_in_column.json] Query with ORDER Keys Not in COLUMNS", checkQuery);
+		it("[invalid/invalid_apply_token.json] Query with Invalid APPLY Token", checkQuery);
+		it("[invalid/apply_on_non_numeric_field.json] Query Using APPLY on Non-Numeric Field", checkQuery);
+		it("[invalid/query_with_duplicate_apply_keys.json] Query with Duplicate APPLY Keys", checkQuery);
+		it("[invalid/query_with_invalid_group_key.json] Query with Invalid GROUP Key", checkQuery);
+		it(
+			"[invalid/query_with_order_key_not_in_column.json] Query Where COLUMNS Contains Keys Not in GROUP or APPLY",
+			checkQuery
+		);
+		it("[invalid/query_with_apply_key_with_underscore.json] Query with APPLY Key Containing Underscore", checkQuery);
+		it(
+			"[invalid/query_with_missing_apply_in_transformations.json] Query with Missing APPLY in TRANSFORMATIONS",
+			checkQuery
+		);
+		it("[invalid/query_with_invalid_applyrule.json] Query with Invalid APPLYRULE (Non-Object)", checkQuery);
+		it(
+			"[invalid/query_with_multiple_apply_tokens_in_applyrule.json] Query with Multiple APPLY Tokens in APPLYRULE",
+			checkQuery
+		);
+		it("[invalid/query_with_invalid_applytoken_value.json] Query with Invalid APPLYTOKEN Value", checkQuery);
+		it("[invalid/query_with_invalid_key_in_applyrule.json] Query with Invalid Key in APPLYRULE", checkQuery);
+		it("[invalid/query_with_invalid_order_clause.json] Query with Invalid ORDER Clause (Missing dir)", checkQuery);
+		it("[invalid/query_with_order_keys_not_array.json] Query with ORDER Keys Not an Array", checkQuery);
+		it("[invalid/query_with_empty_keys_array_in_order.json] Query with Empty Keys Array in ORDER", checkQuery);
+		it(
+			"[invalid/query_with_order_clause_not_string_or_object.json] Query with ORDER Clause Not a String or Object",
+			checkQuery
+		);
 	});
 
 	describe("Invalid Query Inputs", function () {
