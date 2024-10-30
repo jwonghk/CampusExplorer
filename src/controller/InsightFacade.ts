@@ -10,13 +10,15 @@ import {
 	ResultTooLargeError,
 } from "./IInsightFacade";
 import InforForCourses from "./InforForCourses";
+import InfoForRooms, { Room } from "./InfoForRooms";
 import { Section } from "./InforForCourses";
 import { AddAllCourses } from "./AddAllCourses";
+import { AddAllRooms } from "./AddAllRooms";
 import { validateQueryStructure } from "../queryEngine/QueryValidator";
 import { parseQuery } from "../queryEngine/QueryParser";
 import { executeQuery } from "../queryEngine/QueryExecutor";
 
-const fs = require("fs-extra");
+import * as fs from "fs-extra";
 import * as path from "path";
 
 const DATA_DIR = path.join(__dirname, "../../data");
@@ -24,22 +26,29 @@ const MAX_QUERY_SIZE = 5000;
 
 export default class InsightFacade implements IInsightFacade {
 	public datasetNameIDList: string[];
-	public dataIDmap: Map<string, InforForCourses>;
+	public dataIDmap: Map<string, InforForCourses | InfoForRooms>;
 
 	constructor() {
-		this.dataIDmap = new Map<string, InforForCourses>();
+		this.dataIDmap = new Map<string, InforForCourses | InfoForRooms>();
 		this.datasetNameIDList = [];
 	}
 
 	public async addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
-		await this.checkConditionsForAdding(id, kind);
+		await this.checkConditionsForAdding(id);
 
 		try {
 			const dataDir = "data";
 			await fs.ensureDir(dataDir);
 
-			const courses = new AddAllCourses(this);
-			await courses.AddAllCourse(id, content);
+			if (kind === InsightDatasetKind.Sections) {
+				const courses = new AddAllCourses(this);
+				await courses.AddAllCourse(id, content);
+			} else if (kind === InsightDatasetKind.Rooms) {
+				const rooms = new AddAllRooms(this);
+				await rooms.AddAllRooms(id, content);
+			} else {
+				throw new InsightError(`Unsupported dataset kind: ${kind}`);
+			}
 
 			const jsonFormat = JSON.stringify(this.dataIDmap.get(id));
 			await this.writeToPersistent(id, jsonFormat);
@@ -49,11 +58,9 @@ export default class InsightFacade implements IInsightFacade {
 		}
 	}
 
-	public async checkConditionsForAdding(id: string, kind: InsightDatasetKind): Promise<void> {
+	public async checkConditionsForAdding(id: string): Promise<void> {
 		if (id.includes(" ") || id.includes("_") || id.trim() === "") {
 			throw new InsightError("Data ID contains space(s), underscore(s), or is empty");
-		} else if (kind === InsightDatasetKind.Rooms) {
-			throw new InsightError("InsightDatasetKind 'Rooms' is not supported yet");
 		}
 
 		const filePath = path.join(DATA_DIR, `${id}.json`);
@@ -113,7 +120,15 @@ export default class InsightFacade implements IInsightFacade {
 
 			const datasetId = Array.from(datasetIds)[0];
 			const datasetInfo = await this.loadDataset(datasetId);
-			const dataset = datasetInfo.listOfSections;
+
+			let dataset: any[];
+			if (datasetInfo instanceof InforForCourses) {
+				dataset = datasetInfo.listOfSections;
+			} else if (datasetInfo instanceof InfoForRooms) {
+				dataset = datasetInfo.listOfRooms;
+			} else {
+				throw new InsightError("Unknown dataset type");
+			}
 
 			const results = await executeQuery(queryAST, dataset);
 
@@ -163,7 +178,7 @@ export default class InsightFacade implements IInsightFacade {
 		return datasets;
 	}
 
-	private async readDatasetFromDisk(id: string): Promise<InforForCourses> {
+	private async readDatasetFromDisk(id: string): Promise<InforForCourses | InfoForRooms> {
 		try {
 			const filePath = path.join(DATA_DIR, `${id}.json`);
 			if (!(await fs.pathExists(filePath))) {
@@ -173,19 +188,23 @@ export default class InsightFacade implements IInsightFacade {
 			const content = await fs.readFile(filePath, "utf8");
 			const parsedData = JSON.parse(content);
 
-			if (!parsedData || !Array.isArray(parsedData.listOfSections)) {
+			if (!parsedData?.insightDataset) {
 				throw new InsightError(`Dataset ${id} is malformed`);
 			}
 
-			const inforForCourses = new InforForCourses(id, []);
-			function mapSections(sectionsData: any[]): Section[] {
-				return sectionsData.map((sectionData) => new Section(sectionData));
+			if (parsedData.insightDataset.kind === InsightDatasetKind.Sections) {
+				const inforForCourses = new InforForCourses(id, []);
+				inforForCourses.listOfSections = parsedData.listOfSections.map((sectionData: any) => new Section(sectionData));
+				inforForCourses.insightDataset = parsedData.insightDataset;
+				return inforForCourses;
+			} else if (parsedData.insightDataset.kind === InsightDatasetKind.Rooms) {
+				const infoForRooms = new InfoForRooms(id, []);
+				infoForRooms.listOfRooms = parsedData.listOfRooms.map((roomData: any) => new Room(roomData));
+				infoForRooms.insightDataset = parsedData.insightDataset;
+				return infoForRooms;
+			} else {
+				throw new InsightError(`Unknown dataset kind for dataset ${id}`);
 			}
-
-			inforForCourses.listOfSections = mapSections(parsedData.listOfSections);
-			inforForCourses.insightDataset = parsedData.insightDataset;
-
-			return inforForCourses;
 		} catch (err: any) {
 			throw err instanceof SyntaxError
 				? new InsightError(`Dataset ${id} is not valid JSON`)
@@ -193,13 +212,13 @@ export default class InsightFacade implements IInsightFacade {
 		}
 	}
 
-	private async loadDataset(id: string): Promise<InforForCourses> {
+	private async loadDataset(id: string): Promise<InforForCourses | InfoForRooms> {
 		if (this.dataIDmap.has(id)) {
 			return this.dataIDmap.get(id)!;
 		} else {
-			const inforForCourses = await this.readDatasetFromDisk(id);
-			this.dataIDmap.set(id, inforForCourses);
-			return inforForCourses;
+			const datasetInfo = await this.readDatasetFromDisk(id);
+			this.dataIDmap.set(id, datasetInfo);
+			return datasetInfo;
 		}
 	}
 }

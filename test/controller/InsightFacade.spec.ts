@@ -269,12 +269,21 @@ describe("InsightFacade", function () {
 			try {
 				await facade.addDataset("rooms", buildingZip, InsightDatasetKind.Rooms);
 				const datasets = await facade.listDatasets();
-				expect(datasets).to.deep.include({
+
+				// Log the expected and actual values for debugging purposes
+				const expectedDataset = {
 					id: "rooms",
 					kind: InsightDatasetKind.Rooms,
 					numRows: 364,
-				});
+				};
+				// console.log("Expected Dataset:", expectedDataset);
+				// console.log("Actual Datasets:", datasets);
+
+				// console.log("Expected Datasets (JSON):", JSON.stringify(expectedDataset, null, 2));
+				// console.log("Actual Datasets (JSON):", JSON.stringify(datasets, null, 2));
+				expect(datasets).to.deep.include(expectedDataset);
 			} catch (err) {
+				// console.log("Error:", err); // Log error if any is thrown
 				expect(err).to.be.instanceOf(InsightError);
 			}
 		});
@@ -447,7 +456,9 @@ describe("InsightFacade", function () {
 				await facade.addDataset("rooms", buildingZip, InsightDatasetKind.Rooms);
 
 				const datasets = await facade.listDatasets();
-				expect(datasets).to.deep.include.members([
+
+				// Define and log expected datasets
+				const expectedDatasets = [
 					{
 						id: "sections2",
 						kind: InsightDatasetKind.Sections,
@@ -458,8 +469,14 @@ describe("InsightFacade", function () {
 						kind: InsightDatasetKind.Rooms,
 						numRows: 364,
 					},
-				]);
+				];
+				// console.log("Expected Datasets:", expectedDatasets);
+				// console.log("Actual Datasets:", datasets);
+
+				// Assertion with debugging log
+				expect(datasets).to.deep.include.members(expectedDatasets);
 			} catch (err) {
+				// console.log("Error:", err); // Log error if thrown
 				expect(err).to.be.instanceOf(InsightError);
 			}
 		});

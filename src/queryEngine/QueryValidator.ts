@@ -156,7 +156,29 @@ function validateKey(key: string): void {
 		throw new InsightError(`Invalid key format: ${key}`);
 	}
 	const fieldName = keyParts[1];
-	const validFields = ["dept", "id", "instructor", "title", "uuid", "avg", "pass", "fail", "audit", "year"];
+	const validFields = [
+		"dept",
+		"id",
+		"instructor",
+		"title",
+		"uuid",
+		"avg",
+		"pass",
+		"fail",
+		"audit",
+		"year",
+		"fullname",
+		"shortname",
+		"number",
+		"name",
+		"address",
+		"type",
+		"furniture",
+		"seats",
+		"lat",
+		"lon",
+		"href",
+	];
 	if (!validFields.includes(fieldName)) {
 		throw new InsightError(`Invalid field name: ${fieldName}`);
 	}
