@@ -6,6 +6,7 @@ import {
 	NotFoundError,
 } from "../../src/controller/IInsightFacade";
 import InsightFacade from "../../src/controller/InsightFacade";
+import { AddAllRooms } from "../../src/controller/AddAllRooms";
 import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 
 import { expect, use } from "chai";
@@ -40,6 +41,7 @@ describe("InsightFacade", function () {
 	let buildingZip: string;
 	let invalidHTMLZip: string;
 	let missingIndexZip: string;
+	let missingBuildingsZip: string;
 
 	before(async function () {
 		// This block runs once and loads the datasets.
@@ -59,6 +61,7 @@ describe("InsightFacade", function () {
 		buildingZip = await getContentFromArchives("campus.zip");
 		invalidHTMLZip = await getContentFromArchives("invalid_html.zip");
 		missingIndexZip = await getContentFromArchives("missing_index.zip");
+		missingBuildingsZip = await getContentFromArchives("missing_buildings.zip");
 
 		// Just in case there is anything hanging around from a previous run of the test suite
 		await clearDisk();
@@ -289,6 +292,97 @@ describe("InsightFacade", function () {
 				expect.fail("Should have thrown an error");
 			} catch (err) {
 				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding a corrupted ZIP file", async function () {
+			try {
+				const corruptedZipContent = "Invalid base64 ZIP content";
+				await facade.addDataset("corruptedRooms", corruptedZipContent, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown an InsightError");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding a rooms dataset missing index.htm", async function () {
+			try {
+				await facade.addDataset("roomsNoIndex", missingIndexZip, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown an InsightError");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding a rooms dataset with malformed index.htm", async function () {
+			try {
+				await facade.addDataset("roomsMalformedIndex", invalidHTMLZip, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown an InsightError");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding a rooms dataset with no building entries", async function () {
+			try {
+				await facade.addDataset("roomsNoBuildings", missingBuildingsZip, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown an InsightError");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+		it("should reject adding a rooms dataset with invalid building HTML content", async function () {
+			try {
+				await facade.addDataset("roomsInvalidBuildingHTML", invalidHTMLZip, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown an InsightError");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		// Geolocation Tests
+		it("should handle geolocation API failure when adding rooms dataset", async function (): Promise<void> {
+			// Mock the geolocation API to simulate a failure
+			const originalFetchGeolocation = (AddAllRooms.prototype as any).fetchGeolocation;
+			(AddAllRooms.prototype as any).fetchGeolocation = async (): Promise<void> => {
+				throw new Error("Simulated geolocation API failure");
+			};
+
+			try {
+				await facade.addDataset("roomsGeolocationFail", buildingZip, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown an InsightError due to geolocation API failure");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			} finally {
+				// Restore the original method
+				(AddAllRooms.prototype as any).fetchGeolocation = originalFetchGeolocation;
+			}
+		});
+
+		it("should handle incomplete geolocation data when adding rooms dataset", async function (): Promise<void> {
+			// Mock the geolocation API to return incomplete data
+			const originalFetchGeolocation = (AddAllRooms.prototype as any).fetchGeolocation;
+			(AddAllRooms.prototype as any).fetchGeolocation = async (): Promise<{
+				lat: number | null;
+				lon: number | null;
+			}> => {
+				return { lat: null, lon: null };
+			};
+
+			try {
+				await facade.addDataset("roomsIncompleteGeolocation", buildingZip, InsightDatasetKind.Rooms);
+				// Check if rooms were added with missing geolocation data
+				const datasets = await facade.listDatasets();
+				expect(datasets).to.deep.include({
+					id: "roomsIncompleteGeolocation",
+					kind: InsightDatasetKind.Rooms,
+					numRows: 0,
+				});
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			} finally {
+				// Restore the original method
+				(AddAllRooms.prototype as any).fetchGeolocation = originalFetchGeolocation;
 			}
 		});
 	});

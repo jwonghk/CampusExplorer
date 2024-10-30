@@ -132,13 +132,15 @@ export class AddAllRooms {
 
 		// Fetch geolocation for the building
 		try {
-			const geoResponse = await this.fetchGeolocation(entry.address, "213"); // project_team213
-			if (!geoResponse.error) {
-				rooms.forEach((room) => {
-					room.lat = geoResponse.lat;
-					room.lon = geoResponse.lon;
-				});
+			const geoResponse = await this.fetchGeolocation(entry.address, "213");
+			if (geoResponse.lat === null || geoResponse.lon === null) {
+				throw new InsightError(`Incomplete geolocation data for address: ${entry.address}`);
 			}
+
+			rooms.forEach((room) => {
+				room.lat = geoResponse.lat;
+				room.lon = geoResponse.lon;
+			});
 		} catch (err) {
 			throw new InsightError(`Error fetching geolocation for address ${entry.address}: ${err}`);
 		}
