@@ -194,12 +194,16 @@ export default class InsightFacade implements IInsightFacade {
 
 			if (parsedData.insightDataset.kind === InsightDatasetKind.Sections) {
 				const inforForCourses = new InforForCourses(id, []);
-				inforForCourses.listOfSections = parsedData.listOfSections.map((sectionData: any) => new Section(sectionData));
+				parsedData.listOfSections.forEach((sectionData: any) => {
+					inforForCourses.listOfSections.push(new Section(sectionData));
+				});
 				inforForCourses.insightDataset = parsedData.insightDataset;
 				return inforForCourses;
 			} else if (parsedData.insightDataset.kind === InsightDatasetKind.Rooms) {
 				const infoForRooms = new InfoForRooms(id, []);
-				infoForRooms.listOfRooms = parsedData.listOfRooms.map((roomData: any) => new Room(roomData));
+				parsedData.listOfRooms.forEach((roomData: any) => {
+					infoForRooms.listOfRooms.push(new Room(roomData));
+				});
 				infoForRooms.insightDataset = parsedData.insightDataset;
 				return infoForRooms;
 			} else {
