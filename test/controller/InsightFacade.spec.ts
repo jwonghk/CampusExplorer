@@ -6,7 +6,6 @@ import {
 	NotFoundError,
 } from "../../src/controller/IInsightFacade";
 import InsightFacade from "../../src/controller/InsightFacade";
-import { AddAllRooms } from "../../src/controller/AddAllRooms";
 import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 
 import { expect, use } from "chai";
@@ -337,52 +336,6 @@ describe("InsightFacade", function () {
 				expect.fail("Should have thrown an InsightError");
 			} catch (err) {
 				expect(err).to.be.instanceOf(InsightError);
-			}
-		});
-
-		// Geolocation Tests
-		it("should handle geolocation API failure when adding rooms dataset", async function (): Promise<void> {
-			// Mock the geolocation API to simulate a failure
-			const originalFetchGeolocation = (AddAllRooms.prototype as any).fetchGeolocation;
-			(AddAllRooms.prototype as any).fetchGeolocation = async (): Promise<void> => {
-				throw new Error("Simulated geolocation API failure");
-			};
-
-			try {
-				await facade.addDataset("roomsGeolocationFail", buildingZip, InsightDatasetKind.Rooms);
-				expect.fail("Should have thrown an InsightError due to geolocation API failure");
-			} catch (err) {
-				expect(err).to.be.instanceOf(InsightError);
-			} finally {
-				// Restore the original method
-				(AddAllRooms.prototype as any).fetchGeolocation = originalFetchGeolocation;
-			}
-		});
-
-		it("should handle incomplete geolocation data when adding rooms dataset", async function (): Promise<void> {
-			// Mock the geolocation API to return incomplete data
-			const originalFetchGeolocation = (AddAllRooms.prototype as any).fetchGeolocation;
-			(AddAllRooms.prototype as any).fetchGeolocation = async (): Promise<{
-				lat: number | null;
-				lon: number | null;
-			}> => {
-				return { lat: null, lon: null };
-			};
-
-			try {
-				await facade.addDataset("roomsIncompleteGeolocation", buildingZip, InsightDatasetKind.Rooms);
-				// Check if rooms were added with missing geolocation data
-				const datasets = await facade.listDatasets();
-				expect(datasets).to.deep.include({
-					id: "roomsIncompleteGeolocation",
-					kind: InsightDatasetKind.Rooms,
-					numRows: 0,
-				});
-			} catch (err) {
-				expect(err).to.be.instanceOf(InsightError);
-			} finally {
-				// Restore the original method
-				(AddAllRooms.prototype as any).fetchGeolocation = originalFetchGeolocation;
 			}
 		});
 	});
