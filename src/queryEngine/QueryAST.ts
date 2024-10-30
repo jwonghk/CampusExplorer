@@ -1,5 +1,3 @@
-// QueryAST.ts
-
 export abstract class ASTNode {}
 
 const SPLIT_KEY_NUM = 2;

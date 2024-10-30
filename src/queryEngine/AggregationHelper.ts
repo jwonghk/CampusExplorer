@@ -1,5 +1,3 @@
-// AggregationHelper.ts
-
 import { InsightError } from "../controller/IInsightFacade";
 import Decimal from "decimal.js";
 

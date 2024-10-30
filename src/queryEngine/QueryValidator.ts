@@ -1,11 +1,8 @@
-// QueryValidator.ts
-
 import { InsightError } from "../controller/IInsightFacade";
 import { ApplyToken } from "./QueryInterfaces";
 
 const SPLIT_KEY_NUM = 2;
 const MIN_QUERY_KEYS = 2;
-// const MAX_QUERY_KEYS = 3;
 
 export function validateQueryStructure(query: any): void {
 	if (!isValidObject(query)) {
@@ -37,6 +34,7 @@ export function validateQueryStructure(query: any): void {
 	validateOptions(query.OPTIONS, query.TRANSFORMATIONS);
 }
 
+// Start ChatGPT
 function validateTransformations(transformations: any): void {
 	if (!isValidObject(transformations)) {
 		throw new InsightError("TRANSFORMATIONS must be a non-null object");
@@ -83,6 +81,7 @@ function validateApplyRule(applyRule: any, applyKeysSet: Set<string>): void {
 	const fieldKey = applyContent[applyToken];
 	validateKey(fieldKey);
 }
+// End ChatGPT
 
 function validateOptions(options: any, transformations: any): void {
 	if (!isValidObject(options)) {

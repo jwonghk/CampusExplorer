@@ -1,5 +1,3 @@
-// InforForRooms.ts
-
 import { InsightDataset, InsightDatasetKind } from "./IInsightFacade";
 
 export class Room {

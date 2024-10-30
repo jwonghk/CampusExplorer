@@ -1,5 +1,3 @@
-// QueryParser.ts
-
 import {
 	ASTNode,
 	QueryNode,
