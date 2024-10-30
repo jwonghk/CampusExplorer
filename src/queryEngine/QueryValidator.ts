@@ -147,6 +147,30 @@ function isValidObject(obj: any): boolean {
 	return typeof obj === "object" && obj !== null && !Array.isArray(obj);
 }
 
+const VALID_FIELDS = [
+	"dept",
+	"id",
+	"instructor",
+	"title",
+	"uuid",
+	"avg",
+	"pass",
+	"fail",
+	"audit",
+	"year",
+	"fullname",
+	"shortname",
+	"number",
+	"name",
+	"address",
+	"type",
+	"furniture",
+	"seats",
+	"lat",
+	"lon",
+	"href",
+];
+
 function validateKey(key: string): void {
 	if (typeof key !== "string" || key.trim() === "") {
 		throw new InsightError(`Invalid key: ${key}`);
@@ -156,8 +180,7 @@ function validateKey(key: string): void {
 		throw new InsightError(`Invalid key format: ${key}`);
 	}
 	const fieldName = keyParts[1];
-	const validFields = ["dept", "id", "instructor", "title", "uuid", "avg", "pass", "fail", "audit", "year"];
-	if (!validFields.includes(fieldName)) {
+	if (!VALID_FIELDS.includes(fieldName)) {
 		throw new InsightError(`Invalid field name: ${fieldName}`);
 	}
 }
