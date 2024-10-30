@@ -12,7 +12,8 @@ export class Room {
 	public readonly type: string;
 	public readonly furniture: string;
 	public readonly href: string;
-	// Latitude and longitude are omitted for now
+	public readonly lat: number;
+	public readonly lon: number;
 
 	constructor(roomData: any) {
 		this.fullname = roomData.fullname;
@@ -24,7 +25,8 @@ export class Room {
 		this.type = roomData.type;
 		this.furniture = roomData.furniture;
 		this.href = roomData.href;
-		// Latitude and longitude are omitted
+		this.lat = roomData.lat;
+		this.lon = roomData.lon;
 	}
 }
 

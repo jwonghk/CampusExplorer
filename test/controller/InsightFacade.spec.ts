@@ -744,6 +744,29 @@ describe("InsightFacade", function () {
 			checkQuery
 		);
 
+		// Query tests for latitude/longitude
+		it("[valid/queryRoomsWithLatitudeGreaterThan49.json], Query Rooms with Latitude Greater Than 49", checkQuery);
+		it("[valid/queryRoomsWithLongitudeLessThan-123.json], Query Rooms with Longitude Less Than -123", checkQuery);
+		it("[valid/queryRoomsWithinAGeographicalArea.json], Query Rooms Within a Geographical Area", checkQuery);
+		it(
+			"[valid/queryRoomsIncludingLatitudeAndLongitudeInCOLUMNS.json], Query Rooms Including Latitude and Longitude in COLUMNS",
+			checkQuery
+		);
+		it("[valid/queryUsingEQComparatorOnLatitude.json], Query Using EQ Comparator on Latitude", checkQuery);
+		it(
+			"[valid/queryRoomsCombiningGeolocationWithOtherFields.json], Query Rooms Combining Geolocation with Other Fields",
+			checkQuery
+		);
+		it(
+			"[valid/queryWithGeolocationFieldsInGROUPAndAPPLY.json], Query with Geolocation Fields in GROUP and APPLY",
+			checkQuery
+		);
+
+		it(
+			"[invalid/query_invalid_latitude_longitude_field.json], Invalid Latitude/Longitude Query with Incorrect Field Name",
+			checkQuery
+		);
+
 		// Query tests for aggregations
 		it("[valid/aggregationQueryUsingAVG.json], Aggregation query using AVG", checkQuery);
 		it("[valid/aggregationQueryUsingMAX.json], Aggregation query using MAX", checkQuery);

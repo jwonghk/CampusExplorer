@@ -1,0 +1,123 @@
+{
+	"title": "Query Rooms Including Latitude and Longitude in COLUMNS",
+	"input": {
+		"WHERE": {
+			"IS": {
+				"rooms_shortname": "WOOD"
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"rooms_number",
+				"rooms_lat",
+				"rooms_lon"
+			],
+			"ORDER": {
+				"dir": "UP",
+				"keys": [
+					"rooms_number"
+				]
+			}
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "1",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "2",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "3",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "4",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "5",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "6",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "B75",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "B79",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G41",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G44",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G53",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G55",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G57",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G59",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G65",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G66",
+			"rooms_lat": 49.26478,
+			"rooms_lon": -123.24673
+		}
+	]
+}

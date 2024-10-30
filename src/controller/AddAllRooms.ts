@@ -5,6 +5,7 @@ import InsightFacade from "./InsightFacade";
 import JSZip from "jszip";
 import * as parse5 from "parse5";
 import InfoForRooms from "./InfoForRooms";
+import * as http from "http";
 
 interface RoomDetailRefs {
 	roomNumberRef: (value: string) => void;
@@ -126,6 +127,20 @@ export class AddAllRooms {
 		const content = await buildingFile.async("text");
 		const document = parse5.parse(content);
 		const rooms = this.extractRooms(document, entry);
+
+		// Fetch geolocation for the building
+		try {
+			const geoResponse = await this.fetchGeolocation(entry.address, "213");
+			if (!geoResponse.error) {
+				rooms.forEach((room) => {
+					room.lat = geoResponse.lat;
+					room.lon = geoResponse.lon;
+				});
+			}
+		} catch (err) {
+			throw new InsightError(`Error fetching geolocation for address ${entry.address}: ${err}`);
+		}
+
 		return rooms;
 	}
 
@@ -263,5 +278,23 @@ export class AddAllRooms {
 			}
 		}
 		return text;
+	}
+
+	private async fetchGeolocation(
+		address: string,
+		teamNumber: string
+	): Promise<{ lat?: number; lon?: number; error?: string }> {
+		const encodedAddress = encodeURIComponent(address);
+		const url = `http://cs310.students.cs.ubc.ca:11316/api/v1/project_team${teamNumber}/${encodedAddress}`;
+
+		return new Promise((resolve, reject) => {
+			http
+				.get(url, (response) => {
+					let data = "";
+					response.on("data", (chunk) => (data += chunk));
+					response.on("end", () => resolve(JSON.parse(data)));
+				})
+				.on("error", (err) => reject(new Error(`Failed to fetch geolocation: ${err.message}`)));
+		});
 	}
 }

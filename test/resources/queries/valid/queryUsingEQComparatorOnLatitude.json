@@ -1,0 +1,106 @@
+{
+	"title": "Query Using EQ Comparator on Latitude",
+	"input": {
+		"WHERE": {
+			"EQ": {
+				"rooms_lat": 49.26478
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"rooms_number",
+				"rooms_lat"
+			],
+			"ORDER": {
+				"dir": "UP",
+				"keys": [
+					"rooms_number"
+				]
+			}
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "1",
+			"rooms_lat": 49.26478
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "2",
+			"rooms_lat": 49.26478
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "3",
+			"rooms_lat": 49.26478
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "4",
+			"rooms_lat": 49.26478
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "5",
+			"rooms_lat": 49.26478
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "6",
+			"rooms_lat": 49.26478
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "B75",
+			"rooms_lat": 49.26478
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "B79",
+			"rooms_lat": 49.26478
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G41",
+			"rooms_lat": 49.26478
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G44",
+			"rooms_lat": 49.26478
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G53",
+			"rooms_lat": 49.26478
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G55",
+			"rooms_lat": 49.26478
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G57",
+			"rooms_lat": 49.26478
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G59",
+			"rooms_lat": 49.26478
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G65",
+			"rooms_lat": 49.26478
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"rooms_number": "G66",
+			"rooms_lat": 49.26478
+		}
+	]
+}
