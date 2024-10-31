@@ -18,7 +18,7 @@ export class AddAllCourses {
 		const zipFile = new JSZip();
 		const sectionsPromiseArray: Promise<string>[] = [];
 
-		return new Promise<string[]>((res , rej ) => {
+		return new Promise<string[]>((res, rej) => {
 			zipFile
 				.loadAsync(contents, { base64: true })
 				.then((zip: JSZip) => {
