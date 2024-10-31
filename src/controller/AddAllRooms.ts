@@ -258,7 +258,7 @@ export class AddAllRooms {
 			if (child.nodeName === nodeName) {
 				result.push(child);
 			} else {
-				result.push(this.findAllChildNodes(child, nodeName));
+				result.push(...this.findAllChildNodes(child, nodeName));
 			}
 		}
 		return result;
