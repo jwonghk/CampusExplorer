@@ -295,7 +295,7 @@ export class AddAllRooms {
 		const encodedAddress = encodeURIComponent(address);
 		const url = `http://cs310.students.cs.ubc.ca:11316/api/v1/project_team${teamNumber}/${encodedAddress}`;
 
-		return new Promise((resolve: any, reject: any) => {
+		return new Promise((resolve, reject) => {
 			http
 				.get(url, (response) => {
 					let data = "";
