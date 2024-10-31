@@ -75,22 +75,11 @@ function validateApplyRule(applyRule: any, applyKeysSet: Set<string>): void {
 		throw new InsightError("APPLYRULE must have exactly one APPLYTOKEN");
 	}
 	const applyToken = Object.keys(applyContent)[0] as ApplyToken;
-	const fieldKey = applyContent[applyToken];
-
 	if (!["MAX", "MIN", "AVG", "COUNT", "SUM"].includes(applyToken)) {
 		throw new InsightError(`Invalid APPLYTOKEN: ${applyToken}`);
 	}
-
-	// Check numeric fields
-	if (["MAX", "MIN", "SUM", "AVG"].includes(applyToken) && !isNumericField(fieldKey)) {
-		throw new InsightError(`APPLYTOKEN ${applyToken} requires a numeric field but found: ${fieldKey}`);
-	}
+	const fieldKey = applyContent[applyToken];
 	validateKey(fieldKey);
-}
-
-function isNumericField(key: string): boolean {
-	const numericFields = ["rooms_seats", "rooms_lat", "rooms_lon", "sections_avg", "sections_pass", "sections_fail"];
-	return numericFields.includes(key);
 }
 // End ChatGPT
 

@@ -31,6 +31,9 @@ export function performAggregation(applyToken: string, values: any[]): any {
 }
 
 function calculateAverage(values: number[]): number {
+	if (values.length === 0) {
+		throw new InsightError("Cannot calculate average of empty set");
+	}
 	let total = new Decimal(0);
 	values.forEach((num) => {
 		total = total.add(new Decimal(num));
@@ -38,16 +41,19 @@ function calculateAverage(values: number[]): number {
 
 	const numRows = values.length;
 	const avg = total.toNumber() / numRows;
-	const roundedAvg = Number(avg.toFixed(TWO_DECIMAL_PLACES)); // Round to 2 decimal places and convert to number
+	const roundedAvg = Number(avg.toFixed(TWO_DECIMAL_PLACES));
 	return roundedAvg;
 }
 
 function calculateSum(values: number[]): number {
+	if (values.length === 0) {
+		return 0;
+	}
 	let total = new Decimal(0);
 	values.forEach((num) => {
 		total = total.add(new Decimal(num));
 	});
 
-	const roundedSum = Number(total.toFixed(TWO_DECIMAL_PLACES)); // Round to 2 decimal places and convert to number
+	const roundedSum = Number(total.toFixed(TWO_DECIMAL_PLACES));
 	return roundedSum;
 }

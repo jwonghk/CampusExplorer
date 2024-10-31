@@ -115,6 +115,9 @@ function applyTransformations(records: any[], transformationsNode: Transformatio
 	const transformedRecords = [];
 
 	for (const group of Object.values(groups)) {
+		if (group.length === 0) {
+			continue; // Skip empty groups
+		}
 		const newRecord: any = {};
 
 		// Add group keys
