@@ -1,0 +1,15 @@
+{
+	"title": "Query with Invalid ORDER Clause",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": ["rooms_shortname", "rooms_seats"],
+			"ORDER": {
+				"keys": ["rooms_seats"]
+			}
+		}
+	}
+	,
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

@@ -1,0 +1,23 @@
+{
+	"title": "Query with Invalid ORDER Direction",
+	"input": {
+		"WHERE": {
+			"GT": {
+				"rooms_seats": 100
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"rooms_number",
+				"rooms_seats"
+			],
+			"ORDER": {
+				"dir": "UPWARD",
+				"keys": ["rooms_seats"]
+			}
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

@@ -1,0 +1,15 @@
+{
+	"title": "Query with ORDER Keys Not in COLUMNS",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": ["rooms_shortname", "rooms_number"],
+			"ORDER": {
+				"dir": "UP",
+				"keys": ["rooms_seats"]
+			}
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

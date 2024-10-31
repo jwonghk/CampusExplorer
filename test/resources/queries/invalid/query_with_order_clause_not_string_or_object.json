@@ -1,0 +1,13 @@
+{
+	"title": "Query with ORDER Clause Not a String or Object",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": ["rooms_shortname", "rooms_seats"],
+			"ORDER": 12345
+		}
+	}
+	,
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

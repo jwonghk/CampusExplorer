@@ -1,3 +1,5 @@
+// AddAllCourses.ts
+
 import { InsightError } from "./IInsightFacade";
 import InsightFacade from "./InsightFacade";
 import JSZip from "jszip";
@@ -7,8 +9,8 @@ import InforForCourses from "./InforForCourses";
 export class AddAllCourses {
 	private insightfacade: InsightFacade;
 
-	constructor(insightFacade: InsightFacade) {
-		this.insightfacade = insightFacade;
+	constructor(insigFac: InsightFacade) {
+		this.insightfacade = insigFac;
 	}
 
 	// Method to add all courses from the provided ZIP content

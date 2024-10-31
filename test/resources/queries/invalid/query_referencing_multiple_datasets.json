@@ -1,0 +1,24 @@
+{
+	"title": "Query Referencing Multiple Datasets",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"GT": {
+						"sections_avg": 90
+					}
+				},
+				{
+					"IS": {
+						"rooms_shortname": "DMP"
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": ["sections_dept", "sections_avg", "rooms_shortname"]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

@@ -1,0 +1,22 @@
+{
+	"title": "Query with Invalid Key in APPLYRULE",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": ["rooms_shortname", "maxSeats"]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": ["rooms_shortname"],
+			"APPLY": [
+				{
+					"maxSeats": {
+						"MAX": "rooms_nonexistent"
+					}
+				}
+			]
+		}
+	}
+	,
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

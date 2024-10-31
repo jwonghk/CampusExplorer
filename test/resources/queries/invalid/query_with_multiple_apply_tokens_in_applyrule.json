@@ -1,0 +1,23 @@
+{
+	"title": "Query with Multiple APPLY Tokens in APPLYRULE",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": ["rooms_shortname", "maxSeats"]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": ["rooms_shortname"],
+			"APPLY": [
+				{
+					"maxSeats": {
+						"MAX": "rooms_seats",
+						"MIN": "rooms_seats"
+					}
+				}
+			]
+		}
+	}
+	,
+	"errorExpected": true,
+	"expected": "InsightError"
+  }

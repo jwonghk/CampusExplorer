@@ -1,0 +1,15 @@
+{
+	"title": "Query with Missing APPLY in TRANSFORMATIONS",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": ["rooms_shortname"]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": ["rooms_shortname"]
+		}
+	}
+	,
+	"errorExpected": true,
+	"expected": "InsightError"
+  }
