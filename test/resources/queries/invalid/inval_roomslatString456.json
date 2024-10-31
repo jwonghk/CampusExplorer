@@ -1,0 +1,25 @@
+{
+	"title": "Inval_roomslatString456",
+	"input": {
+		"WHERE": {
+			"GT": {
+				"rooms_lat": "456"
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"rooms_number",
+				"rooms_lat"
+			],
+			"ORDER": {
+				"dir": "UP",
+				"keys": [
+					"rooms_lat"
+				]
+			}
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

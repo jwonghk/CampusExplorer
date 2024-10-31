@@ -1,0 +1,46 @@
+{
+	"title": "invalid_ORcase_aString_in_GT_for_rooms_longitude",
+	"input": {
+		"WHERE": {
+			"OR": [
+				{
+					"GT": {
+						"rooms_lat": 45
+					}
+				},
+				{
+					"LT": {
+						"rooms_lat": 49.27
+					}
+				},
+				{
+					"GT": {
+						"rooms_lon": "12345"
+					}
+				},
+				{
+					"LT": {
+						"rooms_lon": -123.245
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"rooms_number",
+				"rooms_lat",
+				"rooms_lon"
+			],
+			"ORDER": {
+				"dir": "UP",
+				"keys": [
+					"rooms_shortname",
+					"rooms_number"
+				]
+			}
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

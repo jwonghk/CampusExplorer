@@ -1,0 +1,49 @@
+{
+	"title": "invalid_orderDIR_containg2directions",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"GT": {
+						"rooms_lat": 45
+					}
+				},
+				{
+					"LT": {
+						"rooms_lat": 49.27
+					}
+				},
+				{
+					"GT": {
+						"rooms_lon": -123.255
+					}
+				},
+				{
+					"LT": {
+						"rooms_lon": -123.245
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"rooms_number",
+				"rooms_lat",
+				"rooms_lon"
+			],
+			"ORDER": {
+				"dir": [
+					"UP",
+					"DOWN"
+				],
+				"keys": [
+					"rooms_shortname",
+					"rooms_number"
+				]
+			}
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

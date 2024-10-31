@@ -258,7 +258,7 @@ export class AddAllRooms {
 			if (child.nodeName === nodeName) {
 				result.push(child);
 			} else {
-				result.push(...this.findAllChildNodes(child, nodeName));
+				result.push(this.findAllChildNodes(child, nodeName));
 			}
 		}
 		return result;
@@ -295,7 +295,7 @@ export class AddAllRooms {
 		const encodedAddress = encodeURIComponent(address);
 		const url = `http://cs310.students.cs.ubc.ca:11316/api/v1/project_team${teamNumber}/${encodedAddress}`;
 
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve: any, reject: any) => {
 			http
 				.get(url, (response) => {
 					let data = "";

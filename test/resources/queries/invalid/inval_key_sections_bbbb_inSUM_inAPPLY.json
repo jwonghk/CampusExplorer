@@ -1,0 +1,53 @@
+{
+	"title": "Inval_key_sections_bbbb_inSUM_inAPPLY",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"OR": [
+						{
+							"IS": {
+								"sections_dept": "aanb"
+							}
+						},
+						{
+							"IS": {
+								"sections_dept": "adhe"
+							}
+						}
+					]
+				},
+				{
+					"GT": {
+						"sections_avg": 75
+					}
+				},
+				{
+					"LT": {
+						"sections_avg": 95
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_title",
+				"totalAvg"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"sections_title"
+			],
+			"APPLY": [
+				{
+					"totalAvg": {
+						"SUM": "sections_bbbb"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

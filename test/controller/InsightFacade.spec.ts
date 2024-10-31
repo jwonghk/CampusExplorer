@@ -856,6 +856,35 @@ describe("InsightFacade", function () {
 			"[invalid/query_with_order_clause_not_string_or_object.json] Query with ORDER Clause Not a String or Object",
 			checkQuery
 		);
+
+		it(
+			"[invalid/inval_ANDcase_aString_in_GT_for_rooms_longitude.json] Query with the AND using a string in GT for longit",
+			checkQuery
+		);
+		it("[invalid/inval_applyRule_has2Keys.json] Query using apply rule with 2 keys", checkQuery);
+		it(
+			"[invalid/inval_key_inCOLUMNS_not_in_GROUP_or_APPLY.json] Query using keys in columns but not appearing in GROUP/APPLY",
+			checkQuery
+		);
+		it(
+			"[invalid/inval_key_sections_avgggggg_in_GROUP.json] Query using key with sections being avgggggg in GROUP",
+			checkQuery
+		);
+		it("[invalid/inval_key_sections_bbbb_inSUM_inAPPLY.json] Query using key sections bbbbb in SUM", checkQuery);
+		it(
+			"[invalid/inval_ORcase_aString_in_GT_for_rooms_longitude.json] Query with the OR using a string in GT for longit",
+			checkQuery
+		);
+		it("[invalid/inval_OrderDir.json] Query with an invalid Order Direction", checkQuery);
+		it("[invalid/inval_orderDir_anNumber3.json] Query with an invalid Order Direction being a number 3", checkQuery);
+		it(
+			"[invalid/inval_orderDIR_containg2directions.json] Query with an invalid Order Direction that contains a array of directions",
+			checkQuery
+		);
+		it(
+			"[invalid/inval_roomslatString456.json] Query with an invalid rooms Latitude using a string called 456",
+			checkQuery
+		);
 	});
 
 	describe("Invalid Query Inputs", function () {
