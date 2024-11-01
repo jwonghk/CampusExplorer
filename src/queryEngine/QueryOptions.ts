@@ -3,6 +3,7 @@ import { OptionsNode, OrderNode } from "./QueryAST";
 
 const SPLIT_KEY_NUM = 2;
 
+// Processes options for a query, filtering columns and applying sorting if specified
 export function processOptions(records: any[], optionsNode: OptionsNode): InsightResult[] {
 	const columns = optionsNode.columns;
 
@@ -16,6 +17,7 @@ export function processOptions(records: any[], optionsNode: OptionsNode): Insigh
 }
 
 // Start ChatGPT
+// Filters records to include only specified columns from options
 function filterColumns(records: any[], columns: string[]): InsightResult[] {
 	return records.map((record) => {
 		const filteredRecord: any = {};
@@ -26,6 +28,7 @@ function filterColumns(records: any[], columns: string[]): InsightResult[] {
 	});
 }
 
+// Retrieves a value from a record based on a given key, supporting nested access
 function getValue(record: any, key: string): any {
 	if (key in record) {
 		return record[key];
@@ -54,6 +57,7 @@ function getValue(record: any, key: string): any {
 }
 // End ChatGPT
 
+// Creates a sorting function based on the specified order criteria (either a single key or multiple keys with direction)
 function createSortFunction(order: OrderNode | string): (a: any, b: any) => number {
 	if (typeof order === "string") {
 		return (a, b) => (a[order] < b[order] ? -1 : a[order] > b[order] ? 1 : 0);

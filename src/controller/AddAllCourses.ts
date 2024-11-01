@@ -1,5 +1,3 @@
-// AddAllCourses.ts
-
 import { InsightError } from "./IInsightFacade";
 import InsightFacade from "./InsightFacade";
 import JSZip from "jszip";

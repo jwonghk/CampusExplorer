@@ -3,6 +3,7 @@ import Decimal from "decimal.js";
 
 const TWO_DECIMAL_PLACES = 2;
 
+// Function to perform aggregation based on a specified applyToken (e.g., MAX, MIN, AVG, SUM, COUNT) and an array of values
 export function performAggregation(applyToken: string, values: any[]): any {
 	switch (applyToken) {
 		case "MAX": {
@@ -30,6 +31,7 @@ export function performAggregation(applyToken: string, values: any[]): any {
 	}
 }
 
+// Helper function to calculate the average of an array of numbers, rounded to two decimal places
 function calculateAverage(values: number[]): number {
 	if (values.length === 0) {
 		throw new InsightError("Cannot calculate average of empty set");
@@ -45,6 +47,7 @@ function calculateAverage(values: number[]): number {
 	return roundedAvg;
 }
 
+// Helper function to calculate the sum of an array of numbers, rounded to two decimal places
 function calculateSum(values: number[]): number {
 	if (values.length === 0) {
 		return 0;
