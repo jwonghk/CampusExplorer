@@ -12,6 +12,7 @@ import {
 import { InsightError } from "../controller/IInsightFacade";
 import { validateQueryStructure } from "./QueryValidator";
 
+// Parses a query object into a QueryNode AST, validating its structure and parsing components
 export function parseQuery(query: any): QueryNode {
 	validateQueryStructure(query);
 
@@ -27,6 +28,7 @@ export function parseQuery(query: any): QueryNode {
 	return new QueryNode(filter, options, transformations);
 }
 
+// Parses the WHERE clause into a filter AST node, supporting AND, OR, NOT, and comparison operators
 function parseFilter(filter: any): ASTNode | null {
 	if (typeof filter !== "object" || filter === null) {
 		throw new InsightError("Invalid filter");
@@ -42,6 +44,7 @@ function parseFilter(filter: any): ASTNode | null {
 
 	const key = keys[0];
 
+	// Parse filter based on the filter type (AND, OR, NOT, LT, GT, EQ, IS)
 	switch (key) {
 		case "AND":
 		case "OR":
@@ -58,6 +61,7 @@ function parseFilter(filter: any): ASTNode | null {
 	}
 }
 
+// Parses a logical operator (AND/OR) node, expecting an array of filters as operands
 function parseLogicNode(operator: "AND" | "OR", logicArray: any): LogicNode {
 	if (!Array.isArray(logicArray) || logicArray.length === 0) {
 		throw new InsightError(`${operator} must be a non-empty array`);
@@ -66,6 +70,7 @@ function parseLogicNode(operator: "AND" | "OR", logicArray: any): LogicNode {
 	return new LogicNode(operator, filters);
 }
 
+// Parses a NOT node, which negates an inner filter
 function parseNotNode(innerFilter: any): NotNode {
 	const inner = parseFilter(innerFilter);
 	if (inner === null) {
@@ -74,6 +79,7 @@ function parseNotNode(innerFilter: any): NotNode {
 	return new NotNode(inner);
 }
 
+// Parses a comparator node (LT, GT, EQ, IS) with a single key-value pair for comparison
 function parseComparatorNode(comparator: "LT" | "GT" | "EQ" | "IS", comparison: any): ComparatorNode {
 	if (typeof comparison !== "object" || comparison === null) {
 		throw new InsightError(`${comparator} must be an object`);
@@ -87,6 +93,7 @@ function parseComparatorNode(comparator: "LT" | "GT" | "EQ" | "IS", comparison: 
 	return new ComparatorNode(comparator, compKey, value);
 }
 
+// Parses the OPTIONS clause, extracting columns and optional ordering details
 function parseOptions(options: any): OptionsNode {
 	const columns = options.COLUMNS;
 	if (!Array.isArray(columns) || columns.length === 0) {
@@ -101,6 +108,7 @@ function parseOptions(options: any): OptionsNode {
 	return new OptionsNode(columns, orderNode);
 }
 
+// Parses the ORDER clause, supporting either a single key or multiple keys with direction
 function parseOrder(order: any): OrderNode | string {
 	if (typeof order === "string") {
 		return order;
@@ -119,6 +127,7 @@ function parseOrder(order: any): OrderNode | string {
 	}
 }
 
+// Parses the TRANSFORMATIONS clause, extracting grouping keys and apply rules
 function parseTransformations(transformations: any): TransformationsNode {
 	const group = transformations.GROUP;
 	const apply = transformations.APPLY;
@@ -135,6 +144,7 @@ function parseTransformations(transformations: any): TransformationsNode {
 	return new TransformationsNode(group, applyNodes);
 }
 
+// Parses an APPLY rule, extracting the apply key, token, and dataset key
 function parseApplyRule(applyRule: any): ApplyNode {
 	if (typeof applyRule !== "object" || applyRule === null || Array.isArray(applyRule)) {
 		throw new InsightError("Each APPLY rule must be an object");

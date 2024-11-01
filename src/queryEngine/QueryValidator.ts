@@ -4,6 +4,7 @@ import { ApplyToken } from "./QueryInterfaces";
 const SPLIT_KEY_NUM = 2;
 const MIN_QUERY_KEYS = 2;
 
+// Validates the overall structure of the query, checking for required top-level keys and their types
 export function validateQueryStructure(query: any): void {
 	if (!isValidObject(query)) {
 		throw new InsightError("Query must be a non-null object");
@@ -35,6 +36,7 @@ export function validateQueryStructure(query: any): void {
 }
 
 // Start ChatGPT
+// Validates the structure of the TRANSFORMATIONS object, ensuring required keys and valid contents
 function validateTransformations(transformations: any): void {
 	if (!isValidObject(transformations)) {
 		throw new InsightError("TRANSFORMATIONS must be a non-null object");
@@ -63,6 +65,7 @@ function validateTransformations(transformations: any): void {
 
 const NUMERIC_FIELDS = ["avg", "pass", "fail", "audit", "year", "seats", "lat", "lon"];
 
+// Validates a single APPLY rule, ensuring unique keys and valid tokens for numeric operations
 function validateApplyRule(applyRule: any, applyKeysSet: Set<string>): void {
 	if (!isValidObject(applyRule) || Object.keys(applyRule).length !== 1) {
 		throw new InsightError("Each APPLYRULE must be an object with one applykey");
@@ -91,6 +94,7 @@ function validateApplyRule(applyRule: any, applyKeysSet: Set<string>): void {
 
 // End ChatGPT
 
+// Validates the OPTIONS object, ensuring presence of COLUMNS and validating ORDER if provided
 function validateOptions(options: any, transformations: any): void {
 	if (!isValidObject(options)) {
 		throw new InsightError("OPTIONS must be a non-null object");
@@ -108,6 +112,7 @@ function validateOptions(options: any, transformations: any): void {
 		validateOrder(options.ORDER, columns);
 	}
 
+	// If TRANSFORMATIONS is present, ensure columns reference valid transformation keys
 	if (transformations) {
 		const groupKeys = transformations.GROUP;
 		const applyKeys = transformations.APPLY.map((rule: any) => Object.keys(rule)[0]);
@@ -129,6 +134,7 @@ function validateOptions(options: any, transformations: any): void {
 	}
 }
 
+// Validates the ORDER object or string, ensuring keys are in COLUMNS and direction is valid if an object
 function validateOrder(order: any, columns: string[]): void {
 	if (typeof order === "string") {
 		if (!columns.includes(order)) {
@@ -150,6 +156,7 @@ function validateOrder(order: any, columns: string[]): void {
 	}
 }
 
+// Helper function to check if an object is valid (non-null, non-array object)
 function isValidObject(obj: any): boolean {
 	return typeof obj === "object" && obj !== null && !Array.isArray(obj);
 }
@@ -178,6 +185,7 @@ const VALID_FIELDS = [
 	"href",
 ];
 
+// Validates a key format, ensuring it is a string in the expected format and references a valid field
 function validateKey(key: string): void {
 	if (typeof key !== "string" || key.trim() === "") {
 		throw new InsightError(`Invalid key: ${key}`);

@@ -5,6 +5,7 @@ import { processOptions } from "./QueryOptions";
 
 const SPLIT_KEY_NUM = 2;
 
+// Executes a query on a dataset based on the provided AST root node
 export async function executeQuery(ast: ASTNode | null, dataset: any[]): Promise<InsightResult[]> {
 	if (!(ast instanceof QueryNode)) {
 		throw new InsightError("Invalid AST: Root node must be a QueryNode");
@@ -14,30 +15,35 @@ export async function executeQuery(ast: ASTNode | null, dataset: any[]): Promise
 
 	let records = dataset;
 
+	// Apply filter if specified
 	if (queryNode.filter) {
 		records = records.filter((record) => evaluate(queryNode.filter!, record));
 	}
 
+	// Apply transformations if specified
 	if (queryNode.transformations) {
 		records = applyTransformations(records, queryNode.transformations);
 	}
 
+	// Process options (e.g., columns, ordering) and return results
 	const results = processOptions(records, queryNode.options);
 
 	return results;
 }
 
+// Evaluates a filter node against a single record
 function evaluate(node: ASTNode, record: any): boolean {
 	if (node instanceof LogicNode) {
 		return evaluateLogicNode(node, record);
 	} else if (node instanceof ComparatorNode) {
 		return evaluateComparisonNode(node, record);
 	} else if (node instanceof NotNode) {
-		return !evaluate(node.filter, record);
+		return !evaluate(node.filter, record); // Negates the result for NOT nodes
 	}
 	return false;
 }
 
+// Evaluates a LogicNode (AND/OR) by applying its filters to a record
 function evaluateLogicNode(node: LogicNode, record: any): boolean {
 	if (node.operator === "AND") {
 		return node.filters.every((filter) => evaluate(filter, record));
@@ -47,6 +53,7 @@ function evaluateLogicNode(node: LogicNode, record: any): boolean {
 	return false;
 }
 
+// Evaluates a ComparatorNode (LT, GT, EQ, IS) against a record value
 function evaluateComparisonNode(node: ComparatorNode, record: any): boolean {
 	const value = getValue(record, node.key);
 	if (value === undefined || value === null) {
@@ -72,6 +79,7 @@ function evaluateComparisonNode(node: ComparatorNode, record: any): boolean {
 }
 
 // Start ChatGPT
+// Retrieves a value from the record based on the key, supporting nested access
 function getValue(record: any, key: string): any {
 	// Check if record contains key directly
 	if (key in record) {
@@ -102,6 +110,7 @@ function getValue(record: any, key: string): any {
 	return undefined;
 }
 
+// Matches a string value against a pattern with optional wildcards
 function matchIS(value: string, pattern: string): boolean {
 	if (pattern === null || typeof pattern !== "string") {
 		throw new InsightError("Pattern in IS must be a string");
@@ -115,6 +124,7 @@ function matchIS(value: string, pattern: string): boolean {
 }
 // End ChatGPT
 
+// Applies transformations (grouping and aggregations) based on the transformations node
 function applyTransformations(records: any[], transformationsNode: TransformationsNode): any[] {
 	const groups = groupRecords(records, transformationsNode.groupKeys);
 	const transformedRecords = [];
@@ -143,6 +153,7 @@ function applyTransformations(records: any[], transformationsNode: Transformatio
 	return transformedRecords;
 }
 
+// Groups records based on specified group keys, returning a dictionary of grouped records
 function groupRecords(records: any[], groupKeys: string[]): Record<string, any[]> {
 	const groups: Record<string, any[]> = {};
 	records.forEach((record) => {

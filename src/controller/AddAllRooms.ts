@@ -16,10 +16,12 @@ interface RoomDetailRefs {
 export class AddAllRooms {
 	private insightFacade: InsightFacade;
 
+	// Constructor to initialize AddAllRooms with a reference to InsightFacade
 	constructor(insightFacade: InsightFacade) {
 		this.insightFacade = insightFacade;
 	}
 
+	// Main method to add all rooms from a zip file given an ID and base64 content
 	public async AddAllRooms(id: string, content: string): Promise<void> {
 		const zip = new JSZip();
 		let loadedZip: JSZip;
@@ -55,6 +57,7 @@ export class AddAllRooms {
 		this.insightFacade.datasetNameIDList.push(id);
 	}
 
+	// Processes the index file and extracts room data for each building
 	private async processIndexFile(loadedZip: JSZip, indexContent: string): Promise<any[]> {
 		const indexDoc = parse5.parse(indexContent);
 		const buildingTable = this.findBuildingTable(indexDoc);
@@ -72,6 +75,7 @@ export class AddAllRooms {
 		return roomsArrays.flat();
 	}
 
+	// Searches for and returns the table containing building information
 	private findBuildingTable(document: any): any | null {
 		const tables = this.findAllChildNodes(document, "table");
 		for (const table of tables) {
@@ -85,6 +89,7 @@ export class AddAllRooms {
 		return null;
 	}
 
+	// Extracts building entries from the provided building table
 	private extractBuildingEntries(table: any): any[] {
 		const tbody = this.findNode(table, "tbody");
 		if (!tbody) {
@@ -102,6 +107,7 @@ export class AddAllRooms {
 		return buildingEntries;
 	}
 
+	// Extracts building information (name, address, link) from a row in the building table
 	private extractBuildingInfo(row: any): any | null {
 		const cells = this.findAllChildNodes(row, "td");
 		let shortName = "",
@@ -130,6 +136,7 @@ export class AddAllRooms {
 		return null;
 	}
 
+	// Processes individual building entry to extract rooms and adds geolocation information
 	private async processBuildingEntry(loadedZip: JSZip, entry: any): Promise<any[]> {
 		const buildingFile = loadedZip.file(entry.link);
 		if (!buildingFile) {
@@ -154,6 +161,7 @@ export class AddAllRooms {
 		return rooms;
 	}
 
+	// Extracts rooms from the parsed HTML document for a given building
 	private extractRooms(document: any, buildingInfo: any): any[] {
 		const roomTable = this.findRoomTable(document);
 		if (!roomTable) {
@@ -176,6 +184,7 @@ export class AddAllRooms {
 		return rooms;
 	}
 
+	// Searches for and returns the table containing room details
 	private findRoomTable(document: any): any | null {
 		const tables = this.findAllChildNodes(document, "table");
 		for (const table of tables) {
@@ -189,6 +198,7 @@ export class AddAllRooms {
 		return null;
 	}
 
+	// Extracts individual room information such as number, seats, furniture, type, and link
 	private extractRoomInfo(row: any, buildingInfo: any): any | null {
 		const cells = this.findAllChildNodes(row, "td");
 		let roomNumber = "",
@@ -226,6 +236,7 @@ export class AddAllRooms {
 		return null;
 	}
 
+	// Extracts specific room details such as number, seats, furniture, and type from each cell
 	private extractRoomDetails(cell: any, refs: RoomDetailRefs): void {
 		if (this.hasClass(cell, "views-field-field-room-number")) {
 			const linkNode = this.findNode(cell, "a");
@@ -250,6 +261,7 @@ export class AddAllRooms {
 		}
 	}
 
+	// Searches for a node with a given nodeName, returns the first matching node
 	private findNode(node: any, nodeName: string): any | null {
 		if (node.nodeName === nodeName) {
 			return node;
@@ -266,6 +278,7 @@ export class AddAllRooms {
 		return null;
 	}
 
+	// Recursively finds and returns all child nodes with the specified node name
 	private findAllChildNodes(node: any, nodeName: string): any[] {
 		const result: any[] = [];
 		if (node.nodeName === nodeName) {
@@ -279,6 +292,7 @@ export class AddAllRooms {
 		return result;
 	}
 
+	// Checks if the given node has a specific class name
 	private hasClass(node: any, className: string): boolean {
 		const classAttr = node.attrs?.find((attr: any) => attr.name === "class");
 		if (classAttr) {
@@ -288,6 +302,7 @@ export class AddAllRooms {
 		return false;
 	}
 
+	// Recursively extracts text content from a node
 	private getTextFromNode(node: any): string {
 		let text = "";
 		if (node.nodeName === "#text") {
@@ -301,6 +316,7 @@ export class AddAllRooms {
 		return text;
 	}
 
+	// Fetches geolocation data for a given address using an external API
 	private async fetchGeolocation(
 		address: string,
 		teamNumber: string
