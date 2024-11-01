@@ -1,0 +1,28 @@
+{
+	"title": "Query with Empty Group",
+	"input": {
+		"WHERE": {
+			"LT": {
+				"rooms_seats": 8
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_type",
+				"count"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [],
+			"APPLY": [
+				{
+					"count": {
+						"COUNT": "rooms_type"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

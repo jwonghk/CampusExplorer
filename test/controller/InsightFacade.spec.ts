@@ -886,6 +886,7 @@ describe("InsightFacade", function () {
 			"[invalid/inval_roomslatString456.json] Query with an invalid rooms Latitude using a string called 456",
 			checkQuery
 		);
+		it("[invalid/queryWithEmptyGroup.json] Query with Empty Group", checkQuery);
 	});
 
 	describe("Invalid Query Inputs", function () {
