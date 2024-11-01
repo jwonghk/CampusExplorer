@@ -225,6 +225,7 @@ export class AddAllRooms {
 		}
 		return null;
 	}
+
 	private extractRoomDetails(cell: any, refs: RoomDetailRefs): void {
 		if (this.hasClass(cell, "views-field-field-room-number")) {
 			const linkNode = this.findNode(cell, "a");
