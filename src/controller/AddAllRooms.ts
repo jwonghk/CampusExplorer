@@ -20,17 +20,14 @@ export class AddAllRooms {
 		this.insightFacade = insightFacade;
 	}
 
-	// Unzips the provided content and parses the index file to process all rooms.
 	public async AddAllRooms(id: string, content: string): Promise<void> {
 		const zip = new JSZip();
 		let loadedZip: JSZip;
-
 		try {
 			loadedZip = await zip.loadAsync(content, { base64: true });
 		} catch (err) {
 			throw new InsightError("Error loading zip file: " + err);
 		}
-
 		const indexFile = loadedZip.file("index.htm");
 		if (!indexFile) {
 			throw new InsightError("index.htm not found");
@@ -58,11 +55,14 @@ export class AddAllRooms {
 		this.insightFacade.datasetNameIDList.push(id);
 	}
 
-	// Parses the index file to find building entries, processes each building for room details.
 	private async processIndexFile(loadedZip: JSZip, indexContent: string): Promise<any[]> {
 		const indexDoc = parse5.parse(indexContent);
-		const buildingEntries = this.findBuildingEntries(indexDoc);
+		const buildingTable = this.findBuildingTable(indexDoc);
+		if (!buildingTable) {
+			throw new InsightError("No valid building table found");
+		}
 
+		const buildingEntries = this.extractBuildingEntries(buildingTable);
 		if (!buildingEntries || buildingEntries.length === 0) {
 			throw new InsightError("No valid building entries found");
 		}
@@ -72,16 +72,27 @@ export class AddAllRooms {
 		return roomsArrays.flat();
 	}
 
-	// Locates and returns all building entries in the HTML document.
-	private findBuildingEntries(document: any): any[] {
-		const tbody = this.findNode(document, "tbody");
+	private findBuildingTable(document: any): any | null {
+		const tables = this.findAllChildNodes(document, "table");
+		for (const table of tables) {
+			const tds = this.findAllChildNodes(table, "td");
+			for (const td of tds) {
+				if (this.hasClass(td, "views-field-field-building-code")) {
+					return table;
+				}
+			}
+		}
+		return null;
+	}
+
+	private extractBuildingEntries(table: any): any[] {
+		const tbody = this.findNode(table, "tbody");
 		if (!tbody) {
 			throw new InsightError("Building table body not found");
 		}
 
 		const buildingEntries: any[] = [];
 		const rows = this.findAllChildNodes(tbody, "tr");
-
 		for (const row of rows) {
 			const buildingInfo = this.extractBuildingInfo(row);
 			if (buildingInfo) {
@@ -91,13 +102,12 @@ export class AddAllRooms {
 		return buildingEntries;
 	}
 
-	// Extracts and returns building information (name, address, link) from a table row.
 	private extractBuildingInfo(row: any): any | null {
 		const cells = this.findAllChildNodes(row, "td");
-		let shortName = "";
-		let fullName = "";
-		let address = "";
-		let link = "";
+		let shortName = "",
+			fullName = "",
+			address = "",
+			link = "";
 
 		for (const cell of cells) {
 			if (this.hasClass(cell, "views-field-field-building-code")) {
@@ -120,37 +130,37 @@ export class AddAllRooms {
 		return null;
 	}
 
-	// Processes a building entry by extracting rooms and fetching geolocation data.
 	private async processBuildingEntry(loadedZip: JSZip, entry: any): Promise<any[]> {
 		const buildingFile = loadedZip.file(entry.link);
 		if (!buildingFile) {
-			return []; // Skip buildings without valid files
+			return [];
 		}
 		const content = await buildingFile.async("text");
 		const document = parse5.parse(content);
 		const rooms = this.extractRooms(document, entry);
 
-		// Fetch geolocation for the building
 		try {
 			const geoResponse = await this.fetchGeolocation(entry.address, "213");
-			if (geoResponse.lat === null || geoResponse.lon === null) {
-				throw new InsightError(`Incomplete geolocation data for address: ${entry.address}`);
+			if (geoResponse.lat === undefined || geoResponse.lon === undefined) {
+				return [];
 			}
-
 			rooms.forEach((room) => {
 				room.lat = geoResponse.lat;
 				room.lon = geoResponse.lon;
 			});
-		} catch (err) {
-			throw new InsightError(`Error fetching geolocation for address ${entry.address}: ${err}`);
+		} catch (_err) {
+			return [];
 		}
-
 		return rooms;
 	}
 
-	// Extracts room details from the document and returns an array of rooms.
 	private extractRooms(document: any, buildingInfo: any): any[] {
-		const tbody = this.findNode(document, "tbody");
+		const roomTable = this.findRoomTable(document);
+		if (!roomTable) {
+			return [];
+		}
+
+		const tbody = this.findNode(roomTable, "tbody");
 		if (!tbody) {
 			return [];
 		}
@@ -166,14 +176,26 @@ export class AddAllRooms {
 		return rooms;
 	}
 
-	// Extracts specific room information from a table row, including number, seats, and type.
+	private findRoomTable(document: any): any | null {
+		const tables = this.findAllChildNodes(document, "table");
+		for (const table of tables) {
+			const tds = this.findAllChildNodes(table, "td");
+			for (const td of tds) {
+				if (this.hasClass(td, "views-field-field-room-number")) {
+					return table;
+				}
+			}
+		}
+		return null;
+	}
+
 	private extractRoomInfo(row: any, buildingInfo: any): any | null {
 		const cells = this.findAllChildNodes(row, "td");
-		let roomNumber = "";
-		let roomSeats = 0;
-		let roomFurniture = "";
-		let roomType = "";
-		let roomHref = "";
+		let roomNumber = "",
+			roomSeats = 0,
+			roomFurniture = "",
+			roomType = "",
+			roomHref = "";
 
 		for (const cell of cells) {
 			this.extractRoomDetails(cell, {
@@ -186,7 +208,6 @@ export class AddAllRooms {
 		}
 
 		if (roomNumber && !isNaN(roomSeats) && roomFurniture) {
-			// Provide default value for roomType if missing
 			if (!roomType) {
 				roomType = "Unknown";
 			}
@@ -201,12 +222,10 @@ export class AddAllRooms {
 				furniture: roomFurniture,
 				href: roomHref,
 			};
-		} else {
-			return null;
 		}
+		return null;
 	}
 
-	// Extracts room details from a table cell and populates references for room attributes.
 	private extractRoomDetails(cell: any, refs: RoomDetailRefs): void {
 		if (this.hasClass(cell, "views-field-field-room-number")) {
 			const linkNode = this.findNode(cell, "a");
@@ -231,7 +250,6 @@ export class AddAllRooms {
 		}
 	}
 
-	// Recursively searches for and returns the first child node with the specified name.
 	private findNode(node: any, nodeName: string): any | null {
 		if (node.nodeName === nodeName) {
 			return node;
@@ -248,23 +266,19 @@ export class AddAllRooms {
 		return null;
 	}
 
-	// Recursively finds and returns all child nodes with the specified name.
 	private findAllChildNodes(node: any, nodeName: string): any[] {
 		const result: any[] = [];
-		if (!node.childNodes) {
-			return result;
+		if (node.nodeName === nodeName) {
+			result.push(node);
 		}
-		for (const child of node.childNodes) {
-			if (child.nodeName === nodeName) {
-				result.push(child);
-			} else {
+		if (node.childNodes) {
+			for (const child of node.childNodes) {
 				result.push(...this.findAllChildNodes(child, nodeName));
 			}
 		}
 		return result;
 	}
 
-	// Checks if a node contains a specified class name.
 	private hasClass(node: any, className: string): boolean {
 		const classAttr = node.attrs?.find((attr: any) => attr.name === "class");
 		if (classAttr) {
@@ -274,7 +288,6 @@ export class AddAllRooms {
 		return false;
 	}
 
-	// Extracts and returns all text content from a node and its children.
 	private getTextFromNode(node: any): string {
 		let text = "";
 		if (node.nodeName === "#text") {
@@ -292,15 +305,26 @@ export class AddAllRooms {
 		address: string,
 		teamNumber: string
 	): Promise<{ lat?: number; lon?: number; error?: string }> {
-		const encodedAddress = encodeURIComponent(address);
-		const url = `http://cs310.students.cs.ubc.ca:11316/api/v1/project_team${teamNumber}/${encodedAddress}`;
+		const url = `http://cs310.students.cs.ubc.ca:11316/api/v1/project_team${teamNumber}/${encodeURIComponent(address)}`;
 
 		return new Promise((resolve, reject) => {
 			http
 				.get(url, (response) => {
 					let data = "";
-					response.on("data", (chunk) => (data += chunk));
-					response.on("end", () => resolve(JSON.parse(data)));
+					response
+						.on("data", (chunk) => (data += chunk))
+						.on("end", () => {
+							try {
+								const geoResponse = JSON.parse(data);
+								if (geoResponse.error) {
+									reject(new Error(geoResponse.error));
+								} else {
+									resolve(geoResponse);
+								}
+							} catch (err) {
+								reject(new Error(`Failed to parse geolocation response: ${err}`));
+							}
+						});
 				})
 				.on("error", (err) => reject(new Error(`Failed to fetch geolocation: ${err.message}`)));
 		});

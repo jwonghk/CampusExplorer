@@ -52,6 +52,7 @@ function evaluateComparisonNode(node: ComparatorNode, record: any): boolean {
 	if (value === undefined || value === null) {
 		return false;
 	}
+
 	switch (node.comparator) {
 		case "LT":
 			return typeof value === "number" && value < node.value;
@@ -60,7 +61,11 @@ function evaluateComparisonNode(node: ComparatorNode, record: any): boolean {
 		case "EQ":
 			return typeof value === "number" && value === node.value;
 		case "IS":
-			return typeof value === "string" && matchIS(value, node.value as string);
+			// Ensure `IS` only compares strings and handle invalid patterns
+			if (typeof value !== "string" || typeof node.value !== "string") {
+				throw new InsightError("IS comparator must be used with string values");
+			}
+			return matchIS(value, node.value as string);
 		default:
 			throw new InsightError(`Invalid comparator: ${node.comparator}`);
 	}

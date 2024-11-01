@@ -68,7 +68,7 @@ export default class InsightFacade implements IInsightFacade {
 		}
 	}
 
-	private async writeToPersistent(id: string, jsonData: string): Promise<void> {
+	public async writeToPersistent(id: string, jsonData: string): Promise<void> {
 		try {
 			const filePath = path.join(DATA_DIR, id + ".json");
 			await fs.writeFile(filePath, jsonData);

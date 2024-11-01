@@ -61,26 +61,34 @@ function validateTransformations(transformations: any): void {
 	}
 }
 
+const NUMERIC_FIELDS = ["avg", "pass", "fail", "audit", "year", "seats", "lat", "lon"];
+
 function validateApplyRule(applyRule: any, applyKeysSet: Set<string>): void {
 	if (!isValidObject(applyRule) || Object.keys(applyRule).length !== 1) {
 		throw new InsightError("Each APPLYRULE must be an object with one applykey");
 	}
+
 	const applyKey = Object.keys(applyRule)[0];
 	if (applyKeysSet.has(applyKey) || applyKey.includes("_")) {
 		throw new InsightError("applykeys must be unique and not contain underscores");
 	}
 	applyKeysSet.add(applyKey);
+
 	const applyContent = applyRule[applyKey];
 	if (!isValidObject(applyContent) || Object.keys(applyContent).length !== 1) {
 		throw new InsightError("APPLYRULE must have exactly one APPLYTOKEN");
 	}
+
 	const applyToken = Object.keys(applyContent)[0] as ApplyToken;
-	if (!["MAX", "MIN", "AVG", "COUNT", "SUM"].includes(applyToken)) {
-		throw new InsightError(`Invalid APPLYTOKEN: ${applyToken}`);
-	}
 	const fieldKey = applyContent[applyToken];
+
+	// Check that field key is valid and numeric if required by apply token
 	validateKey(fieldKey);
+	if (["MAX", "MIN", "AVG", "SUM"].includes(applyToken) && !NUMERIC_FIELDS.includes(fieldKey.split("_")[1])) {
+		throw new InsightError(`${applyToken} can only be used with numeric fields`);
+	}
 }
+
 // End ChatGPT
 
 function validateOptions(options: any, transformations: any): void {
