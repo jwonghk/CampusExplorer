@@ -1,0 +1,25 @@
+{
+	"title": "Query for Non-Existent Room Address",
+	"input": {
+		"WHERE": {
+			"IS": {
+				"rooms_address": "NonExistentBuilding123"
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"rooms_number",
+				"rooms_address"
+			],
+			"ORDER": {
+				"dir": "UP",
+				"keys": [
+					"rooms_shortname"
+				]
+			}
+		}
+	},
+	"errorExpected": false,
+	"expected": []
+}

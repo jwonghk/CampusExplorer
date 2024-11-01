@@ -791,6 +791,7 @@ describe("InsightFacade", function () {
 			"[valid/queryWithGeolocationFieldsInGROUPAndAPPLY.json] Query with Geolocation Fields in GROUP and APPLY",
 			checkQuery
 		);
+		it("[valid/queryForNon-ExistentRoomAddress.json] Query for Non-Existent Room Address", checkQuery);
 
 		it(
 			"[invalid/query_invalid_latitude_longitude_field.json] Invalid Latitude/Longitude Query with Incorrect Field Name",
