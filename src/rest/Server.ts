@@ -3,16 +3,20 @@ import { StatusCodes } from "http-status-codes";
 import Log from "@ubccpsc310/folder-test/build/Log";
 import * as http from "http";
 import cors from "cors";
+import InsightFacade from "../controller/InsightFacade";
+import { InsightDatasetKind, InsightError, NotFoundError } from "../controller/IInsightFacade";
 
 export default class Server {
 	private readonly port: number;
 	private express: Application;
 	private server: http.Server | undefined;
+	private insightFacade: InsightFacade;
 
 	constructor(port: number) {
 		Log.info(`Server::<init>( ${port} )`);
 		this.port = port;
 		this.express = express();
+		this.insightFacade = new InsightFacade();
 
 		this.registerMiddleware();
 		this.registerRoutes();
@@ -88,7 +92,90 @@ export default class Server {
 		// http://localhost:4321/echo/hello
 		this.express.get("/echo/:msg", Server.echo);
 
-		// TODO: your other endpoints should go here
+		// Dataset endpoints
+		this.express.put("/dataset/:id/:kind", this.putDataset.bind(this));
+		this.express.delete("/dataset/:id", this.deleteDataset.bind(this));
+		this.express.post("/query", this.postQuery.bind(this));
+		this.express.get("/datasets", this.getDatasets.bind(this));
+	}
+
+	/**
+	 * Handles PUT /dataset/:id/:kind
+	 */
+	private async putDataset(req: Request, res: Response): Promise<void> {
+		const id = req.params.id;
+		const kindParam = req.params.kind;
+
+		let kind: InsightDatasetKind;
+		if (kindParam === "sections") {
+			kind = InsightDatasetKind.Sections;
+		} else if (kindParam === "rooms") {
+			kind = InsightDatasetKind.Rooms;
+		} else {
+			res.status(StatusCodes.BAD_REQUEST).json({ error: "Invalid dataset kind" });
+			return;
+		}
+
+		const buffer = req.body;
+		if (!Buffer.isBuffer(buffer)) {
+			res.status(StatusCodes.BAD_REQUEST).json({ error: "Invalid dataset content" });
+			return;
+		}
+
+		const content = buffer.toString("base64");
+
+		try {
+			const result = await this.insightFacade.addDataset(id, content, kind);
+			res.status(StatusCodes.OK).json({ result: result });
+		} catch (err: any) {
+			res.status(StatusCodes.BAD_REQUEST).json({ error: err.message });
+		}
+	}
+
+	/**
+	 * Handles DELETE /dataset/:id
+	 */
+	private async deleteDataset(req: Request, res: Response): Promise<void> {
+		const id = req.params.id;
+
+		try {
+			const result = await this.insightFacade.removeDataset(id);
+			res.status(StatusCodes.OK).json({ result: result });
+		} catch (err: any) {
+			if (err instanceof NotFoundError) {
+				res.status(StatusCodes.NOT_FOUND).json({ error: err.message });
+			} else if (err instanceof InsightError) {
+				res.status(StatusCodes.BAD_REQUEST).json({ error: err.message });
+			} else {
+				res.status(StatusCodes.BAD_REQUEST).json({ error: err.toString() });
+			}
+		}
+	}
+
+	/**
+	 * Handles POST /query
+	 */
+	private async postQuery(req: Request, res: Response): Promise<void> {
+		const query = req.body;
+
+		try {
+			const result = await this.insightFacade.performQuery(query);
+			res.status(StatusCodes.OK).json({ result: result });
+		} catch (err: any) {
+			res.status(StatusCodes.BAD_REQUEST).json({ error: err.message });
+		}
+	}
+
+	/**
+	 * Handles GET /datasets
+	 */
+	private async getDatasets(_req: Request, res: Response): Promise<void> {
+		try {
+			const result = await this.insightFacade.listDatasets();
+			res.status(StatusCodes.OK).json({ result: result });
+		} catch (err: any) {
+			res.status(StatusCodes.BAD_REQUEST).json({ error: err.message });
+		}
 	}
 
 	// The next two methods handle the echo service.
