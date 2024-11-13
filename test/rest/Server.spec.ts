@@ -42,7 +42,7 @@ describe("Facade C3", function () {
 	// Sample on how to format PUT requests
 	it("PUT test for valid dataset (sections)", async function () {
 		const ENDPOINT_URL = "/dataset/sections/sections";
-		const datasetPath = path.join(__dirname, "../resources/archives/pair.zip");
+		const datasetPath = path.join(__dirname, "../resources/archives/SmallerData.zip");
 
 		try {
 			const zipFileData = await fs.promises.readFile(datasetPath);
@@ -89,7 +89,7 @@ describe("Facade C3", function () {
 	// Test for DELETE /dataset/:id with existing dataset
 	it("DELETE test for existing dataset (should succeed)", async function () {
 		const ENDPOINT_URL = "/dataset/sections";
-		const datasetPath = path.join(__dirname, "../resources/archives/pair.zip");
+		const datasetPath = path.join(__dirname, "../resources/archives/SmallerData.zip");
 
 		try {
 			// Ensure dataset exists before deletion
@@ -147,7 +147,7 @@ describe("Facade C3", function () {
 				ORDER: "sections_avg",
 			},
 		};
-		const datasetPath = path.join(__dirname, "../resources/archives/pair.zip");
+		const datasetPath = path.join(__dirname, "../resources/archives/SmallerData.zip");
 
 		try {
 			// Ensure dataset exists before querying
@@ -203,7 +203,7 @@ describe("Facade C3", function () {
 	// Test for GET /datasets to list added datasets
 	it("GET test for list of datasets", async function () {
 		const ENDPOINT_URL = "/datasets";
-		const datasetPath = path.join(__dirname, "../resources/archives/pair.zip");
+		const datasetPath = path.join(__dirname, "../resources/archives/SmallerData.zip");
 
 		try {
 			// Ensure dataset exists before listing
