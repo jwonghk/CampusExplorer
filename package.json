@@ -52,8 +52,8 @@
 		"test": "mocha --require ts-node/register --timeout 10000 --extension .spec.ts --recursive test",
 		"lint:check": "eslint src test --ext .ts",
 		"lint:fix": "eslint src test --ext .ts --fix",
-		"prettier:check": "prettier src/**/*.ts test/**/*.ts --check",
-		"prettier:fix": "prettier src/**/*.ts test/**/*.ts --write",
+		"prettier:check": "prettier frontend/**/*.js frontend/**/*.css src/**/*.ts test/**/*.ts --check",
+		"prettier:fix": "prettier frontend/**/*.js frontend/**/*.css src/**/*.ts test/**/*.ts --write",
 		"start": "ts-node src/App.ts"
 	}
 }
