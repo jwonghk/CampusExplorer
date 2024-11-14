@@ -1,4 +1,3 @@
-// api.js
 import axios from "axios";
 
 const API_BASE_URL = "http://localhost:4321";
@@ -27,7 +26,13 @@ export const fetchBuildings = async () => {
 		const response = await api.post("/query", query);
 		return response.data.result;
 	} catch (error) {
-		console.error("Error fetching buildings:", error);
+		if (error.response) {
+			console.error("Error fetching buildings:", error.response.data);
+		} else if (error.request) {
+			console.error("No response received:", error.request);
+		} else {
+			console.error("Error:", error.message);
+		}
 		throw new Error("Failed to fetch buildings data");
 	}
 };
@@ -57,7 +62,13 @@ export const fetchRoomsForBuilding = async (shortname) => {
 		const response = await api.post("/query", query);
 		return response.data.result;
 	} catch (error) {
-		console.error("Error fetching rooms:", error);
+		if (error.response) {
+			console.error(`Error fetching rooms for building ${shortname}:`, error.response.data);
+		} else if (error.request) {
+			console.error("No response received:", error.request);
+		} else {
+			console.error("Error:", error.message);
+		}
 		throw new Error(`Failed to fetch rooms for building ${shortname}`);
 	}
 };
