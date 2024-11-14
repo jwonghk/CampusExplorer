@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
@@ -65,7 +65,6 @@ function MapView() {
 		setSelectedRooms([]);
 	};
 
-	// Start ChatGPT
 	const calculateDistance = (lat1, lon1, lat2, lon2) => {
 		const toRadians = (value) => (value * Math.PI) / 180;
 		const radius = 6371e3; // Earth's radius in meters
@@ -116,7 +115,6 @@ function MapView() {
 	};
 
 	const walkingTimes = getWalkingTimes();
-	// End ChatGPT
 
 	// Group rooms by building
 	const roomsByBuilding = allRooms.reduce((acc, room) => {
@@ -128,10 +126,12 @@ function MapView() {
 		return acc;
 	}, {});
 
+	const buildingRefs = useRef({});
+
 	return (
 		<div className="app-container">
 			<div className="map-container">
-				<div className="logo">Campus Explorer</div>
+				<div className="logo">UBC Campus Explorer</div>
 				<MapContainer center={position} zoom={16} id="map">
 					<TileLayer
 						attribution="&copy; OpenStreetMap contributors"
@@ -142,26 +142,33 @@ function MapView() {
 						const buildingLat = roomsInBuilding[0].rooms_lat;
 						const buildingLon = roomsInBuilding[0].rooms_lon;
 						const buildingFullName = roomsInBuilding[0].rooms_fullname;
+
 						return (
-							<Marker key={index} position={[buildingLat, buildingLon]} icon={redIcon}>
+							<Marker
+								key={index}
+								position={[buildingLat, buildingLon]}
+								icon={redIcon}
+								eventHandlers={{
+									click: () => {
+										const ref = buildingRefs.current[buildingFullName];
+										if (ref && ref.scrollIntoView) {
+											ref.scrollIntoView({ behavior: "smooth", block: "start" });
+										}
+									},
+								}}
+							>
 								<Popup>
 									<div>
 										<h3>{buildingFullName}</h3>
-										<ul>
-											{roomsInBuilding.map((room) => {
-												const isSelected = selectedRooms.some((selected) => selected.rooms_name === room.rooms_name);
-												return (
+										<div className="popup-room-list">
+											<ul>
+												{roomsInBuilding.map((room) => (
 													<li key={room.rooms_name}>
-														{room.rooms_name} - Seats: {room.rooms_seats}{" "}
-														{!isSelected ? (
-															<button onClick={() => toggleRoomSelection(room)}>Add</button>
-														) : (
-															<button onClick={() => toggleRoomSelection(room)}>Remove</button>
-														)}
+														{room.rooms_name} - Seats: {room.rooms_seats}
 													</li>
-												);
-											})}
-										</ul>
+												))}
+											</ul>
+										</div>
 									</div>
 								</Popup>
 							</Marker>
@@ -175,7 +182,12 @@ function MapView() {
 					walkingTimes={walkingTimes}
 				/>
 			</div>
-			<RoomList rooms={allRooms} selectedRooms={selectedRooms} toggleRoomSelection={toggleRoomSelection} />
+			<RoomList
+				rooms={allRooms}
+				selectedRooms={selectedRooms}
+				toggleRoomSelection={toggleRoomSelection}
+				buildingRefs={buildingRefs}
+			/>
 		</div>
 	);
 }

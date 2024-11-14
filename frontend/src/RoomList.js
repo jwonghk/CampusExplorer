@@ -1,7 +1,7 @@
 import React from "react";
 import "./RoomList.css";
 
-function RoomList({ rooms, selectedRooms, toggleRoomSelection }) {
+function RoomList({ rooms, selectedRooms, toggleRoomSelection, buildingRefs }) {
 	// Group rooms by building
 	const roomsByBuilding = rooms.reduce((acc, room) => {
 		const building = room.rooms_fullname;
@@ -17,7 +17,13 @@ function RoomList({ rooms, selectedRooms, toggleRoomSelection }) {
 			<h2>Rooms</h2>
 			<div className="room-list-container">
 				{Object.keys(roomsByBuilding).map((buildingName) => (
-					<div key={buildingName} className="building-group">
+					<div
+						key={buildingName}
+						className="building-group"
+						ref={(el) => {
+							buildingRefs.current[buildingName] = el;
+						}}
+					>
 						<h3>{buildingName}</h3>
 						<ul>
 							{roomsByBuilding[buildingName].map((room) => {

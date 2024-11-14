@@ -5,7 +5,7 @@ function SelectedRooms({ selectedRooms, toggleRoomSelection, clearAllRooms, walk
 	return (
 		<div className="selected-rooms">
 			<div className="selected-rooms-header">
-				<h2>Selected Rooms</h2>
+				<h2>Selected Rooms ({selectedRooms.length}/5)</h2>
 				{selectedRooms.length > 0 && (
 					<button className="clear-all-button" onClick={clearAllRooms}>
 						Remove All Rooms
