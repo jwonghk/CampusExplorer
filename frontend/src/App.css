@@ -1,42 +1,108 @@
 body,
 html,
 #root {
-	margin: 0;
-	padding: 0;
-	height: 100%;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.map-container {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
 }
 
 #map {
-	width: 100%;
-	height: 70vh;
-}
-
-.room-selection {
-	position: absolute;
-	top: 10%;
-	right: 5%;
-	background: white;
-	padding: 20px;
-	max-height: 80%;
-	overflow-y: auto;
-	border: 1px solid #ccc;
-	z-index: 1000;
+  width: 100%;
+  height: 70vh;
 }
 
 .selected-rooms {
-	position: relative;
-	background: rgba(255, 255, 255, 0.9);
-	padding: 20px;
-	max-height: 30vh;
-	overflow-y: auto;
-	width: 100%;
-	box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  overflow-y: auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .room-info {
-	margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .walking-times {
-	margin-top: 20px;
+  margin-top: 20px;
+}
+
+.room-list {
+  flex: 1;
+  background: #f9f9f9;
+  padding: 10px;
+  overflow-y: auto;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.room-list h2 {
+  margin-top: 0;
+}
+
+.room-list-container {
+  max-height: calc(100vh - 50px);
+  overflow-y: auto;
+}
+
+.building-group {
+  margin-bottom: 20px;
+}
+
+.building-group h3 {
+  margin-bottom: 10px;
+}
+
+.room-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.room-item:hover {
+  background-color: #e0e0e0;
+}
+
+.room-item.selected {
+  background-color: #a6d8ff;
+}
+
+.room-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.room-name {
+  font-weight: bold;
+}
+
+.room-info {
+  font-size: 0.9em;
+  color: #555;
+}
+
+.remove-button {
+  background-color: transparent;
+  border: none;
+  color: red;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.remove-button:hover {
+  color: darkred;
 }
