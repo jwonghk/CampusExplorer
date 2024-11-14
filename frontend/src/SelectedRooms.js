@@ -1,10 +1,17 @@
 import React from "react";
 import "./SelectedRooms.css";
 
-function SelectedRooms({ selectedRooms, toggleRoomSelection, walkingTimes }) {
+function SelectedRooms({ selectedRooms, toggleRoomSelection, clearAllRooms, walkingTimes }) {
 	return (
 		<div className="selected-rooms">
-			<h2>Selected Rooms</h2>
+			<div className="selected-rooms-header">
+				<h2>Selected Rooms</h2>
+				{selectedRooms.length > 0 && (
+					<button className="clear-all-button" onClick={clearAllRooms}>
+						Remove All Rooms
+					</button>
+				)}
+			</div>
 			{selectedRooms.length === 0 && <p>No rooms selected.</p>}
 			<div className="cards-container">
 				{selectedRooms.map((room) => (

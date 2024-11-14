@@ -61,6 +61,10 @@ function MapView() {
 		});
 	};
 
+	const clearAllRooms = () => {
+		setSelectedRooms([]);
+	};
+
 	// Start ChatGPT
 	const calculateDistance = (lat1, lon1, lat2, lon2) => {
 		const toRadians = (value) => (value * Math.PI) / 180;
@@ -110,9 +114,19 @@ function MapView() {
 
 		return times;
 	};
-	// End ChatGPT
 
 	const walkingTimes = getWalkingTimes();
+	// End ChatGPT
+
+	// Group rooms by building
+	const roomsByBuilding = allRooms.reduce((acc, room) => {
+		const building = room.rooms_shortname;
+		if (!acc[building]) {
+			acc[building] = [];
+		}
+		acc[building].push(room);
+		return acc;
+	}, {});
 
 	return (
 		<div className="app-container">
@@ -123,20 +137,31 @@ function MapView() {
 						attribution="&copy; OpenStreetMap contributors"
 						url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 					/>
-					{allRooms.map((room, index) => {
-						const isSelected = selectedRooms.some((selected) => selected.rooms_name === room.rooms_name);
+					{Object.keys(roomsByBuilding).map((buildingShortName, index) => {
+						const roomsInBuilding = roomsByBuilding[buildingShortName];
+						const buildingLat = roomsInBuilding[0].rooms_lat;
+						const buildingLon = roomsInBuilding[0].rooms_lon;
+						const buildingFullName = roomsInBuilding[0].rooms_fullname;
 						return (
-							<Marker key={index} position={[room.rooms_lat, room.rooms_lon]} icon={redIcon}>
+							<Marker key={index} position={[buildingLat, buildingLon]} icon={redIcon}>
 								<Popup>
 									<div>
-										<h3>{room.rooms_name}</h3>
-										<p>{room.rooms_fullname}</p>
-										<p>Seats: {room.rooms_seats}</p>
-										{!isSelected ? (
-											<button onClick={() => toggleRoomSelection(room)}>Add Room</button>
-										) : (
-											<button onClick={() => toggleRoomSelection(room)}>Remove Room</button>
-										)}
+										<h3>{buildingFullName}</h3>
+										<ul>
+											{roomsInBuilding.map((room) => {
+												const isSelected = selectedRooms.some((selected) => selected.rooms_name === room.rooms_name);
+												return (
+													<li key={room.rooms_name}>
+														{room.rooms_name} - Seats: {room.rooms_seats}{" "}
+														{!isSelected ? (
+															<button onClick={() => toggleRoomSelection(room)}>Add</button>
+														) : (
+															<button onClick={() => toggleRoomSelection(room)}>Remove</button>
+														)}
+													</li>
+												);
+											})}
+										</ul>
 									</div>
 								</Popup>
 							</Marker>
@@ -146,6 +171,7 @@ function MapView() {
 				<SelectedRooms
 					selectedRooms={selectedRooms}
 					toggleRoomSelection={toggleRoomSelection}
+					clearAllRooms={clearAllRooms}
 					walkingTimes={walkingTimes}
 				/>
 			</div>
