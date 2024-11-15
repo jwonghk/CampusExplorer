@@ -1,18 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
-import "./leaflet.config";
-import { fetchBuildings, fetchRoomsForBuilding } from "./api";
-import RoomSelection from "./RoomSelection";
+import { fetchBuildings, fetchAllRooms } from "./api";
 import SelectedRooms from "./SelectedRooms";
+import RoomList from "./RoomList";
+import L from "leaflet";
+import redMarkerIcon from "./images/marker-icon-red.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
+const redIcon = new L.Icon({
+	iconUrl: redMarkerIcon,
+	shadowUrl: markerShadow,
+	iconSize: [25, 41],
+	iconAnchor: [12, 41],
+	popupAnchor: [1, -34],
+	shadowSize: [41, 41],
+});
 
 function MapView() {
 	const position = [49.2606, -123.246]; // Coordinates for UBC
-	const [buildings, setBuildings] = useState([]);
+	const [buildings, setBuildings] = useState([]); // eslint-disable-line no-unused-vars
+	const [allRooms, setAllRooms] = useState([]);
 	const [selectedRooms, setSelectedRooms] = useState([]);
-	const [currentBuildingRooms, setCurrentBuildingRooms] = useState([]);
-	const [showRoomSelection, setShowRoomSelection] = useState(false);
 
 	useEffect(() => {
 		const getBuildings = async () => {
@@ -24,18 +34,18 @@ function MapView() {
 			}
 		};
 
-		getBuildings();
-	}, []);
+		const getAllRooms = async () => {
+			try {
+				const roomsData = await fetchAllRooms();
+				setAllRooms(roomsData);
+			} catch (error) {
+				console.error("Failed to load all rooms:", error);
+			}
+		};
 
-	const handleBuildingClick = async (building) => {
-		try {
-			const rooms = await fetchRoomsForBuilding(building.rooms_shortname);
-			setCurrentBuildingRooms(rooms);
-			setShowRoomSelection(true);
-		} catch (error) {
-			console.error("Failed to load rooms:", error);
-		}
-	};
+		getBuildings();
+		getAllRooms();
+	}, []);
 
 	const toggleRoomSelection = (room) => {
 		setSelectedRooms((prevSelected) => {
@@ -51,25 +61,25 @@ function MapView() {
 		});
 	};
 
-	const closeRoomSelection = () => {
-		setShowRoomSelection(false);
-		setCurrentBuildingRooms([]);
+	const clearAllRooms = () => {
+		setSelectedRooms([]);
 	};
 
 	const calculateDistance = (lat1, lon1, lat2, lon2) => {
-		const toRad = (value) => (value * Math.PI) / 180;
-		const R = 6371e3; // Earth's radius in meters
+		const toRadians = (value) => (value * Math.PI) / 180;
+		const radius = 6371e3; // Earth's radius in meters
 
-		const φ1 = toRad(lat1);
-		const φ2 = toRad(lat2);
-		const Δφ = toRad(lat2 - lat1);
-		const Δλ = toRad(lon2 - lon1);
+		const latitude1 = toRadians(lat1);
+		const latitude2 = toRadians(lat2);
+		const deltaLatitude = toRadians(lat2 - lat1);
+		const deltaLongitude = toRadians(lon2 - lon1);
 
-		const a = Math.sin(Δφ / 2) ** 2 + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
+		const a =
+			Math.sin(deltaLatitude / 2) ** 2 + Math.cos(latitude1) * Math.cos(latitude2) * Math.sin(deltaLongitude / 2) ** 2;
 
 		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-		const distance = R * c; // in meters
+		const distance = radius * c; // in meters
 		return distance;
 	};
 
@@ -85,7 +95,6 @@ function MapView() {
 				let walkingTime;
 
 				if (roomA.rooms_shortname === roomB.rooms_shortname) {
-					// Same building, minimal walking time
 					walkingTime = 60; // seconds
 				} else {
 					const distance = calculateDistance(roomA.rooms_lat, roomA.rooms_lon, roomB.rooms_lat, roomB.rooms_lon);
@@ -107,36 +116,78 @@ function MapView() {
 
 	const walkingTimes = getWalkingTimes();
 
+	// Group rooms by building
+	const roomsByBuilding = allRooms.reduce((acc, room) => {
+		const building = room.rooms_shortname;
+		if (!acc[building]) {
+			acc[building] = [];
+		}
+		acc[building].push(room);
+		return acc;
+	}, {});
+
+	const buildingRefs = useRef({});
+
 	return (
-		<div>
-			<MapContainer center={position} zoom={16} id="map">
-				<TileLayer
-					attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
-					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-				/>
-				{buildings.map((building, index) => (
-					<Marker
-						key={index}
-						position={[building.rooms_lat, building.rooms_lon]}
-						eventHandlers={{
-							click: () => {
-								handleBuildingClick(building);
-							},
-						}}
-					>
-						<Popup>{building.rooms_fullname}</Popup>
-					</Marker>
-				))}
-			</MapContainer>
-			{showRoomSelection && (
-				<RoomSelection
-					rooms={currentBuildingRooms}
+		<div className="app-container">
+			<div className="map-container">
+				<div className="logo">UBC Campus Explorer</div>
+				<MapContainer center={position} zoom={16} id="map">
+					<TileLayer
+						attribution="&copy; OpenStreetMap contributors"
+						url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+					/>
+					{Object.keys(roomsByBuilding).map((buildingShortName, index) => {
+						const roomsInBuilding = roomsByBuilding[buildingShortName];
+						const buildingLat = roomsInBuilding[0].rooms_lat;
+						const buildingLon = roomsInBuilding[0].rooms_lon;
+						const buildingFullName = roomsInBuilding[0].rooms_fullname;
+
+						return (
+							<Marker
+								key={index}
+								position={[buildingLat, buildingLon]}
+								icon={redIcon}
+								eventHandlers={{
+									click: () => {
+										const ref = buildingRefs.current[buildingFullName];
+										if (ref && ref.scrollIntoView) {
+											ref.scrollIntoView({ behavior: "smooth", block: "start" });
+										}
+									},
+								}}
+							>
+								<Popup>
+									<div>
+										<h3>{buildingFullName}</h3>
+										<div className="popup-room-list">
+											<ul>
+												{roomsInBuilding.map((room) => (
+													<li key={room.rooms_name}>
+														{room.rooms_name} - Seats: {room.rooms_seats}
+													</li>
+												))}
+											</ul>
+										</div>
+									</div>
+								</Popup>
+							</Marker>
+						);
+					})}
+				</MapContainer>
+				<SelectedRooms
 					selectedRooms={selectedRooms}
 					toggleRoomSelection={toggleRoomSelection}
-					closeSelection={closeRoomSelection}
+					clearAllRooms={clearAllRooms}
+					walkingTimes={walkingTimes}
 				/>
-			)}
-			<SelectedRooms selectedRooms={selectedRooms} walkingTimes={walkingTimes} />
+			</div>
+			<RoomList
+				rooms={allRooms}
+				selectedRooms={selectedRooms}
+				toggleRoomSelection={toggleRoomSelection}
+				buildingRefs={buildingRefs}
+			/>
 		</div>
 	);
 }

@@ -1,0 +1,64 @@
+.selected-rooms-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.clear-all-button {
+	background-color: transparent;
+	border: none;
+	color: #ff0000;
+	font-size: 1em;
+	cursor: pointer;
+}
+
+.clear-all-button:hover {
+	color: #cc0000;
+}
+
+.cards-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.room-card {
+	position: relative;
+	background-color: #ffffff;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	padding: 15px;
+	width: calc(33.333% - 20px);
+	box-sizing: border-box;
+}
+
+.card-remove-button {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	background-color: transparent;
+	border: none;
+	color: #888;
+	font-size: 1.2em;
+	cursor: pointer;
+}
+
+.card-remove-button:hover {
+	color: #ff0000;
+}
+
+.room-card h3 {
+	margin-top: 0;
+}
+
+@media (max-width: 768px) {
+	.room-card {
+		width: calc(50% - 20px);
+	}
+}
+
+@media (max-width: 480px) {
+	.room-card {
+		width: 100%;
+	}
+}
