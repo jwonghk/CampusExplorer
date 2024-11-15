@@ -142,6 +142,7 @@ function MapView() {
 						const buildingLat = roomsInBuilding[0].rooms_lat;
 						const buildingLon = roomsInBuilding[0].rooms_lon;
 						const buildingFullName = roomsInBuilding[0].rooms_fullname;
+						const buildingAddress = roomsInBuilding[0].rooms_address;
 
 						return (
 							<Marker
@@ -160,6 +161,7 @@ function MapView() {
 								<Popup>
 									<div>
 										<h3>{buildingFullName}</h3>
+										<p>{buildingAddress}</p>
 										<div className="popup-room-list">
 											<ul>
 												{roomsInBuilding.map((room) => (
