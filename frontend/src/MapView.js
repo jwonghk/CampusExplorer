@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { MapContainer, TileLayer, Marker, Popup, Polyline, Tooltip } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
 import { fetchBuildings, fetchAllRooms } from "./api";
@@ -8,6 +8,8 @@ import RoomList from "./RoomList";
 import L from "leaflet";
 import redMarkerIcon from "./images/marker-icon-red.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
+const apiKey = process.env.REACT_APP_OPENROUTESERVICE_API_KEY;
 
 const redIcon = new L.Icon({
 	iconUrl: redMarkerIcon,
@@ -23,6 +25,9 @@ function MapView() {
 	const [buildings, setBuildings] = useState([]); // eslint-disable-line no-unused-vars
 	const [allRooms, setAllRooms] = useState([]);
 	const [selectedRooms, setSelectedRooms] = useState([]);
+	const [routeCoordinates, setRouteCoordinates] = useState(null);
+	const [routeTime, setRouteTime] = useState(null);
+	const [walkingTimes, setWalkingTimes] = useState([]);
 
 	useEffect(() => {
 		const getBuildings = async () => {
@@ -65,26 +70,25 @@ function MapView() {
 		setSelectedRooms([]);
 	};
 
-	const calculateDistance = (lat1, lon1, lat2, lon2) => {
-		const toRadians = (value) => (value * Math.PI) / 180;
-		const radius = 6371e3; // Earth's radius in meters
+	const fetchWalkingTime = async (roomA, roomB) => {
+		const start = [roomA.rooms_lon, roomA.rooms_lat];
+		const end = [roomB.rooms_lon, roomB.rooms_lat];
 
-		const latitude1 = toRadians(lat1);
-		const latitude2 = toRadians(lat2);
-		const deltaLatitude = toRadians(lat2 - lat1);
-		const deltaLongitude = toRadians(lon2 - lon1);
+		const url = `https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${apiKey}&start=${start[0]},${start[1]}&end=${end[0]},${end[1]}`;
 
-		const a =
-			Math.sin(deltaLatitude / 2) ** 2 + Math.cos(latitude1) * Math.cos(latitude2) * Math.sin(deltaLongitude / 2) ** 2;
+		const response = await fetch(url);
+		const data = await response.json();
 
-		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		if (data.error || !data.features || data.features.length === 0) {
+			throw new Error("No route found");
+		}
 
-		const distance = radius * c; // in meters
-		return distance;
+		const duration = data.features[0].properties.segments[0].duration; // in seconds
+
+		return duration;
 	};
 
-	const getWalkingTimes = () => {
-		const walkingSpeed = 1.4; // meters per second
+	const getWalkingTimes = useCallback(async () => {
 		const times = [];
 
 		for (let i = 0; i < selectedRooms.length; i++) {
@@ -97,11 +101,16 @@ function MapView() {
 				if (roomA.rooms_shortname === roomB.rooms_shortname) {
 					walkingTime = 60; // seconds
 				} else {
-					const distance = calculateDistance(roomA.rooms_lat, roomA.rooms_lon, roomB.rooms_lat, roomB.rooms_lon);
-					walkingTime = distance / walkingSpeed; // seconds
+					try {
+						const duration = await fetchWalkingTime(roomA, roomB);
+						walkingTime = duration; // duration in seconds
+					} catch (error) {
+						console.error(`Error fetching walking time between ${roomA.rooms_name} and ${roomB.rooms_name}:`, error);
+						walkingTime = null;
+					}
 				}
 
-				const timeInMinutes = (walkingTime / 60).toFixed(2);
+				const timeInMinutes = walkingTime ? (walkingTime / 60).toFixed(2) : "N/A";
 
 				times.push({
 					roomA: roomA.rooms_name,
@@ -112,9 +121,64 @@ function MapView() {
 		}
 
 		return times;
-	};
+	}, [selectedRooms]);
 
-	const walkingTimes = getWalkingTimes();
+	// Fetch walking times whenever selectedRooms changes
+	useEffect(() => {
+		const fetchWalkingTimes = async () => {
+			const times = await getWalkingTimes();
+			setWalkingTimes(times);
+		};
+
+		if (selectedRooms.length > 0) {
+			fetchWalkingTimes();
+		} else {
+			setWalkingTimes([]);
+		}
+	}, [selectedRooms, getWalkingTimes]);
+
+	useEffect(() => {
+		const fetchRoute = async () => {
+			if (selectedRooms.length === 2) {
+				const roomA = selectedRooms[0];
+				const roomB = selectedRooms[1];
+				const coordinates = [
+					[roomA.rooms_lon, roomA.rooms_lat],
+					[roomB.rooms_lon, roomB.rooms_lat],
+				];
+
+				try {
+					const response = await fetch(
+						`https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${apiKey}&start=${coordinates[0][0]},${coordinates[0][1]}&end=${coordinates[1][0]},${coordinates[1][1]}`
+					);
+
+					const data = await response.json();
+
+					if (data && data.features && data.features.length > 0) {
+						const geometry = data.features[0].geometry;
+						const decodedCoordinates = geometry.coordinates.map((coord) => [
+							coord[1], // Latitude
+							coord[0], // Longitude
+						]);
+						setRouteCoordinates(decodedCoordinates);
+
+						const duration = data.features[0].properties.segments[0].duration; // in seconds
+						setRouteTime((duration / 60).toFixed(2)); // convert to minutes
+					}
+				} catch (error) {
+					console.error("Error fetching route:", error);
+					setRouteCoordinates(null);
+					setRouteTime(null);
+				}
+			} else {
+				// Clear the route if not exactly two rooms are selected
+				setRouteCoordinates(null);
+				setRouteTime(null);
+			}
+		};
+
+		fetchRoute();
+	}, [selectedRooms]);
 
 	// Group rooms by building
 	const roomsByBuilding = allRooms.reduce((acc, room) => {
@@ -137,11 +201,13 @@ function MapView() {
 						attribution="&copy; OpenStreetMap contributors"
 						url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 					/>
+
 					{Object.keys(roomsByBuilding).map((buildingShortName, index) => {
 						const roomsInBuilding = roomsByBuilding[buildingShortName];
 						const buildingLat = roomsInBuilding[0].rooms_lat;
 						const buildingLon = roomsInBuilding[0].rooms_lon;
 						const buildingFullName = roomsInBuilding[0].rooms_fullname;
+						const buildingAddress = roomsInBuilding[0].rooms_address;
 
 						return (
 							<Marker
@@ -152,7 +218,10 @@ function MapView() {
 									click: () => {
 										const ref = buildingRefs.current[buildingFullName];
 										if (ref && ref.scrollIntoView) {
-											ref.scrollIntoView({ behavior: "smooth", block: "start" });
+											ref.scrollIntoView({
+												behavior: "smooth",
+												block: "start",
+											});
 										}
 									},
 								}}
@@ -160,6 +229,7 @@ function MapView() {
 								<Popup>
 									<div>
 										<h3>{buildingFullName}</h3>
+										<p>{buildingAddress}</p>
 										<div className="popup-room-list">
 											<ul>
 												{roomsInBuilding.map((room) => (
@@ -174,6 +244,14 @@ function MapView() {
 							</Marker>
 						);
 					})}
+
+					{routeCoordinates && (
+						<Polyline positions={routeCoordinates} color="blue">
+							<Tooltip permanent direction="center">
+								Walking Time: {routeTime} minutes
+							</Tooltip>
+						</Polyline>
+					)}
 				</MapContainer>
 				<SelectedRooms
 					selectedRooms={selectedRooms}
