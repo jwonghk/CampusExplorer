@@ -86,6 +86,7 @@ export const fetchAllRooms = async () => {
 				"rooms_seats",
 				"rooms_lat",
 				"rooms_lon",
+				"rooms_furniture",
 			],
 			ORDER: {
 				dir: "UP",

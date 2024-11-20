@@ -115,7 +115,15 @@ function MapView() {
 				times.push({
 					roomA: roomA.rooms_name,
 					roomB: roomB.rooms_name,
+					roomAshort: roomA.rooms_shortname,
+					roomBshort: roomB.rooms_shortname,
+					roomAaddr: roomA.rooms_address,
+					roomBaddr: roomB.rooms_address,
 					time: timeInMinutes,
+					roomAFurniture: roomA.rooms_furniture,
+					roomBFurniture: roomB.rooms_furniture,
+					roomAseats: roomA.rooms_seats,
+					roomBseats: roomB.rooms_seats,
 				});
 			}
 		}
