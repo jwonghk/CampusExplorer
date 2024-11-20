@@ -25,56 +25,55 @@ function SelectedRooms({ selectedRooms, toggleRoomSelection, clearAllRooms, walk
 						<p>Room Number: {room.rooms_number}</p>
 						<p>Address: {room.rooms_address}</p>
 						<p>Seats: {room.rooms_seats}</p>
-						<p>Furniture : {room.rooms_furniture}</p>
+						<p>Furniture: {room.rooms_furniture}</p>
 					</div>
 				))}
 			</div>
 			{walkingTimes.length > 0 && (
 				<div className="walking-times">
-					<h2>Walking Times Between Rooms</h2>
-					<ul>
+					<h2>Rooms Information</h2>
+					<div className="table-container">
 						<table>
-							<tr>
-								<th> &#10140; </th>
-								<th> Room 1</th>
-								<th> Building for 1</th>
-								<th> Address of Building 1</th>
-								<th> Seats Room 1</th>
-								<th> Room 1 Furniture</th>
-
-								<th> Room 2</th>
-								<th> Building for 2</th>
-								<th> Address of Building 2</th>
-								<th> Seats Room 2</th>
-								<th> Room 2 Furniture</th>
-								<th> Distance</th>
-								<th> Duration</th>
-							</tr>
-
-							{walkingTimes.map((wt, index) => (
+							<thead>
 								<tr>
-									<th id="relation">
-										{" "}
-										{wt.roomA} {wt.roomB}{" "}
-									</th>
-									<th id="roomA"> {wt.roomA} </th>
-									<th id="roomAshort"> {wt.roomAshort} </th>
-									<th id="roomAaddr"> {wt.roomAaddr} </th>
-									<th id="roomAseats"> {wt.roomAseats} </th>
-									<th id="roomFur"> {wt.roomAFurniture}</th>
-
-									<th id="roomB"> {wt.roomB} </th>
-									<th id="roomBshort"> {wt.roomBshort} </th>
-									<th id="roomBaddr"> {wt.roomBaddr} </th>
-									<th id="roomBseats"> {wt.roomBseats} </th>
-									<th id="roomFur"> {wt.roomBFurniture}</th>
-
-									<th id="distance"> Distance</th>
-									<th id="travelTime"> {wt.time} minutes</th>
+									<th>Relation</th>
+									<th>Building A</th>
+									<th>Room A</th>
+									<th>Address A</th>
+									<th>Seats A</th>
+									<th>Furniture A</th>
+									<th>Building B</th>
+									<th>Room B</th>
+									<th>Address B</th>
+									<th>Seats B</th>
+									<th>Furniture B</th>
+									<th>Distance (m)</th>
+									<th>Duration (min)</th>
 								</tr>
-							))}
+							</thead>
+							<tbody>
+								{walkingTimes.map((wt, index) => (
+									<tr key={index}>
+										<td>
+											{wt.roomA} → {wt.roomB}
+										</td>
+										<td>{wt.roomAshort}</td>
+										<td>{wt.roomA}</td>
+										<td>{wt.roomAaddr}</td>
+										<td>{wt.roomAseats}</td>
+										<td>{wt.roomAFurniture}</td>
+										<td>{wt.roomBshort}</td>
+										<td>{wt.roomB}</td>
+										<td>{wt.roomBaddr}</td>
+										<td>{wt.roomBseats}</td>
+										<td>{wt.roomBFurniture}</td>
+										<td>{wt.distance}</td>
+										<td>{wt.time}</td>
+									</tr>
+								))}
+							</tbody>
 						</table>
-					</ul>
+					</div>
 				</div>
 			)}
 		</div>

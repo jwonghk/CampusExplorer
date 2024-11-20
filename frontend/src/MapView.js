@@ -84,8 +84,9 @@ function MapView() {
 		}
 
 		const duration = data.features[0].properties.segments[0].duration; // in seconds
+		const distance = data.features[0].properties.segments[0].distance; // in meters
 
-		return duration;
+		return { duration, distance };
 	};
 
 	const getWalkingTimes = useCallback(async () => {
@@ -97,33 +98,40 @@ function MapView() {
 				const roomB = selectedRooms[j];
 
 				let walkingTime;
+				let walkingDistance;
 
 				if (roomA.rooms_shortname === roomB.rooms_shortname) {
 					walkingTime = 60; // seconds
+					walkingDistance = 0; // meters
 				} else {
 					try {
-						const duration = await fetchWalkingTime(roomA, roomB);
+						const { duration, distance } = await fetchWalkingTime(roomA, roomB);
 						walkingTime = duration; // duration in seconds
+						walkingDistance = distance; // distance in meters
 					} catch (error) {
 						console.error(`Error fetching walking time between ${roomA.rooms_name} and ${roomB.rooms_name}:`, error);
 						walkingTime = null;
+						walkingDistance = null;
 					}
 				}
 
 				const timeInMinutes = walkingTime ? (walkingTime / 60).toFixed(2) : "N/A";
+				const distanceInMeters = walkingDistance ? walkingDistance.toFixed(2) : "N/A";
 
 				times.push({
+					relation: `${roomA.rooms_name} → ${roomB.rooms_name}`,
 					roomA: roomA.rooms_name,
 					roomB: roomB.rooms_name,
 					roomAshort: roomA.rooms_shortname,
 					roomBshort: roomB.rooms_shortname,
 					roomAaddr: roomA.rooms_address,
 					roomBaddr: roomB.rooms_address,
-					time: timeInMinutes,
-					roomAFurniture: roomA.rooms_furniture,
-					roomBFurniture: roomB.rooms_furniture,
 					roomAseats: roomA.rooms_seats,
 					roomBseats: roomB.rooms_seats,
+					roomAFurniture: roomA.rooms_furniture,
+					roomBFurniture: roomB.rooms_furniture,
+					distance: distanceInMeters,
+					time: timeInMinutes,
 				});
 			}
 		}

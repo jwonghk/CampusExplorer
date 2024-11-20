@@ -164,30 +164,47 @@ h2 {
 	color: #3498db;
 }
 
+/* Styles for the table */
+.table-container {
+	overflow-x: auto;
+	margin-top: 20px;
+}
+
 table {
-	border: 1px solid black;
+	width: 100%;
+	border-collapse: collapse;
+	table-layout: fixed;
 }
 
-#roomA,
-#roomB,
-#travelTime,
-#roomAshort,
-#roomBshort,
-#roomAaddr,
-#roomBaddr,
-#roomAFurniture,
-#roomBFurniture,
-#roomAseats,
-#roomBseats,
-#relation,
-#distance {
-	font-style: oblique;
-	font-size: 13px;
-	font-weight: normal;
+th,
+td {
+	border: 1px solid #ccc;
+	padding: 8px;
+	text-align: left;
+	word-wrap: break-word;
 }
 
-#roomFur {
-	font-style: italic;
-	font-size: 10px;
-	font-weight: normal;
+th {
+	background-color: #f2f2f2;
+	font-weight: bold;
+}
+
+td {
+	background-color: #fff;
+}
+
+@media (max-width: 768px) {
+	th,
+	td {
+		font-size: 12px;
+		padding: 6px;
+	}
+}
+
+@media (max-width: 480px) {
+	th,
+	td {
+		font-size: 10px;
+		padding: 4px;
+	}
 }
