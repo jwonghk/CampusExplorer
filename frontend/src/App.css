@@ -159,3 +159,35 @@ html,
 	max-height: 200px;
 	overflow-y: auto;
 }
+
+h2 {
+	color: #3498db;
+}
+
+table {
+	border: 1px solid black;
+}
+
+#roomA,
+#roomB,
+#travelTime,
+#roomAshort,
+#roomBshort,
+#roomAaddr,
+#roomBaddr,
+#roomAFurniture,
+#roomBFurniture,
+#roomAseats,
+#roomBseats,
+#relation,
+#distance {
+	font-style: oblique;
+	font-size: 13px;
+	font-weight: normal;
+}
+
+#roomFur {
+	font-style: italic;
+	font-size: 10px;
+	font-weight: normal;
+}
