@@ -5,6 +5,17 @@ Please keep your repository private.
 
 For information about the project, autotest, and the checkpoints, see the course webpage.
 
+## Running Campus Explorer
+Follow the steps below to run the Campus Explorer application locally:
+```
+# in terminal 1
+yarn start
+
+# in terminal 2
+cd frontend
+yarn start
+```
+
 ## Configuring your environment
 
 To start using this project, you need to get your development environment configured so that you can build and execute the code.
